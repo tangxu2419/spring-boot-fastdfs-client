@@ -9,4 +9,4 @@ fastdfs:
     maxAttempt: 3
   cluster:
     nodes:
-    - localhost:22122
+    - 10.138.30.172:22122

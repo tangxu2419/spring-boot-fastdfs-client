@@ -1,8 +1,11 @@
 package com.vcredit.framework.fastdfs.config;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.time.Duration;
 import java.util.List;
 
@@ -10,6 +13,8 @@ import java.util.List;
  * @author Dong Zhuming
  */
 @ConfigurationProperties(prefix = "fastdfs")
+@Getter
+@Setter
 public class FastdfsProperties {
     private Duration connectTimeout;
     private Duration networkTimeout;
@@ -57,6 +62,8 @@ public class FastdfsProperties {
         this.cluster = cluster;
     }
 
+    @Getter
+    @Setter
     public static class Pool {
         private int maxSize = 10;
 
@@ -66,11 +73,13 @@ public class FastdfsProperties {
 
     }
 
+    @Getter
+    @Setter
     public static class Cluster {
         /**
          * Comma-separated list of "host:port" pairs.
          */
-        private List<InetAddress> nodes;
+        private List<String> nodes;
 
     }
 }

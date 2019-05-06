@@ -26,8 +26,7 @@ public class FastdfsAutoConfiguration {
 
     @Bean
     public TrackerConnectionPool trackerConnectionPool() throws IOException {
-        log.info(fastdfsProperties.toString());
-        return new TrackerConnectionPool();
+        return new TrackerConnectionPool(fastdfsProperties);
     }
 
     @Bean
