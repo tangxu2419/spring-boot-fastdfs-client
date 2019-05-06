@@ -29,7 +29,7 @@ public class FastdfsClientTest {
     @Test
     public void testUpload() throws IOException {
         fastdfsProperties.toString();
-        fastdfsClient.upload(new FileInputStream("c:\\LibAntiPrtSc_ERROR.log"), null);
+        fastdfsClient.upload(new FileInputStream("d:\\script.sql"), null);
         assertTrue(true);
     }
 }

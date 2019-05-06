@@ -2,8 +2,9 @@ package com.vcredit.framework.fastdfs;
 
 import com.vcredit.framework.fastdfs.constants.Constants;
 import com.vcredit.framework.fastdfs.constants.ProtocolCommand;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -16,7 +17,6 @@ import static com.vcredit.framework.fastdfs.constants.ProtocolCommand.TRACKER_PR
 /**
  * @author Dong Zhuming
  */
-@Slf4j
 public class TrackerClient {
 
     /**
@@ -24,12 +24,23 @@ public class TrackerClient {
      */
     private static final String DEFAULT_CHARSET_NAME = "UTF-8";
 
+    /**
+     * 日志
+     */
+    private static Logger log = LoggerFactory.getLogger(TrackerClient.class);
+
     private final TrackerConnectionPool trackerConnectionPool;
 
     public TrackerClient(TrackerConnectionPool trackerConnectionPool) {
         this.trackerConnectionPool = trackerConnectionPool;
     }
 
+    /**
+     *
+     * @param groupName
+     * @return
+     * @throws IOException
+     */
     public StorageLocation getStorageLocation(String groupName) throws IOException {
         final TrackerConnection trackerConnection = trackerConnectionPool.borrow();
         Socket trackerSocket = trackerConnection.getSocket();
@@ -78,6 +89,36 @@ public class TrackerClient {
         trackerConnectionPool.release(trackerConnection);
         log.debug(storageLocation.toString());
         return storageLocation;
+    }
+
+    /**
+     *
+     * @param groupName
+     * @param fileExtName
+     * @return
+     * @throws IOException
+     */
+    private StorageLocation[] getStorageLocations(String groupName, String fileExtName) throws IOException {
+        final TrackerConnection trackerConnection = trackerConnectionPool.borrow();
+        Socket trackerSocket = trackerConnection.getSocket();
+        StorageLocation[] storageLocations;
+        try (OutputStream out = trackerSocket.getOutputStream()) {
+            // 上传支持断点续传的文件
+            byte cmd= ProtocolCommand.STORAGE_PROTO_CMD_UPLOAD_FILE;
+            // 继续上载文件
+//            byte cmd= ProtocolCommand.STORAGE_PROTO_CMD_APPEND_FILE;
+
+
+            // 报文三部分
+            // 报文头
+            // 报文参数
+            // 文件流
+
+
+
+        }
+        trackerConnectionPool.release(trackerConnection);
+        return storageLocations;
     }
 
     private StorageLocation[] getStorageLocations(String groupName) throws IOException {

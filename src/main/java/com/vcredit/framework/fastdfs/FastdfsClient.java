@@ -24,7 +24,6 @@ public class FastdfsClient {
         final StorageLocation storageLocation = trackerClient.getStorageLocation(groupName);
         final StorageClient storageClient = new StorageClient(storageLocation);
         return storageClient.uploadFile(groupName, inputStream, null, null);
-
     }
 
     public OutputStream download(String fileName, String groupName) {
