@@ -1,0 +1,12 @@
+spring.profiles.active: dev
+
+fastdfs:
+  connectTimeout: PT5S
+  networkTimeout: PT5S
+  charset: UTF-8
+  pool:
+    maxSize: 10
+    maxAttempt: 3
+  cluster:
+    nodes:
+    - localhost:22122
