@@ -101,7 +101,7 @@ public class TrackerClient {
     private StorageLocation[] getStorageLocations(String groupName, String fileExtName) throws IOException {
         final TrackerConnection trackerConnection = trackerConnectionPool.borrow();
         Socket trackerSocket = trackerConnection.getSocket();
-        StorageLocation[] storageLocations;
+        StorageLocation[] storageLocations = null;
         try (OutputStream out = trackerSocket.getOutputStream()) {
             // 上传支持断点续传的文件
             byte cmd= ProtocolCommand.STORAGE_PROTO_CMD_UPLOAD_FILE;

@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import static org.junit.Assert.*;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -29,7 +29,8 @@ public class FastdfsClientTest {
     @Test
     public void testUpload() throws IOException {
         fastdfsProperties.toString();
-        fastdfsClient.upload(new FileInputStream("d:\\script.sql"), null);
+        File file = new File("d:\\script.sql");
+        fastdfsClient.upload(new FileInputStream(file), file.length(), "sql", null);
         assertTrue(true);
     }
 }
