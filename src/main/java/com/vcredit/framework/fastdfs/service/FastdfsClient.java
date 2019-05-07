@@ -28,12 +28,16 @@ public class FastdfsClient {
         return storageClient.uploadFile(groupName, inputStream, fileSize, fileExtName, null, null);
     }
 
-    public OutputStream download(String fileName, String groupName) {
-        return null;
+    public OutputStream download(String fileName, String groupName) throws Exception {
+        final StorageLocation storageLocation = trackerClient.getStorageLocation(groupName);
+        final StorageClient storageClient = new StorageClient(storageLocation);
+        return storageClient.download(groupName, fileName);
     }
 
     public Future<DeleteResult> delete(String fileName, String groupName) throws IOException {
-        return null;
+        final StorageLocation storageLocation = trackerClient.getStorageLocation(groupName);
+        final StorageClient storageClient = new StorageClient(storageLocation);
+        return storageClient.deleteFile(groupName, fileName);
     }
 
 

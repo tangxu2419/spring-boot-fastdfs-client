@@ -13,4 +13,6 @@ public abstract class OperationResult {
     public OperationResult(int errorCode) {
         this.errorCode = errorCode;
     }
+
+
 }

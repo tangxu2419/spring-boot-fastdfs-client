@@ -5,14 +5,17 @@ import com.vcredit.framework.fastdfs.ProtoPackageUtil;
 import com.vcredit.framework.fastdfs.StorageLocation;
 import com.vcredit.framework.fastdfs.constants.Constants;
 import com.vcredit.framework.fastdfs.constants.ProtocolCommand;
+import com.vcredit.framework.fastdfs.exception.StorageException;
 import com.vcredit.framework.fastdfs.proto.DeleteResult;
 import com.vcredit.framework.fastdfs.proto.UploadResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.Socket;
 import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -83,7 +86,7 @@ public class StorageClient {
             sendFileContent(inputStream, fileSize, out);
         }
 
-        ProtoPackageUtil.RecvPackageInfo pkgInfo = ProtoPackageUtil.recvPackage(storageLocation.getSocket().getInputStream(),ProtocolCommand.STORAGE_PROTO_CMD_RESP, -1);
+        ProtoPackageUtil.RecvPackageInfo pkgInfo = ProtoPackageUtil.recvPackage(storageLocation.getSocket().getInputStream(), ProtocolCommand.STORAGE_PROTO_CMD_RESP, -1);
         if (pkgInfo.errno != 0) {
             return null;
         }
@@ -129,7 +132,7 @@ public class StorageClient {
         OutputStream out = storageLocation.getSocket().getOutputStream();
         out.write(wholePkg);
 
-        ProtoPackageUtil.RecvPackageInfo pkgInfo = ProtoPackageUtil.recvPackage(storageLocation.getSocket().getInputStream(),ProtocolCommand.STORAGE_PROTO_CMD_RESP, 0);
+        ProtoPackageUtil.RecvPackageInfo pkgInfo = ProtoPackageUtil.recvPackage(storageLocation.getSocket().getInputStream(), ProtocolCommand.STORAGE_PROTO_CMD_RESP, 0);
 
         DeleteResult result = new DeleteResult(pkgInfo.errno);
         CompletableFuture<DeleteResult> future = new CompletableFuture<>();
@@ -137,12 +140,61 @@ public class StorageClient {
         return future;
     }
 
-    public OutputStream download(String fileName, String groupName){
+    public OutputStream download(String groupName, String fileName) throws Exception {
+        byte[] header;
+        byte[] bsOffset;
+        byte[] bsDownBytes;
+        byte[] groupBytes;
+        byte[] filenameBytes;
+        byte[] bs;
+        int groupLen;
 
-        return null;
+        bsOffset = ProtoPackageUtil.long2buff(0);
+        bsDownBytes = ProtoPackageUtil.long2buff(0);
+        groupBytes = new byte[Constants.FDFS_GROUP_NAME_MAX_LEN];
+        bs = groupName.getBytes(DEFAULT_CHARSET_NAME);
+        filenameBytes = fileName.getBytes(DEFAULT_CHARSET_NAME);
+
+        Arrays.fill(groupBytes, (byte) 0);
+        if (bs.length <= groupBytes.length) {
+            groupLen = bs.length;
+        } else {
+            groupLen = groupBytes.length;
+        }
+        System.arraycopy(bs, 0, groupBytes, 0, groupLen);
+
+        header = ProtoPackageUtil.packHeader(ProtocolCommand.STORAGE_PROTO_CMD_DOWNLOAD_FILE,
+                bsOffset.length + bsDownBytes.length + groupBytes.length + filenameBytes.length, (byte) 0);
+        byte[] wholePkg = new byte[header.length + bsOffset.length + bsDownBytes.length + groupBytes.length + filenameBytes.length];
+        System.arraycopy(header, 0, wholePkg, 0, header.length);
+        System.arraycopy(bsOffset, 0, wholePkg, header.length, bsOffset.length);
+        System.arraycopy(bsDownBytes, 0, wholePkg, header.length + bsOffset.length, bsDownBytes.length);
+        System.arraycopy(groupBytes, 0, wholePkg, header.length + bsOffset.length + bsDownBytes.length, groupBytes.length);
+        System.arraycopy(filenameBytes, 0, wholePkg, header.length + bsOffset.length + bsDownBytes.length + groupBytes.length, filenameBytes.length);
+
+        Socket socket = storageLocation.getSocket();
+        OutputStream out = socket.getOutputStream();
+        out.write(wholePkg);
+
+        ProtoPackageUtil.RecvHeaderInfo headerInfo = ProtoPackageUtil.recvHeader(socket.getInputStream(), ProtocolCommand.STORAGE_PROTO_CMD_RESP, -1);
+        if (headerInfo.errno != 0) {
+            log.warn("download file error. errorCode : {}", headerInfo.errno);
+            throw new StorageException("download file error. errorCode : {}" + headerInfo.errno);
+        }
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        byte[] buff = new byte[256 * 1024];
+        long remainBytes = headerInfo.bodyLen;
+        int bytes;
+        while (remainBytes > 0) {
+            if ((bytes = socket.getInputStream().read(buff, 0, remainBytes > buff.length ? buff.length : (int) remainBytes)) < 0) {
+                throw new IOException("recv package size " + (headerInfo.bodyLen - remainBytes) + " != " + headerInfo.bodyLen);
+            }
+            outputStream.write(buff, 0, bytes);
+            remainBytes -= bytes;
+        }
+        return outputStream;
     }
-
-
 
 
     /**

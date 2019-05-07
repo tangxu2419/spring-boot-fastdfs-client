@@ -5,7 +5,7 @@ package com.vcredit.framework.fastdfs.exception;
  */
 public class StorageException extends Exception {
 
-    protected StorageException(String message) {
+    public StorageException(String message) {
         super(message);
     }
 

@@ -30,10 +30,10 @@ public class FastdfsAutoConfiguration {
         return new TrackerConnectionPool(fastdfsProperties);
     }
 
-    @Bean
-    public PoolConnectFactory poolConnectFactory() throws IOException {
-        return new PoolConnectFactory(fastdfsProperties);
-    }
+//    @Bean
+//    public PoolConnectFactory poolConnectFactory() throws IOException {
+//        return new PoolConnectFactory(fastdfsProperties);
+//    }
 
 
     @Bean
