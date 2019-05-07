@@ -43,7 +43,9 @@ public class TrackerConnectionPool {
         private static Map<InetSocketAddress, Integer> nodeMap = new HashMap<>();
 
         static void addNode(InetSocketAddress inetSocketAddress) {
-            nodeMap.put(inetSocketAddress, 0);
+            if(nodeMap.putIfAbsent(inetSocketAddress, 0) != null) {
+                log.warn("Duplicated tracker server node is configured, please check \"fastdfs.cluster\"");
+            }
         }
 
         /**

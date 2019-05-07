@@ -20,7 +20,6 @@ public class FastdfsClient {
     }
 
     public Future<UploadResult> upload(InputStream inputStream, long fileSize, String fileExtName, String groupName) throws IOException {
-
         final StorageLocation storageLocation = trackerClient.getStorageLocation(groupName);
         final StorageClient storageClient = new StorageClient(storageLocation);
         return storageClient.uploadFile(groupName, inputStream, fileSize, fileExtName, null, null);

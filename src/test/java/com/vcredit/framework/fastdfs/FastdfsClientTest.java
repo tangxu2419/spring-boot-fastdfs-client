@@ -28,9 +28,8 @@ public class FastdfsClientTest {
 
     @Test
     public void testUpload() throws IOException {
-        fastdfsProperties.toString();
-        File file = new File("d:\\script.sql");
-        fastdfsClient.upload(new FileInputStream(file), file.length(), "sql", null);
+        File file = File.createTempFile("test", "txt");
+        fastdfsClient.upload(new FileInputStream(file), file.length(), "txt", null);
         assertTrue(true);
     }
 }
