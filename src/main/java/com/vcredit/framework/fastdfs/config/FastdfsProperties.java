@@ -12,67 +12,56 @@ import java.util.List;
 /**
  * @author Dong Zhuming
  */
-@ConfigurationProperties(prefix = "fastdfs")
 @Getter
 @Setter
+@ConfigurationProperties(prefix = "fastdfs")
 public class FastdfsProperties {
+    /**
+     * 连接超时时间
+     */
     private Duration connectTimeout;
+
     private Duration networkTimeout;
-    private String charset;
+    /**
+     * group name字符集
+     */
+    private String charset = "UTF-8";
+
     private Pool pool;
+
     private Cluster cluster;
 
-    public Duration getConnectTimeout() {
-        return connectTimeout;
-    }
-
-    public void setConnectTimeout(Duration connectTimeout) {
-        this.connectTimeout = connectTimeout;
-    }
-
-    public Duration getNetworkTimeout() {
-        return networkTimeout;
-    }
-
-    public void setNetworkTimeout(Duration networkTimeout) {
-        this.networkTimeout = networkTimeout;
-    }
-
-    public String getCharset() {
-        return charset;
-    }
-
-    public void setCharset(String charset) {
-        this.charset = charset;
-    }
-
-    public Pool getPool() {
-        return pool;
-    }
-
-    public void setPool(Pool pool) {
-        this.pool = pool;
-    }
-
-    public Cluster getCluster() {
-        return cluster;
-    }
-
-    public void setCluster(Cluster cluster) {
-        this.cluster = cluster;
-    }
-
+    /**
+     * 连接池配置
+     */
     @Getter
     @Setter
     public static class Pool {
+        /**
+         * 最大连接数
+         */
         private int maxSize = 10;
 
-        private int maxActive;
+        /**
+         * 最小连接数
+         */
+        private int minSize = 1;
 
+        /**
+         * 最大空闲时间
+         */
+        private Duration maxIdleTime;
+
+        /**
+         * 最大错误重试次数
+         */
         private int maxAttempt = 3;
 
     }
 
+    /**
+     * 集群配置
+     */
     @Getter
     @Setter
     public static class Cluster {
@@ -83,3 +72,5 @@ public class FastdfsProperties {
 
     }
 }
+
+

@@ -6,6 +6,8 @@ fastdfs:
   charset: UTF-8
   pool:
     maxSize: 10
+    minSize: 1
+    maxIdleTime: PT5S
     maxAttempt: 3
   cluster:
     nodes:

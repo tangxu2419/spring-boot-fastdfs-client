@@ -19,11 +19,16 @@ public class TrackerConnection implements Closeable {
 
     private final Socket socket;
     private final InetSocketAddress inetSocketAddress;
+    private boolean inUse;
 
     public TrackerConnection(Socket socket, InetSocketAddress inetSocketAddress) {
-        log.info("A Tracker connection was established.[{}]", inetSocketAddress.toString());
+        this(socket, inetSocketAddress, false);
+    }
+
+    public TrackerConnection(Socket socket, InetSocketAddress inetSocketAddress, boolean inUse) {
         this.socket = socket;
         this.inetSocketAddress = inetSocketAddress;
+        this.inUse = inUse;
     }
 
     public Socket getSocket() {
@@ -46,13 +51,18 @@ public class TrackerConnection implements Closeable {
 
     @Override
     public synchronized void close() throws IOException {
-        if(this.socket != null && !socket.isClosed()) {
+        if (this.socket != null && !socket.isClosed()) {
             //TODO 向服务器发送退出指令
-            this.socket.close();
+
         }
+        this.inUse = false;
     }
 
-    public boolean isAlive() {
+    public boolean isInUse() {
         return false;
     }
-}
+
+    public void setInUse(boolean inUse) {
+        this.inUse = inUse;
+    }
+    }
