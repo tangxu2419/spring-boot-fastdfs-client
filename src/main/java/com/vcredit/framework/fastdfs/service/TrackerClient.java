@@ -1,5 +1,9 @@
-package com.vcredit.framework.fastdfs;
+package com.vcredit.framework.fastdfs.service;
 
+import com.vcredit.framework.fastdfs.ProtoPackageUtil;
+import com.vcredit.framework.fastdfs.StorageLocation;
+import com.vcredit.framework.fastdfs.conn.TrackerConnection;
+import com.vcredit.framework.fastdfs.conn.TrackerConnectionPool;
 import com.vcredit.framework.fastdfs.constants.Constants;
 import com.vcredit.framework.fastdfs.constants.ProtocolCommand;
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +40,6 @@ public class TrackerClient {
     }
 
     /**
-     *
      * @param groupName
      * @return
      * @throws IOException
@@ -56,7 +59,7 @@ public class TrackerClient {
                 cmd = ProtocolCommand.TRACKER_PROTO_CMD_SERVICE_QUERY_STORE_WITH_GROUP_ONE;
                 outLen = Constants.FDFS_GROUP_NAME_MAX_LEN;
             }
-            byte[] header = ProtoPackageResult.packHeader(cmd, outLen, (byte) 0);
+            byte[] header = ProtoPackageUtil.packHeader(cmd, outLen, (byte) 0);
             out.write(header);
             // write groupName to socket
             if (StringUtils.isNotBlank(groupName)) {
@@ -73,7 +76,7 @@ public class TrackerClient {
                 out.write(bGroupName);
             }
             // read package from socket
-            ProtoPackageResult.RecvPackageInfo pkgInfo = ProtoPackageResult.recvPackage(trackerSocket.getInputStream(), TRACKER_PROTO_CMD_RESP, TRACKER_QUERY_STORAGE_STORE_BODY_LEN);
+            ProtoPackageUtil.RecvPackageInfo pkgInfo = ProtoPackageUtil.recvPackage(trackerSocket.getInputStream(), TRACKER_PROTO_CMD_RESP, TRACKER_QUERY_STORAGE_STORE_BODY_LEN);
             // check error code and throw
             if (pkgInfo.errno != 0) {
                 log.warn("getStoreStorage fail, errno code: " + pkgInfo.errno);
@@ -81,7 +84,7 @@ public class TrackerClient {
             }
             // parse ip address, port, storePath from package
             String ip = new String(pkgInfo.body, FDFS_GROUP_NAME_MAX_LEN, FDFS_IPADDR_SIZE - 1).trim();
-            int port = (int) ProtoPackageResult.buff2long(pkgInfo.body, FDFS_GROUP_NAME_MAX_LEN + FDFS_IPADDR_SIZE - 1);
+            int port = (int) ProtoPackageUtil.buff2long(pkgInfo.body, FDFS_GROUP_NAME_MAX_LEN + FDFS_IPADDR_SIZE - 1);
             int storePath = pkgInfo.body[TRACKER_QUERY_STORAGE_STORE_BODY_LEN - 1];
             // create storage connection and return
             storageLocation = new StorageLocation(ip, port, storePath);
@@ -92,7 +95,6 @@ public class TrackerClient {
     }
 
     /**
-     *
      * @param groupName
      * @param fileExtName
      * @return
@@ -104,7 +106,7 @@ public class TrackerClient {
         StorageLocation[] storageLocations = null;
         try (OutputStream out = trackerSocket.getOutputStream()) {
             // 上传支持断点续传的文件
-            byte cmd= ProtocolCommand.STORAGE_PROTO_CMD_UPLOAD_FILE;
+            byte cmd = ProtocolCommand.STORAGE_PROTO_CMD_UPLOAD_FILE;
             // 继续上载文件
 //            byte cmd= ProtocolCommand.STORAGE_PROTO_CMD_APPEND_FILE;
 
@@ -113,7 +115,6 @@ public class TrackerClient {
             // 报文头
             // 报文参数
             // 文件流
-
 
 
         }

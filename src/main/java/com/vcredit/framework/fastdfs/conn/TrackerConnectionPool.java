@@ -1,4 +1,4 @@
-package com.vcredit.framework.fastdfs;
+package com.vcredit.framework.fastdfs.conn;
 
 import com.vcredit.framework.fastdfs.config.FastdfsProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketException;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -74,7 +73,7 @@ public class TrackerConnectionPool {
      *
      * @throws IOException 连接异常
      */
-    synchronized TrackerConnection borrow() throws IOException {
+    public synchronized TrackerConnection borrow() throws IOException {
         TrackerConnection start = null;
         do {
             TrackerConnection trackerConnection = trackerConnections.poll();
@@ -162,7 +161,7 @@ public class TrackerConnectionPool {
     /**
      * 释放连接
      */
-    synchronized void release(TrackerConnection trackerConnections) {
+    public synchronized void release(TrackerConnection trackerConnections) {
         trackerConnections.setInUse(false);
     }
 }

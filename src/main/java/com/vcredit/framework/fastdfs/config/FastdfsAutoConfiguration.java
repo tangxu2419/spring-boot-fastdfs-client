@@ -1,7 +1,8 @@
 package com.vcredit.framework.fastdfs.config;
 
-import com.vcredit.framework.fastdfs.TrackerClient;
-import com.vcredit.framework.fastdfs.TrackerConnectionPool;
+import com.vcredit.framework.fastdfs.conn.PoolConnectFactory;
+import com.vcredit.framework.fastdfs.conn.TrackerConnectionPool;
+import com.vcredit.framework.fastdfs.service.TrackerClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -28,6 +29,12 @@ public class FastdfsAutoConfiguration {
     public TrackerConnectionPool trackerConnectionPool() throws IOException {
         return new TrackerConnectionPool(fastdfsProperties);
     }
+
+    @Bean
+    public PoolConnectFactory poolConnectFactory() throws IOException {
+        return new PoolConnectFactory(fastdfsProperties);
+    }
+
 
     @Bean
     public TrackerClient trackerClient(TrackerConnectionPool trackerConnectionPool) {

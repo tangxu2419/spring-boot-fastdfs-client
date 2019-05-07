@@ -1,7 +1,12 @@
-package com.vcredit.framework.fastdfs;
+package com.vcredit.framework.fastdfs.service;
 
+import com.vcredit.framework.fastdfs.MetaInfo;
+import com.vcredit.framework.fastdfs.ProtoPackageUtil;
+import com.vcredit.framework.fastdfs.StorageLocation;
 import com.vcredit.framework.fastdfs.constants.Constants;
 import com.vcredit.framework.fastdfs.constants.ProtocolCommand;
+import com.vcredit.framework.fastdfs.proto.DeleteResult;
+import com.vcredit.framework.fastdfs.proto.UploadResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,10 +64,10 @@ public class StorageClient {
         bodyLen = sizeBytes.length + Constants.FDFS_FILE_EXT_NAME_MAX_LEN + fileSize;
         sizeBytes[0] = (byte) storageLocation.getStorePathIndex();
         offset = 1;
-        hexLenBytes = ProtoPackageResult.long2buff(fileSize);
+        hexLenBytes = ProtoPackageUtil.long2buff(fileSize);
         System.arraycopy(hexLenBytes, 0, sizeBytes, offset, hexLenBytes.length);
 
-        byte[] header = ProtoPackageResult.packHeader(cmd, bodyLen, (byte) 0);
+        byte[] header = ProtoPackageUtil.packHeader(cmd, bodyLen, (byte) 0);
         byte[] wholePkg = new byte[(int) (header.length + bodyLen - fileSize)];
         System.arraycopy(header, 0, wholePkg, 0, header.length);
         System.arraycopy(sizeBytes, 0, wholePkg, header.length, sizeBytes.length);
@@ -78,8 +83,7 @@ public class StorageClient {
             sendFileContent(inputStream, fileSize, out);
         }
 
-        ProtoPackageResult.RecvPackageInfo pkgInfo = ProtoPackageResult.recvPackage(storageLocation.getSocket().getInputStream(),
-                ProtocolCommand.STORAGE_PROTO_CMD_RESP, -1);
+        ProtoPackageUtil.RecvPackageInfo pkgInfo = ProtoPackageUtil.recvPackage(storageLocation.getSocket().getInputStream(),ProtocolCommand.STORAGE_PROTO_CMD_RESP, -1);
         if (pkgInfo.errno != 0) {
             return null;
         }
@@ -95,6 +99,50 @@ public class StorageClient {
         future.complete(result);
         return future;
     }
+
+    public Future<DeleteResult> deleteFile(String groupName, String filename) throws IOException {
+        byte cmd = ProtocolCommand.TRACKER_PROTO_CMD_SERVICE_QUERY_UPDATE;
+        byte[] header;
+        byte[] groupBytes;
+        byte[] filenameBytes;
+        byte[] bs;
+        int groupLen;
+
+        groupBytes = new byte[Constants.FDFS_GROUP_NAME_MAX_LEN];
+        bs = groupName.getBytes(DEFAULT_CHARSET_NAME);
+        filenameBytes = filename.getBytes(DEFAULT_CHARSET_NAME);
+
+        Arrays.fill(groupBytes, (byte) 0);
+        if (bs.length <= groupBytes.length) {
+            groupLen = bs.length;
+        } else {
+            groupLen = groupBytes.length;
+        }
+        System.arraycopy(bs, 0, groupBytes, 0, groupLen);
+
+        header = ProtoPackageUtil.packHeader(cmd, groupBytes.length + filenameBytes.length, (byte) 0);
+        byte[] wholePkg = new byte[header.length + groupBytes.length + filenameBytes.length];
+        System.arraycopy(header, 0, wholePkg, 0, header.length);
+        System.arraycopy(groupBytes, 0, wholePkg, header.length, groupBytes.length);
+        System.arraycopy(filenameBytes, 0, wholePkg, header.length + groupBytes.length, filenameBytes.length);
+
+        OutputStream out = storageLocation.getSocket().getOutputStream();
+        out.write(wholePkg);
+
+        ProtoPackageUtil.RecvPackageInfo pkgInfo = ProtoPackageUtil.recvPackage(storageLocation.getSocket().getInputStream(),ProtocolCommand.STORAGE_PROTO_CMD_RESP, 0);
+
+        DeleteResult result = new DeleteResult(pkgInfo.errno);
+        CompletableFuture<DeleteResult> future = new CompletableFuture<>();
+        future.complete(result);
+        return future;
+    }
+
+    public OutputStream download(String fileName, String groupName){
+
+        return null;
+    }
+
+
 
 
     /**

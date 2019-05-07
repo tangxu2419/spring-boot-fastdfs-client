@@ -1,4 +1,4 @@
-package com.vcredit.framework.fastdfs;
+package com.vcredit.framework.fastdfs.conn;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -21,6 +21,11 @@ public class FastdfsProperties {
      */
     private Duration connectTimeout;
 
+    /**
+     * 读取时间
+     */
+    private Duration soTimeout;
+
     private Duration networkTimeout;
     /**
      * group name字符集

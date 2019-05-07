@@ -1,6 +1,6 @@
 package com.vcredit.framework.fastdfs.proto;
 
-import com.vcredit.framework.fastdfs.ProtoPackageResult;
+import com.vcredit.framework.fastdfs.ProtoPackageUtil;
 import com.vcredit.framework.fastdfs.constants.Constants;
 import com.vcredit.framework.fastdfs.constants.ProtocolCommand;
 import com.vcredit.framework.fastdfs.exception.FdfsServerException;
@@ -79,7 +79,7 @@ public class ProtoHead {
     public byte[] packHeader() {
         byte[] header = new byte[HEAD_LENGTH];
         Arrays.fill(header, (byte) 0);
-        byte[] hexLen = ProtoPackageResult.long2buff(contentLength);
+        byte[] hexLen = ProtoPackageUtil.long2buff(contentLength);
         System.arraycopy(hexLen, 0, header, 0, hexLen.length);
         header[PROTO_HEADER_CMD_INDEX] = cmd;
         header[PROTO_HEADER_STATUS_INDEX] = status;
@@ -100,7 +100,7 @@ public class ProtoHead {
         if ((bytes = ins.read(header)) != header.length) {
             throw new IOException("recv package size " + bytes + " != " + header.length);
         }
-        long returnContentLength = ProtoPackageResult.buff2long(header, 0);
+        long returnContentLength = ProtoPackageUtil.buff2long(header, 0);
         byte returnCmd = header[Constants.PROTO_HEADER_CMD_INDEX];
         byte returnStatus = header[Constants.PROTO_HEADER_STATUS_INDEX];
         // 返回解析出来的ProtoHead

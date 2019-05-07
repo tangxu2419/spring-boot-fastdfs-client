@@ -1,4 +1,4 @@
-package com.vcredit.framework.fastdfs;
+package com.vcredit.framework.fastdfs.proto;
 
 import lombok.Builder;
 import lombok.Data;

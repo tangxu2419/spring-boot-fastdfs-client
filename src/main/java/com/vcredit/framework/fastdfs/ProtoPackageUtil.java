@@ -10,7 +10,7 @@ import static com.vcredit.framework.fastdfs.constants.Constants.*;
  * @author tangxu
  * @date 2019/5/517:30
  */
-public class ProtoPackageResult {
+public class ProtoPackageUtil {
 
     /**
      * receive whole pack

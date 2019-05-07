@@ -1,5 +1,8 @@
-package com.vcredit.framework.fastdfs;
+package com.vcredit.framework.fastdfs.service;
 
+import com.vcredit.framework.fastdfs.StorageLocation;
+import com.vcredit.framework.fastdfs.proto.DeleteResult;
+import com.vcredit.framework.fastdfs.proto.UploadResult;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;

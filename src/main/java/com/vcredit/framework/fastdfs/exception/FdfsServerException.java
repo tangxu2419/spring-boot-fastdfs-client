@@ -2,8 +2,6 @@ package com.vcredit.framework.fastdfs.exception;
 
 import com.vcredit.framework.fastdfs.constants.Constants;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -36,15 +34,14 @@ public class FdfsServerException extends RuntimeException {
     private static final Map<Integer, String> CODE_MESSAGE_MAPPING;
 
     static {
-        Map<Integer, String> mapping = new HashMap<Integer, String>();
-        mapping.put((int) Constants.ERR_NO_ENOENT, "找不到节点或文件");
-        mapping.put((int) Constants.ERR_NO_EIO, "服务端发生io异常");
-        mapping.put((int) Constants.ERR_NO_EINVAL, "无效的参数");
-        mapping.put((int) Constants.ERR_NO_EBUSY, "服务端忙");
-        mapping.put((int) Constants.ERR_NO_ENOSPC, "没有足够的存储空间");
-        mapping.put((int) Constants.ECONNREFUSED, "服务端拒绝连接");
-        mapping.put((int) Constants.ERR_NO_EALREADY, "文件已经存在？");
-        CODE_MESSAGE_MAPPING = Collections.unmodifiableMap(mapping);
+        CODE_MESSAGE_MAPPING = Map.of(
+                (int) Constants.ERR_NO_ENOENT, "找不到节点或文件",
+                (int) Constants.ERR_NO_EIO, "服务端发生io异常",
+                (int) Constants.ERR_NO_EINVAL, "无效的参数",
+                (int) Constants.ERR_NO_EBUSY, "服务端忙",
+                (int) Constants.ERR_NO_ENOSPC, "没有足够的存储空间",
+                (int) Constants.ECONNREFUSED, "服务端拒绝连接",
+                (int) Constants.ERR_NO_EALREADY, "文件已经存在？");
     }
 
     private int errorCode;
