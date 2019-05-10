@@ -20,4 +20,12 @@ public class UploadResult extends OperationResult {
     public String getFileName() {
         return fileName;
     }
+
+    @Override
+    public String toString() {
+        return "UploadResult{" +
+                "groupName='" + groupName + '\'' +
+                ", fileName='" + fileName + '\'' +
+                '}';
+    }
 }

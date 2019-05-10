@@ -1,223 +1,127 @@
 package com.vcredit.framework.fastdfs.service;
 
 import com.vcredit.framework.fastdfs.MetaInfo;
-import com.vcredit.framework.fastdfs.ProtoPackageUtil;
-import com.vcredit.framework.fastdfs.StorageLocation;
-import com.vcredit.framework.fastdfs.constants.Constants;
-import com.vcredit.framework.fastdfs.constants.ProtocolCommand;
-import com.vcredit.framework.fastdfs.exception.StorageException;
-import com.vcredit.framework.fastdfs.proto.DeleteResult;
-import com.vcredit.framework.fastdfs.proto.UploadResult;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.vcredit.framework.fastdfs.conn.ConnectionManager;
+import com.vcredit.framework.fastdfs.proto.*;
+import com.vcredit.framework.fastdfs.proto.storage.StorageDeleteFileCommand;
+import com.vcredit.framework.fastdfs.proto.storage.StorageDownloadCommand;
+import com.vcredit.framework.fastdfs.proto.storage.StorageUploadFileCommand;
+import org.apache.commons.lang3.Validate;
+import org.springframework.stereotype.Component;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.util.Arrays;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
+import java.util.Set;
 
 /**
  * @author Dong Zhuming
  */
+@Component
 public class StorageClient {
-    /**
-     * 默认字符集
-     */
-    private static final String DEFAULT_CHARSET_NAME = "UTF-8";
-    /**
-     * 日志
-     */
-    private static Logger log = LoggerFactory.getLogger(StorageClient.class);
 
-    private final StorageLocation storageLocation;
+    private final TrackerClient trackerClient;
+    private final ConnectionManager connectionManager;
 
-    public StorageClient(StorageLocation storageLocation) {
-        this.storageLocation = storageLocation;
-    }
-
-    public Future<UploadResult> uploadFile(InputStream inputStream, long fileSize, String fileExtName, String extension, MetaInfo[] metaInfo) throws IOException {
-        return uploadFile(null, inputStream, fileSize, fileExtName, extension, metaInfo);
-    }
-
-    public Future<UploadResult> uploadFile(String groupName, InputStream inputStream, long fileSize, String fileExtName, String extension, MetaInfo[] metaInfo) throws IOException {
-        byte cmd = ProtocolCommand.STORAGE_PROTO_CMD_UPLOAD_FILE;
-        byte[] sizeBytes;
-        byte[] hexLenBytes;
-        long bodyLen;
-        int offset;
-
-        byte[] extNameBs;
-        // 设置文件后缀名转byte数组，最多转6位
-        extNameBs = new byte[Constants.FDFS_FILE_EXT_NAME_MAX_LEN];
-        Arrays.fill(extNameBs, (byte) 0);
-        if (fileExtName != null && fileExtName.length() > 0) {
-            byte[] bs = fileExtName.getBytes(DEFAULT_CHARSET_NAME);
-            int extNameLen = bs.length;
-            if (extNameLen > Constants.FDFS_FILE_EXT_NAME_MAX_LEN) {
-                extNameLen = Constants.FDFS_FILE_EXT_NAME_MAX_LEN;
-            }
-            System.arraycopy(bs, 0, extNameBs, 0, extNameLen);
-        }
-
-        sizeBytes = new byte[1 + Constants.FDFS_PROTO_PKG_LEN_SIZE];
-        bodyLen = sizeBytes.length + Constants.FDFS_FILE_EXT_NAME_MAX_LEN + fileSize;
-        sizeBytes[0] = (byte) storageLocation.getStorePathIndex();
-        offset = 1;
-        hexLenBytes = ProtoPackageUtil.long2buff(fileSize);
-        System.arraycopy(hexLenBytes, 0, sizeBytes, offset, hexLenBytes.length);
-
-        byte[] header = ProtoPackageUtil.packHeader(cmd, bodyLen, (byte) 0);
-        byte[] wholePkg = new byte[(int) (header.length + bodyLen - fileSize)];
-        System.arraycopy(header, 0, wholePkg, 0, header.length);
-        System.arraycopy(sizeBytes, 0, wholePkg, header.length, sizeBytes.length);
-        offset = header.length + sizeBytes.length;
-
-        System.arraycopy(extNameBs, 0, wholePkg, offset, extNameBs.length);
-
-        OutputStream out = storageLocation.getSocket().getOutputStream();
-        out.write(wholePkg);
-
-        //写入数据流
-        if (null != inputStream) {
-            sendFileContent(inputStream, fileSize, out);
-        }
-
-        ProtoPackageUtil.RecvPackageInfo pkgInfo = ProtoPackageUtil.recvPackage(storageLocation.getSocket().getInputStream(), ProtocolCommand.STORAGE_PROTO_CMD_RESP, -1);
-        if (pkgInfo.errno != 0) {
-            return null;
-        }
-        if (pkgInfo.body.length <= Constants.FDFS_GROUP_NAME_MAX_LEN) {
-            throw new IOException("body length: " + pkgInfo.body.length + " <= " + Constants.FDFS_GROUP_NAME_MAX_LEN);
-        }
-
-        String fileGroupName = new String(pkgInfo.body, 0, Constants.FDFS_GROUP_NAME_MAX_LEN).trim();
-        String filename = new String(pkgInfo.body, Constants.FDFS_GROUP_NAME_MAX_LEN, pkgInfo.body.length - Constants.FDFS_GROUP_NAME_MAX_LEN);
-
-        UploadResult result = new UploadResult(fileGroupName, filename);
-        CompletableFuture<UploadResult> future = new CompletableFuture<>();
-        future.complete(result);
-        return future;
-    }
-
-    public Future<DeleteResult> deleteFile(String groupName, String filename) throws IOException {
-        byte cmd = ProtocolCommand.TRACKER_PROTO_CMD_SERVICE_QUERY_UPDATE;
-        byte[] header;
-        byte[] groupBytes;
-        byte[] filenameBytes;
-        byte[] bs;
-        int groupLen;
-
-        groupBytes = new byte[Constants.FDFS_GROUP_NAME_MAX_LEN];
-        bs = groupName.getBytes(DEFAULT_CHARSET_NAME);
-        filenameBytes = filename.getBytes(DEFAULT_CHARSET_NAME);
-
-        Arrays.fill(groupBytes, (byte) 0);
-        if (bs.length <= groupBytes.length) {
-            groupLen = bs.length;
-        } else {
-            groupLen = groupBytes.length;
-        }
-        System.arraycopy(bs, 0, groupBytes, 0, groupLen);
-
-        header = ProtoPackageUtil.packHeader(cmd, groupBytes.length + filenameBytes.length, (byte) 0);
-        byte[] wholePkg = new byte[header.length + groupBytes.length + filenameBytes.length];
-        System.arraycopy(header, 0, wholePkg, 0, header.length);
-        System.arraycopy(groupBytes, 0, wholePkg, header.length, groupBytes.length);
-        System.arraycopy(filenameBytes, 0, wholePkg, header.length + groupBytes.length, filenameBytes.length);
-
-        OutputStream out = storageLocation.getSocket().getOutputStream();
-        out.write(wholePkg);
-
-        ProtoPackageUtil.RecvPackageInfo pkgInfo = ProtoPackageUtil.recvPackage(storageLocation.getSocket().getInputStream(), ProtocolCommand.STORAGE_PROTO_CMD_RESP, 0);
-
-        DeleteResult result = new DeleteResult(pkgInfo.errno);
-        CompletableFuture<DeleteResult> future = new CompletableFuture<>();
-        future.complete(result);
-        return future;
-    }
-
-    public OutputStream download(String groupName, String fileName) throws Exception {
-        byte[] header;
-        byte[] bsOffset;
-        byte[] bsDownBytes;
-        byte[] groupBytes;
-        byte[] filenameBytes;
-        byte[] bs;
-        int groupLen;
-
-        bsOffset = ProtoPackageUtil.long2buff(0);
-        bsDownBytes = ProtoPackageUtil.long2buff(0);
-        groupBytes = new byte[Constants.FDFS_GROUP_NAME_MAX_LEN];
-        bs = groupName.getBytes(DEFAULT_CHARSET_NAME);
-        filenameBytes = fileName.getBytes(DEFAULT_CHARSET_NAME);
-
-        Arrays.fill(groupBytes, (byte) 0);
-        if (bs.length <= groupBytes.length) {
-            groupLen = bs.length;
-        } else {
-            groupLen = groupBytes.length;
-        }
-        System.arraycopy(bs, 0, groupBytes, 0, groupLen);
-
-        header = ProtoPackageUtil.packHeader(ProtocolCommand.STORAGE_PROTO_CMD_DOWNLOAD_FILE,
-                bsOffset.length + bsDownBytes.length + groupBytes.length + filenameBytes.length, (byte) 0);
-        byte[] wholePkg = new byte[header.length + bsOffset.length + bsDownBytes.length + groupBytes.length + filenameBytes.length];
-        System.arraycopy(header, 0, wholePkg, 0, header.length);
-        System.arraycopy(bsOffset, 0, wholePkg, header.length, bsOffset.length);
-        System.arraycopy(bsDownBytes, 0, wholePkg, header.length + bsOffset.length, bsDownBytes.length);
-        System.arraycopy(groupBytes, 0, wholePkg, header.length + bsOffset.length + bsDownBytes.length, groupBytes.length);
-        System.arraycopy(filenameBytes, 0, wholePkg, header.length + bsOffset.length + bsDownBytes.length + groupBytes.length, filenameBytes.length);
-
-        Socket socket = storageLocation.getSocket();
-        OutputStream out = socket.getOutputStream();
-        out.write(wholePkg);
-
-        ProtoPackageUtil.RecvHeaderInfo headerInfo = ProtoPackageUtil.recvHeader(socket.getInputStream(), ProtocolCommand.STORAGE_PROTO_CMD_RESP, -1);
-        if (headerInfo.errno != 0) {
-            log.warn("download file error. errorCode : {}", headerInfo.errno);
-            throw new StorageException("download file error. errorCode : {}" + headerInfo.errno);
-        }
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        byte[] buff = new byte[256 * 1024];
-        long remainBytes = headerInfo.bodyLen;
-        int bytes;
-        while (remainBytes > 0) {
-            if ((bytes = socket.getInputStream().read(buff, 0, remainBytes > buff.length ? buff.length : (int) remainBytes)) < 0) {
-                throw new IOException("recv package size " + (headerInfo.bodyLen - remainBytes) + " != " + headerInfo.bodyLen);
-            }
-            outputStream.write(buff, 0, bytes);
-            remainBytes -= bytes;
-        }
-        return outputStream;
+    public StorageClient(TrackerClient trackerClient, ConnectionManager connectionManager) {
+        this.trackerClient = trackerClient;
+        this.connectionManager = connectionManager;
     }
 
 
     /**
-     * 发送文件
+     * 上传文件
      *
-     * @param ins
-     * @param size
-     * @param ous
-     * @throws IOException
+     * @param inputStream 文件流
+     * @param fileSize    文件长度
+     * @param fileExtName 文件扩展名
+     * @param metaInfo    元数据
+     * @return 上传文件结果
      */
-    protected void sendFileContent(InputStream ins, long size, OutputStream ous) throws IOException {
-        log.debug("开始上传文件流大小为{}", size);
-        long remainBytes = size;
-        byte[] buff = new byte[256 * 1024];
-        int bytes;
-        while (remainBytes > 0) {
-            if ((bytes = ins.read(buff, 0, remainBytes > buff.length ? buff.length : (int) remainBytes)) < 0) {
-                throw new IOException("the end of the stream has been reached. not match the expected size ");
-            }
-            ous.write(buff, 0, bytes);
-            remainBytes -= bytes;
-            log.debug("剩余数据量{}", remainBytes);
+    public UploadResult uploadFile(InputStream inputStream, long fileSize, String fileExtName, Set<MetaInfo> metaInfo) {
+        UploadingFile file;
+        if (null == metaInfo) {
+            file = new UploadingFile(inputStream, fileSize, fileExtName);
+        } else {
+            file = new UploadingFile(inputStream, fileSize, fileExtName, metaInfo);
         }
+        return updateFile(file);
     }
 
+    /**
+     * 文件上传
+     *
+     * @param file 上传文件对象
+     * @return 上传文件结果
+     */
+    private UploadResult updateFile(UploadingFile file) {
+        Validate.notNull(file.getInputStream(), "上传文件流不能为空");
+        Validate.notBlank(file.getFileExtName(), "文件扩展名不能为空");
+        // 获取存储节点
+        StorageNode client = trackerClient.getStorageNode(file.getGroupName());
+        // 上传文件
+        return uploadFileAndMetaData(client, file.getInputStream(),
+                file.getSize(), file.getFileExtName(),
+                file.getMetaData());
+    }
+
+    /**
+     * 上传文件和元数据
+     *
+     * @param client      storage存储节点
+     * @param inputStream 文件流
+     * @param fileSize    文件长度
+     * @param fileExtName 文件扩展名
+     * @param metaDataSet 元数据
+     * @return 上传文件结果
+     */
+    private UploadResult uploadFileAndMetaData(StorageNode client, InputStream inputStream, long fileSize,
+                                               String fileExtName, Set<MetaInfo> metaDataSet) {
+        // 上传文件
+        StorageUploadFileCommand command = new StorageUploadFileCommand(client.getStoreIndex(), inputStream, fileExtName, fileSize);
+        UploadResult path = connectionManager.executeFdfsCmd(client.getInetSocketAddress(), command);
+        // 上传metadata
+        if (null != metaDataSet && !metaDataSet.isEmpty()) {
+            //TODO
+//            StorageSetMetadataCommand setMDCommand = new StorageSetMetadataCommand(path.getGroup(), path.getPath(),
+//                    metaDataSet, StorageMetadataSetType.STORAGE_SET_METADATA_FLAG_OVERWRITE);
+//            connectionManager.executeFdfsCmd(client.getInetSocketAddress(), setMDCommand);
+        }
+        return path;
+    }
+
+    /**
+     * 删除文件
+     *
+     * @param groupName 组名
+     * @param filename  文件全路径
+     * @return 删除结果
+     */
+    public DeleteResult deleteFile(String groupName, String filename) {
+        // 获取存储节点
+        StorageNode client = trackerClient.getUpdateStorage(groupName, filename);
+        StorageDeleteFileCommand command = new StorageDeleteFileCommand(groupName, filename);
+        return connectionManager.executeFdfsCmd(client.getInetSocketAddress(), command);
+    }
+
+
+    /**
+     * 下载整个文件
+     *
+     * @param groupName 组名
+     * @param path      文件全路径
+     * @return 下载结果
+     */
+    public DownLoadResult downloadFile(String groupName, String path) {
+        long fileOffset = 0;
+        long fileSize = 0;
+        return this.downloadFile(groupName, path, fileOffset, fileSize);
+    }
+
+    /**
+     * 下载文件片段
+     */
+    public DownLoadResult downloadFile(String groupName, String path, long fileOffset, long fileSize) {
+        StorageNode client = trackerClient.getUpdateStorage(groupName, path);
+        StorageDownloadCommand command = new StorageDownloadCommand(groupName, path, fileOffset, fileSize);
+        return connectionManager.executeFdfsCmd(client.getInetSocketAddress(), command);
+    }
 }

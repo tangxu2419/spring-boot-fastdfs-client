@@ -2,6 +2,7 @@ package com.vcredit.framework.fastdfs;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 
 import static com.vcredit.framework.fastdfs.constants.Constants.*;
@@ -11,6 +12,46 @@ import static com.vcredit.framework.fastdfs.constants.Constants.*;
  * @date 2019/5/517:30
  */
 public class ProtoPackageUtil {
+
+
+    /**
+     * 将String转换为byte
+     *
+     * @param value
+     * @param charset
+     * @return
+     */
+    public static byte[] objString2Byte(String value, Charset charset) {
+        if (null == value) {
+            return null;
+        }
+        // 获取byte
+        return value.getBytes(charset);
+
+    }
+
+    /**
+     * 将String转换为byte
+     */
+    public static byte[] objString2Byte(String value, int max, Charset charset) {
+        byte[] fullContentBytes = new byte[max];
+        // 填充默认值
+        Arrays.fill(fullContentBytes, (byte) 0);
+        if (null == value) {
+            return fullContentBytes;
+        }
+        // 获取byte
+        byte[] realContent = value.getBytes(charset);
+        int length;
+        if (realContent.length <= max) {
+            length = realContent.length;
+        } else {
+            length = max;
+        }
+        // 复制数值
+        System.arraycopy(realContent, 0, fullContentBytes, 0, length);
+        return fullContentBytes;
+    }
 
     /**
      * receive whole pack
@@ -42,6 +83,7 @@ public class ProtoPackageUtil {
         return new RecvPackageInfo((byte) 0, body);
     }
 
+
     /**
      * receive pack header
      *
@@ -71,6 +113,25 @@ public class ProtoPackageUtil {
         }
         return new RecvHeaderInfo((byte) 0, pkgLen);
     }
+
+    public static byte[] recvResponseBody(InputStream in, long bodyLen) throws IOException {
+        byte[] body = new byte[(int) bodyLen];
+        int totalBytes = 0;
+        int remainBytes = (int) bodyLen;
+        int bytes;
+        while (totalBytes < bodyLen) {
+            if ((bytes = in.read(body, totalBytes, remainBytes)) < 0) {
+                break;
+            }
+            totalBytes += bytes;
+            remainBytes -= bytes;
+        }
+        if (totalBytes != bodyLen) {
+            throw new IOException("recv package size " + totalBytes + " != " + bodyLen);
+        }
+        return body;
+    }
+
 
 
     /**
@@ -130,7 +191,6 @@ public class ProtoPackageUtil {
                 ((long) (bs[offset + 7] >= 0 ? bs[offset + 7] : 256 + bs[offset + 7]));
     }
 
-
     /**
      * receive package info
      */
@@ -154,6 +214,14 @@ public class ProtoPackageUtil {
         public RecvHeaderInfo(byte errno, long bodyLen) {
             this.errno = errno;
             this.bodyLen = bodyLen;
+        }
+
+        @Override
+        public String toString() {
+            return "RecvHeaderInfo{" +
+                    "errno=" + errno +
+                    ", bodyLen=" + bodyLen +
+                    '}';
         }
     }
 

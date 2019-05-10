@@ -1,17 +1,23 @@
-package com.vcredit.framework.fastdfs;
+package com.vcredit.framework.fastdfs.proto.mapper;
 
 /**
- * 文件元数据
- * @author Dong Zhuming
+ * @author tangxu
+ * @date 2019/5/816:58
  */
-public class MetaInfo {
-    String name;
-    String value;
+public class MetaData {
 
-    public MetaInfo() {
+    private String name;
+
+    private String value;
+
+    public MetaData() {
     }
 
-    public MetaInfo(String name, String value) {
+    public MetaData(String name) {
+        this.name = name;
+    }
+
+    public MetaData(String name, String value) {
         this.name = name;
         this.value = value;
     }
@@ -52,7 +58,7 @@ public class MetaInfo {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        MetaInfo other = (MetaInfo) obj;
+        MetaData other = (MetaData) obj;
         if (name == null) {
             if (other.name != null) {
                 return false;
@@ -61,17 +67,17 @@ public class MetaInfo {
             return false;
         }
         if (value == null) {
-            return other.value == null;
-        } else {
-            return value.equals(other.value);
+            if (other.value != null) {
+                return false;
+            }
+        } else if (!value.equals(other.value)) {
+            return false;
         }
+        return true;
     }
 
     @Override
     public String toString() {
-        return "MetaInfo{" +
-                "name='" + name + '\'' +
-                ", value='" + value + '\'' +
-                '}';
+        return "NameValuePair [name=" + name + ", value=" + value + "]";
     }
 }

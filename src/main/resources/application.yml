@@ -2,16 +2,14 @@ spring.profiles.active: dev
 
 fastdfs:
   connectTimeout: PT5S
-  networkTimeout: PT5S
   soTimeout: PT15S
   charset: UTF-8
   pool:
-    maxSize: 10
-    minSize: 1
-    maxIdleTime: PT5S
-    maxAttempt: 3
+    max-total: 200
+    max-wait-millis: 500
   cluster:
     nodes:
-    - localhost:22122
+      #    - 10.0.75.2:22122
+      - 10.138.30.151:22122
 #    - 10.138.30.40:22122
 #    - 10.138.30.42:22122

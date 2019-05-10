@@ -16,7 +16,7 @@ public class FdfsServerException extends RuntimeException {
      */
     private static final long serialVersionUID = 1L;
 
-    protected FdfsServerException(String message) {
+    public FdfsServerException(String message) {
         super(message);
     }
 

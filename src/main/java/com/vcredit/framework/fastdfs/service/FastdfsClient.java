@@ -1,7 +1,7 @@
 package com.vcredit.framework.fastdfs.service;
 
-import com.vcredit.framework.fastdfs.StorageLocation;
 import com.vcredit.framework.fastdfs.proto.DeleteResult;
+import com.vcredit.framework.fastdfs.proto.DownLoadResult;
 import com.vcredit.framework.fastdfs.proto.UploadResult;
 import org.springframework.stereotype.Component;
 
@@ -16,27 +16,21 @@ import java.util.concurrent.Future;
 @Component
 public class FastdfsClient {
 
-    private final TrackerClient trackerClient;
+    private final StorageClient storageClient;
 
-    public FastdfsClient(TrackerClient trackerClient) {
-        this.trackerClient = trackerClient;
+    public FastdfsClient(StorageClient storageClient) {
+        this.storageClient = storageClient;
     }
 
-    public Future<UploadResult> upload(InputStream inputStream, long fileSize, String fileExtName, String groupName) throws IOException {
-        final StorageLocation storageLocation = trackerClient.getStorageLocation(groupName);
-        final StorageClient storageClient = new StorageClient(storageLocation);
-        return storageClient.uploadFile(groupName, inputStream, fileSize, fileExtName, null, null);
+    public UploadResult upload(InputStream inputStream, long fileSize, String fileExtName) {
+        return storageClient.uploadFile(inputStream, fileSize, fileExtName, null);
     }
 
-    public OutputStream download(String fileName, String groupName) throws Exception {
-        final StorageLocation storageLocation = trackerClient.getStorageLocation(groupName);
-        final StorageClient storageClient = new StorageClient(storageLocation);
-        return storageClient.download(groupName, fileName);
+    public DownLoadResult download(String fileName, String groupName) {
+        return storageClient.downloadFile(groupName, fileName);
     }
 
-    public Future<DeleteResult> delete(String fileName, String groupName) throws IOException {
-        final StorageLocation storageLocation = trackerClient.getStorageLocation(groupName);
-        final StorageClient storageClient = new StorageClient(storageLocation);
+    public DeleteResult delete(String fileName, String groupName) {
         return storageClient.deleteFile(groupName, fileName);
     }
 

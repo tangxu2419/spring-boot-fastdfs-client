@@ -1,10 +1,12 @@
 package com.vcredit.framework.fastdfs.proto;
 
+import com.vcredit.framework.fastdfs.MetaInfo;
 import lombok.Builder;
 import lombok.Data;
 
 import java.io.InputStream;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 文件上传对象
@@ -25,15 +27,43 @@ public class UploadingFile {
     /**
      * 文件扩展名
      */
-    private String extension;
+    private String fileExtName;
     /**
      * 文件元数据
      * TODO 评估Set<ImmutablePair<String, String>>
      */
-    private Map<String, String> metaData;
+    private Set<MetaInfo> metaData;
 
     /**
      * 上传文件分组
      */
     private String groupName;
+
+    public UploadingFile(InputStream inputStream, long size, String fileExtName) {
+        this.inputStream = inputStream;
+        this.size = size;
+        this.fileExtName = fileExtName;
+    }
+
+    public UploadingFile(InputStream inputStream, long size, String fileExtName, String groupName) {
+        this.inputStream = inputStream;
+        this.size = size;
+        this.fileExtName = fileExtName;
+        this.groupName = groupName;
+    }
+
+    public UploadingFile(InputStream inputStream, long size, String fileExtName, Set<MetaInfo>metaData) {
+        this.inputStream = inputStream;
+        this.size = size;
+        this.fileExtName = fileExtName;
+        this.metaData = metaData;
+    }
+
+    public UploadingFile(InputStream inputStream, long size, String fileExtName, Set<MetaInfo> metaData, String groupName) {
+        this.inputStream = inputStream;
+        this.size = size;
+        this.fileExtName = fileExtName;
+        this.metaData = metaData;
+        this.groupName = groupName;
+    }
 }

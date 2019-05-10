@@ -76,7 +76,7 @@ public class ProtoHead {
      *
      * @return packed byte buffer
      */
-    public byte[] packHeader() {
+    public byte[] toByte() {
         byte[] header = new byte[HEAD_LENGTH];
         Arrays.fill(header, (byte) 0);
         byte[] hexLen = ProtoPackageUtil.long2buff(contentLength);
@@ -105,7 +105,6 @@ public class ProtoHead {
         byte returnStatus = header[Constants.PROTO_HEADER_STATUS_INDEX];
         // 返回解析出来的ProtoHead
         return new ProtoHead(returnContentLength, returnCmd, returnStatus);
-
     }
 
     /**
@@ -134,5 +133,9 @@ public class ProtoHead {
     @Override
     public String toString() {
         return "ProtoHead{ contentLength=" + contentLength + ", cmd=" + cmd + ", status=" + status + '}';
+    }
+
+    public void setContentLength(long contentLength) {
+        this.contentLength = contentLength;
     }
 }
