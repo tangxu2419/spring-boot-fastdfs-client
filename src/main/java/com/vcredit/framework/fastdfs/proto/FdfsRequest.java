@@ -37,7 +37,7 @@ public abstract class FdfsRequest {
         // 设置报文长度
         head.setContentLength(getBodyLength(charset));
         // 返回报文byte
-        return head.toByte();
+        return head.packHeader();
     }
 
     /**
@@ -46,25 +46,12 @@ public abstract class FdfsRequest {
      * @param charset
      * @return
      */
-    public byte[] encodeParam(Charset charset) {
-//        Field[] fields = this.getClass().getDeclaredFields();
-//        for (Field field : fields) {
-//            Object object = field.get(field.getName());
-//
-//        }
-        //TODO
-        return null;
-    }
+    public abstract byte[] encodeParam(Charset charset);
 
     public byte[] getParam() {
         return param;
     }
 
-    /**
-     * 获取参数域长度
-     *
-     * @return
-     */
     /**
      * 获取参数域长度
      *

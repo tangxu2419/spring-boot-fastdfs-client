@@ -11,6 +11,10 @@ public class MetaInfo {
     public MetaInfo() {
     }
 
+    public MetaInfo(String name) {
+        this.name = name;
+    }
+
     public MetaInfo(String name, String value) {
         this.name = name;
         this.value = value;

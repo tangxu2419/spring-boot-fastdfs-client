@@ -76,7 +76,7 @@ public class ProtoHead {
      *
      * @return packed byte buffer
      */
-    public byte[] toByte() {
+    public byte[] packHeader() {
         byte[] header = new byte[HEAD_LENGTH];
         Arrays.fill(header, (byte) 0);
         byte[] hexLen = ProtoPackageUtil.long2buff(contentLength);

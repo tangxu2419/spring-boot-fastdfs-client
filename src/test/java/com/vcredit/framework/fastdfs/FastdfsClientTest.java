@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Dong Zhuming
@@ -29,13 +31,31 @@ public class FastdfsClientTest {
     @Test
     public void testFastDFS() throws Exception {
         System.out.println("==============[文件上传]=================");
-        UploadResult result = this.testUpload();
+        UploadResult result = this.testUploadByMateData();
         System.out.println("上传文件信息：" + result.toString());
+        System.out.println("==============[MetaData 获取]=================");
+        Set<MetaInfo> metaInfos = this.testGetMetadata(result.getGroupName(), result.getFileName());
+        for (MetaInfo metaInfo : metaInfos) {
+            System.out.println(metaInfo.toString());
+        }
         System.out.println("==============[文件下载]=================");
         this.testDownload(result.getGroupName(), result.getFileName(), "d://download_1.sql");
         System.out.println("==============[文件删除]=================");
         this.testDelete(result.getGroupName(), result.getFileName());
     }
+
+    private UploadResult testUploadByMateData() throws IOException {
+        Set<MetaInfo> metaInfo = new HashSet<>();
+        metaInfo.add(new MetaInfo("desc", "this is a metaData"));
+        File file = File.createTempFile("test", "sql");
+        return fastdfsClient.upload(new FileInputStream(file), file.length(), "sql", metaInfo);
+    }
+
+
+    private Set<MetaInfo> testGetMetadata(String groupName, String fileName) {
+        return fastdfsClient.getMetadata(groupName, fileName);
+    }
+
 
     public UploadResult testUpload() throws IOException {
         File file = File.createTempFile("test", "sql");

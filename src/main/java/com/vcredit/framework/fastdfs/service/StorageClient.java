@@ -2,10 +2,9 @@ package com.vcredit.framework.fastdfs.service;
 
 import com.vcredit.framework.fastdfs.MetaInfo;
 import com.vcredit.framework.fastdfs.conn.ConnectionManager;
+import com.vcredit.framework.fastdfs.constants.StorageStatus;
 import com.vcredit.framework.fastdfs.proto.*;
-import com.vcredit.framework.fastdfs.proto.storage.StorageDeleteFileCommand;
-import com.vcredit.framework.fastdfs.proto.storage.StorageDownloadCommand;
-import com.vcredit.framework.fastdfs.proto.storage.StorageUploadFileCommand;
+import com.vcredit.framework.fastdfs.proto.storage.*;
 import org.apache.commons.lang3.Validate;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +24,6 @@ public class StorageClient {
         this.trackerClient = trackerClient;
         this.connectionManager = connectionManager;
     }
-
 
     /**
      * 上传文件
@@ -80,10 +78,9 @@ public class StorageClient {
         UploadResult path = connectionManager.executeFdfsCmd(client.getInetSocketAddress(), command);
         // 上传metadata
         if (null != metaDataSet && !metaDataSet.isEmpty()) {
-            //TODO
-//            StorageSetMetadataCommand setMDCommand = new StorageSetMetadataCommand(path.getGroup(), path.getPath(),
-//                    metaDataSet, StorageMetadataSetType.STORAGE_SET_METADATA_FLAG_OVERWRITE);
-//            connectionManager.executeFdfsCmd(client.getInetSocketAddress(), setMDCommand);
+            StorageSetMetadataCommand setMDCommand = new StorageSetMetadataCommand(path.getGroupName(), path.getFileName(),
+                    metaDataSet, StorageStatus.STORAGE_SET_METADATA_FLAG_OVERWRITE);
+            connectionManager.executeFdfsCmd(client.getInetSocketAddress(), setMDCommand);
         }
         return path;
     }
@@ -102,6 +99,26 @@ public class StorageClient {
         return connectionManager.executeFdfsCmd(client.getInetSocketAddress(), command);
     }
 
+    /**
+     * 获取metadata
+     */
+    public void setMetadata(String groupName, String filename, Set<MetaInfo> metaDataSet) {
+        StorageNode client = trackerClient.getUpdateStorage(groupName, filename);
+        if (null != metaDataSet && !metaDataSet.isEmpty()) {
+            StorageSetMetadataCommand setMDCommand = new StorageSetMetadataCommand(groupName, filename,
+                    metaDataSet, StorageStatus.STORAGE_SET_METADATA_FLAG_OVERWRITE);
+            connectionManager.executeFdfsCmd(client.getInetSocketAddress(), setMDCommand);
+        }
+    }
+
+    /**
+     * 获取metadata
+     */
+    public Set<MetaInfo> getMetadata(String groupName, String filename) {
+        StorageNode client = trackerClient.getUpdateStorage(groupName, filename);
+        StorageGetMetadataCommand command = new StorageGetMetadataCommand(groupName, filename);
+        return connectionManager.executeFdfsCmd(client.getInetSocketAddress(), command);
+    }
 
     /**
      * 下载整个文件
