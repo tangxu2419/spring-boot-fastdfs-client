@@ -1,11 +1,9 @@
 package com.vcredit.framework.fastdfs.proto;
 
-import com.vcredit.framework.fastdfs.MetaInfo;
 import lombok.Builder;
 import lombok.Data;
 
 import java.io.InputStream;
-import java.util.Map;
 import java.util.Set;
 
 /**

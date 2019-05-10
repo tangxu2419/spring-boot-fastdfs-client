@@ -2,6 +2,7 @@ package com.vcredit.framework.fastdfs;
 
 import com.vcredit.framework.fastdfs.proto.DeleteResult;
 import com.vcredit.framework.fastdfs.proto.DownLoadResult;
+import com.vcredit.framework.fastdfs.proto.MetaInfo;
 import com.vcredit.framework.fastdfs.proto.UploadResult;
 import com.vcredit.framework.fastdfs.service.FastdfsClient;
 import org.junit.Test;

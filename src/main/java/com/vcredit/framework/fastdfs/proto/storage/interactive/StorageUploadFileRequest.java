@@ -3,7 +3,7 @@ package com.vcredit.framework.fastdfs.proto.storage.interactive;
 import com.vcredit.framework.fastdfs.ProtoPackageUtil;
 import com.vcredit.framework.fastdfs.constants.Constants;
 import com.vcredit.framework.fastdfs.constants.ProtocolCommand;
-import com.vcredit.framework.fastdfs.proto.FdfsRequest;
+import com.vcredit.framework.fastdfs.proto.AbstractFdfsRequest;
 import com.vcredit.framework.fastdfs.proto.ProtoHead;
 
 import java.io.InputStream;
@@ -13,7 +13,7 @@ import java.nio.charset.Charset;
  * @author tangxu
  * @date 2019/5/615:39
  */
-public class StorageUploadFileRequest extends FdfsRequest {
+public class StorageUploadFileRequest extends AbstractFdfsRequest {
 
     /**
      * 存储节点index

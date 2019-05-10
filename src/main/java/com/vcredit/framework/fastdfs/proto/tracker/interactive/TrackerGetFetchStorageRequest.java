@@ -2,7 +2,7 @@ package com.vcredit.framework.fastdfs.proto.tracker.interactive;
 
 import com.vcredit.framework.fastdfs.constants.Constants;
 import com.vcredit.framework.fastdfs.constants.ProtocolCommand;
-import com.vcredit.framework.fastdfs.proto.FdfsRequest;
+import com.vcredit.framework.fastdfs.proto.AbstractFdfsRequest;
 import com.vcredit.framework.fastdfs.proto.ProtoHead;
 import org.apache.commons.lang3.Validate;
 
@@ -14,7 +14,7 @@ import java.nio.charset.Charset;
  * @author tangxu
  * @date 2019/5/917:18
  */
-public class TrackerGetFetchStorageRequest extends FdfsRequest {
+public class TrackerGetFetchStorageRequest extends AbstractFdfsRequest {
 
     /**
      * 组名

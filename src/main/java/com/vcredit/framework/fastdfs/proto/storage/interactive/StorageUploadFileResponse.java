@@ -2,7 +2,7 @@ package com.vcredit.framework.fastdfs.proto.storage.interactive;
 
 import com.vcredit.framework.fastdfs.ProtoPackageUtil;
 import com.vcredit.framework.fastdfs.constants.Constants;
-import com.vcredit.framework.fastdfs.proto.FdfsResponse;
+import com.vcredit.framework.fastdfs.proto.AbstractFdfsResponse;
 import com.vcredit.framework.fastdfs.proto.UploadResult;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.nio.charset.Charset;
  * @author tangxu
  * @date 2019/5/915:00
  */
-public class StorageUploadFileResponse extends FdfsResponse<UploadResult> {
+public class StorageUploadFileResponse extends AbstractFdfsResponse<UploadResult> {
 
     /**
      * 解析反馈内容

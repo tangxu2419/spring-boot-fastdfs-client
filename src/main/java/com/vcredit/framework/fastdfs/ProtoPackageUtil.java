@@ -2,10 +2,6 @@ package com.vcredit.framework.fastdfs;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.util.Arrays;
-
-import static com.vcredit.framework.fastdfs.constants.Constants.*;
 
 /**
  * @author tangxu
@@ -133,25 +129,6 @@ public class ProtoPackageUtil {
     }
 
 
-
-    /**
-     * pack header by FastDFS transfer protocol
-     *
-     * @param cmd    which command to send
-     * @param pkgLen package body length
-     * @param errno  status code, should be (byte)0
-     * @return packed byte buffer
-     */
-    public static byte[] packHeader(byte cmd, long pkgLen, byte errno) {
-        byte[] header = new byte[FDFS_PROTO_PKG_LEN_SIZE + 2];
-        Arrays.fill(header, (byte) 0);
-        byte[] hexLen = long2buff(pkgLen);
-        System.arraycopy(hexLen, 0, header, 0, hexLen.length);
-        header[PROTO_HEADER_CMD_INDEX] = cmd;
-        header[PROTO_HEADER_STATUS_INDEX] = errno;
-        return header;
-    }
-
     /**
      * long convert to buff (big-endian)
      *
@@ -172,7 +149,6 @@ public class ProtoPackageUtil {
         return bs;
     }
 
-
     /**
      * buff convert to long
      *
@@ -189,40 +165,6 @@ public class ProtoPackageUtil {
                 (((long) (bs[offset + 5] >= 0 ? bs[offset + 5] : 256 + bs[offset + 5])) << 16) |
                 (((long) (bs[offset + 6] >= 0 ? bs[offset + 6] : 256 + bs[offset + 6])) << 8) |
                 ((long) (bs[offset + 7] >= 0 ? bs[offset + 7] : 256 + bs[offset + 7]));
-    }
-
-    /**
-     * receive package info
-     */
-    public static class RecvPackageInfo {
-        public byte errno;
-        public byte[] body;
-
-        public RecvPackageInfo(byte errno, byte[] body) {
-            this.errno = errno;
-            this.body = body;
-        }
-    }
-
-    /**
-     * receive header info
-     */
-    public static class RecvHeaderInfo {
-        public byte errno;
-        public long bodyLen;
-
-        public RecvHeaderInfo(byte errno, long bodyLen) {
-            this.errno = errno;
-            this.bodyLen = bodyLen;
-        }
-
-        @Override
-        public String toString() {
-            return "RecvHeaderInfo{" +
-                    "errno=" + errno +
-                    ", bodyLen=" + bodyLen +
-                    '}';
-        }
     }
 
 }

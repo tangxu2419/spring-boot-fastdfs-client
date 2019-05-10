@@ -1,6 +1,6 @@
 package com.vcredit.framework.fastdfs.proto.storage;
 
-import com.vcredit.framework.fastdfs.MetaInfo;
+import com.vcredit.framework.fastdfs.proto.MetaInfo;
 import com.vcredit.framework.fastdfs.proto.AbstractCommand;
 import com.vcredit.framework.fastdfs.proto.storage.interactive.StorageGetMetadataRequest;
 import com.vcredit.framework.fastdfs.proto.storage.interactive.StorageGetMetadataResponse;

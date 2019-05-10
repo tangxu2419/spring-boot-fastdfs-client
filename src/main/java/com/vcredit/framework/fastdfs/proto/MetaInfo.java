@@ -1,4 +1,4 @@
-package com.vcredit.framework.fastdfs;
+package com.vcredit.framework.fastdfs.proto;
 
 /**
  * 文件元数据
@@ -8,8 +8,6 @@ public class MetaInfo {
     String name;
     String value;
 
-    public MetaInfo() {
-    }
 
     public MetaInfo(String name) {
         this.name = name;

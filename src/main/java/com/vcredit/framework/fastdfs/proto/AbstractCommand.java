@@ -23,12 +23,12 @@ public abstract class AbstractCommand<T> implements FdfsCommand<T> {
     /**
      * 表示请求消息
      */
-    protected FdfsRequest request;
+    protected AbstractFdfsRequest request;
 
     /**
      * 解析反馈消息对象
      */
-    protected FdfsResponse<T> response;
+    protected AbstractFdfsResponse<T> response;
 
 
     /**

@@ -1,7 +1,7 @@
 package com.vcredit.framework.fastdfs.proto.storage.interactive;
 
 import com.vcredit.framework.fastdfs.proto.DeleteResult;
-import com.vcredit.framework.fastdfs.proto.FdfsResponse;
+import com.vcredit.framework.fastdfs.proto.AbstractFdfsResponse;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -10,7 +10,7 @@ import java.nio.charset.Charset;
  * @author tangxu
  * @date 2019/5/917:38
  */
-public class StorageDeleteFileResponse extends FdfsResponse<DeleteResult> {
+public class StorageDeleteFileResponse extends AbstractFdfsResponse<DeleteResult> {
     /**
      * 解析反馈内容
      *

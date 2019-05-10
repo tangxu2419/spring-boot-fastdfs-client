@@ -1,7 +1,7 @@
 package com.vcredit.framework.fastdfs.proto.tracker.interactive;
 
 import com.vcredit.framework.fastdfs.ProtoPackageUtil;
-import com.vcredit.framework.fastdfs.proto.FdfsResponse;
+import com.vcredit.framework.fastdfs.proto.AbstractFdfsResponse;
 import com.vcredit.framework.fastdfs.proto.StorageNode;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ import static com.vcredit.framework.fastdfs.constants.Constants.*;
  * @author tangxu
  * @date 2019/5/818:04
  */
-public class TrackerGetStorageResponse extends FdfsResponse<StorageNode> {
+public class TrackerGetStorageResponse extends AbstractFdfsResponse<StorageNode> {
 
     /**
      * 解析反馈内容

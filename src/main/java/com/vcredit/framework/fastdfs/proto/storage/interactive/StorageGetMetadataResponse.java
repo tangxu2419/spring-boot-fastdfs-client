@@ -1,8 +1,8 @@
 package com.vcredit.framework.fastdfs.proto.storage.interactive;
 
-import com.vcredit.framework.fastdfs.MetaInfo;
+import com.vcredit.framework.fastdfs.proto.MetaInfo;
 import com.vcredit.framework.fastdfs.constants.Constants;
-import com.vcredit.framework.fastdfs.proto.FdfsResponse;
+import com.vcredit.framework.fastdfs.proto.AbstractFdfsResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,7 +14,7 @@ import java.util.Set;
  * @author tangxu
  * @date 2019/5/1011:44
  */
-public class StorageGetMetadataResponse extends FdfsResponse<Set<MetaInfo>> {
+public class StorageGetMetadataResponse extends AbstractFdfsResponse<Set<MetaInfo>> {
 
 
     /**

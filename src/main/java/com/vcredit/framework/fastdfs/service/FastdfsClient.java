@@ -1,6 +1,6 @@
 package com.vcredit.framework.fastdfs.service;
 
-import com.vcredit.framework.fastdfs.MetaInfo;
+import com.vcredit.framework.fastdfs.proto.MetaInfo;
 import com.vcredit.framework.fastdfs.proto.DeleteResult;
 import com.vcredit.framework.fastdfs.proto.DownLoadResult;
 import com.vcredit.framework.fastdfs.proto.UploadResult;

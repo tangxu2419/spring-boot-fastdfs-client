@@ -1,10 +1,10 @@
 package com.vcredit.framework.fastdfs.proto.storage.interactive;
 
-import com.vcredit.framework.fastdfs.MetaInfo;
+import com.vcredit.framework.fastdfs.proto.MetaInfo;
 import com.vcredit.framework.fastdfs.ProtoPackageUtil;
 import com.vcredit.framework.fastdfs.constants.Constants;
 import com.vcredit.framework.fastdfs.constants.ProtocolCommand;
-import com.vcredit.framework.fastdfs.proto.FdfsRequest;
+import com.vcredit.framework.fastdfs.proto.AbstractFdfsRequest;
 import com.vcredit.framework.fastdfs.proto.ProtoHead;
 import org.apache.commons.lang3.Validate;
 
@@ -15,7 +15,7 @@ import java.util.Set;
  * @author tangxu
  * @date 2019/5/1011:13
  */
-public class StorageSetMetadataRequest extends FdfsRequest {
+public class StorageSetMetadataRequest extends AbstractFdfsRequest {
 
     /**
      * 操作标记（重写/覆盖）
@@ -51,14 +51,14 @@ public class StorageSetMetadataRequest extends FdfsRequest {
      * 打包参数
      *
      * @param charset 编码
-     * @return
+     * @return 请求参数
      */
     @Override
     public byte[] encodeParam(Charset charset) {
         byte[] bopFlag = {opFlag};
         byte[] groupNameBytes = super.encodeRequestParam(groupName, Constants.FDFS_GROUP_NAME_MAX_LEN, charset);
         byte[] filenameBytes = path.getBytes(charset);
-        byte[] metaDataBytes = this.toByte(metaDataSet, charset);
+        byte[] metaDataBytes = this.packMetaData(metaDataSet, charset);
         //////////////////////////
         byte[] fileNameSizeBytes = ProtoPackageUtil.long2buff(filenameBytes.length);
         byte[] metaDataSizeBytes = ProtoPackageUtil.long2buff(metaDataBytes.length);
@@ -72,7 +72,7 @@ public class StorageSetMetadataRequest extends FdfsRequest {
      * @param charset     编码
      * @return result
      */
-    private byte[] toByte(Set<MetaInfo> metadataSet, Charset charset) {
+    private byte[] packMetaData(Set<MetaInfo> metadataSet, Charset charset) {
         if (null == metadataSet || metadataSet.isEmpty()) {
             return new byte[0];
         }

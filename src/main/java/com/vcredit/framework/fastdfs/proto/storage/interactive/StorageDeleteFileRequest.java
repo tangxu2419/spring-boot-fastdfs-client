@@ -2,7 +2,7 @@ package com.vcredit.framework.fastdfs.proto.storage.interactive;
 
 import com.vcredit.framework.fastdfs.constants.Constants;
 import com.vcredit.framework.fastdfs.constants.ProtocolCommand;
-import com.vcredit.framework.fastdfs.proto.FdfsRequest;
+import com.vcredit.framework.fastdfs.proto.AbstractFdfsRequest;
 import com.vcredit.framework.fastdfs.proto.ProtoHead;
 
 import java.nio.charset.Charset;
@@ -11,7 +11,7 @@ import java.nio.charset.Charset;
  * @author tangxu
  * @date 2019/5/917:38
  */
-public class StorageDeleteFileRequest extends FdfsRequest {
+public class StorageDeleteFileRequest extends AbstractFdfsRequest {
 
     /**
      * 组名

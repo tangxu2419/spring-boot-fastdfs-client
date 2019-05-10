@@ -1,6 +1,6 @@
 package com.vcredit.framework.fastdfs.service;
 
-import com.vcredit.framework.fastdfs.MetaInfo;
+import com.vcredit.framework.fastdfs.proto.MetaInfo;
 import com.vcredit.framework.fastdfs.conn.ConnectionManager;
 import com.vcredit.framework.fastdfs.constants.StorageStatus;
 import com.vcredit.framework.fastdfs.proto.*;

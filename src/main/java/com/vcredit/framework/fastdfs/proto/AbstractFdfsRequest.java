@@ -8,13 +8,12 @@ import java.util.Arrays;
  * @author tangxu
  * @date 2019/5/614:18
  */
-public abstract class FdfsRequest {
+public abstract class AbstractFdfsRequest {
 
     /**
      * 报文头
      */
     protected ProtoHead head;
-
 
     /**
      * 参数字节
@@ -26,14 +25,13 @@ public abstract class FdfsRequest {
      */
     protected InputStream inputFile;
 
-
     /**
      * 获取报文头
      *
-     * @param charset
-     * @return
+     * @param charset 编码
+     * @return 报文头byte
      */
-    public byte[] getHeadByte(Charset charset) {
+    byte[] getHeadByte(Charset charset) {
         // 设置报文长度
         head.setContentLength(getBodyLength(charset));
         // 返回报文byte
@@ -43,30 +41,30 @@ public abstract class FdfsRequest {
     /**
      * 打包参数
      *
-     * @param charset
-     * @return
+     * @param charset 编码
+     * @return 请求参数byte
      */
     public abstract byte[] encodeParam(Charset charset);
-
-    public byte[] getParam() {
-        return param;
-    }
 
     /**
      * 获取参数域长度
      *
      * @return 参数域长度
      */
-    protected long getBodyLength(Charset charset) {
+    private long getBodyLength(Charset charset) {
         param = encodeParam(charset);
         return null == param ? 0 : param.length;
+    }
+
+    public byte[] getParam() {
+        return param;
     }
 
     public ProtoHead getHead() {
         return head;
     }
 
-    public InputStream getInputFile() {
+    InputStream getInputFile() {
         return inputFile;
     }
 

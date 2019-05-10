@@ -1,7 +1,7 @@
 package com.vcredit.framework.fastdfs.proto.storage.interactive;
 
 import com.vcredit.framework.fastdfs.proto.DownLoadResult;
-import com.vcredit.framework.fastdfs.proto.FdfsResponse;
+import com.vcredit.framework.fastdfs.proto.AbstractFdfsResponse;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +11,7 @@ import java.nio.charset.Charset;
  * @author tangxu
  * @date 2019/5/918:13
  */
-public class StorageDownloadResponse extends FdfsResponse<DownLoadResult> {
+public class StorageDownloadResponse extends AbstractFdfsResponse<DownLoadResult> {
 
     /**
      * 解析反馈内容
