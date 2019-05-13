@@ -76,6 +76,7 @@ public class ConnectPoolConfig extends GenericKeyedObjectPoolConfig {
         // 配置jmx
         this.setJmxNameBase(FDFS_JMX_NAME_BASE);
         this.setJmxNamePrefix(FDFS_JMX_NAME_PREFIX);
+        this.setJmxEnabled(false);
     }
 
 

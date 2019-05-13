@@ -2,6 +2,10 @@ package com.vcredit.framework.fastdfs;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+
+import static com.vcredit.framework.fastdfs.constants.Constants.*;
 
 /**
  * @author tangxu
@@ -148,6 +152,7 @@ public class ProtoPackageUtil {
 
         return bs;
     }
+
 
     /**
      * buff convert to long
