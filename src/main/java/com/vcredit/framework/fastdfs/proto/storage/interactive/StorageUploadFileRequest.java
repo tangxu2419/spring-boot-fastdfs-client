@@ -50,21 +50,28 @@ public class StorageUploadFileRequest extends AbstractFdfsRequest {
     /**
      * 打包参数
      *
-     * @param charset
-     * @return
+     * @param charset 编码
+     * @return 请求参数转byte
      */
     @Override
     public byte[] encodeParam(Charset charset) {
-        //初始化storage节点信息以及文件长度信息
-//        byte[] sizeBytes = new byte[1 + Constants.FDFS_PROTO_PKG_LEN_SIZE];
-//        sizeBytes[0] = storeIndex;
-//        byte[] hexLenBytes = ProtoPackageUtil.long2buff(fileSize);
-//        System.arraycopy(hexLenBytes, 0, sizeBytes, 1, hexLenBytes.length);
         byte[] storeIndexBytes = {storeIndex};
         byte[] hexLenBytes = ProtoPackageUtil.long2buff(fileSize);
         // 设置文件后缀名转byte数组，最多转6位
         byte[] extNameBs = encodeRequestParam(fileExtName, Constants.FDFS_FILE_EXT_NAME_MAX_LEN, charset);
         return this.byteMergerAll(storeIndexBytes, hexLenBytes, extNameBs);
+    }
+
+
+    /**
+     * 获取参数域长度
+     *
+     * @return 参数域长度
+     */
+    @Override
+    protected long getBodyLength(Charset charset) {
+        param = encodeParam(charset);
+        return 1 + Constants.FDFS_PROTO_PKG_LEN_SIZE + Constants.FDFS_FILE_EXT_NAME_MAX_LEN + fileSize;
     }
 
 

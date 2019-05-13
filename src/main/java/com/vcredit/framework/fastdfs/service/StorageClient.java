@@ -1,6 +1,5 @@
 package com.vcredit.framework.fastdfs.service;
 
-import com.vcredit.framework.fastdfs.proto.MetaInfo;
 import com.vcredit.framework.fastdfs.conn.ConnectionManager;
 import com.vcredit.framework.fastdfs.constants.StorageStatus;
 import com.vcredit.framework.fastdfs.proto.*;
@@ -34,7 +33,7 @@ public class StorageClient {
      * @param metaInfo    元数据
      * @return 上传文件结果
      */
-    public UploadResult uploadFile(InputStream inputStream, long fileSize, String fileExtName, Set<MetaInfo> metaInfo) {
+    UploadResult uploadFile(InputStream inputStream, long fileSize, String fileExtName, Set<MetaInfo> metaInfo) {
         UploadingFile file;
         if (null == metaInfo) {
             file = new UploadingFile(inputStream, fileSize, fileExtName);
@@ -92,7 +91,7 @@ public class StorageClient {
      * @param filename  文件全路径
      * @return 删除结果
      */
-    public DeleteResult deleteFile(String groupName, String filename) {
+    DeleteResult deleteFile(String groupName, String filename) {
         // 获取存储节点
         StorageNode client = trackerClient.getUpdateStorage(groupName, filename);
         StorageDeleteFileCommand command = new StorageDeleteFileCommand(groupName, filename);
@@ -102,7 +101,7 @@ public class StorageClient {
     /**
      * 获取metadata
      */
-    public void setMetadata(String groupName, String filename, Set<MetaInfo> metaDataSet) {
+    void setMetadata(String groupName, String filename, Set<MetaInfo> metaDataSet) {
         StorageNode client = trackerClient.getUpdateStorage(groupName, filename);
         if (null != metaDataSet && !metaDataSet.isEmpty()) {
             StorageSetMetadataCommand setMDCommand = new StorageSetMetadataCommand(groupName, filename,
@@ -114,7 +113,7 @@ public class StorageClient {
     /**
      * 获取metadata
      */
-    public Set<MetaInfo> getMetadata(String groupName, String filename) {
+    Set<MetaInfo> getMetadata(String groupName, String filename) {
         StorageNode client = trackerClient.getUpdateStorage(groupName, filename);
         StorageGetMetadataCommand command = new StorageGetMetadataCommand(groupName, filename);
         return connectionManager.executeFdfsCmd(client.getInetSocketAddress(), command);
@@ -127,7 +126,7 @@ public class StorageClient {
      * @param path      文件全路径
      * @return 下载结果
      */
-    public DownLoadResult downloadFile(String groupName, String path) {
+    DownLoadResult downloadFile(String groupName, String path) {
         long fileOffset = 0;
         long fileSize = 0;
         return this.downloadFile(groupName, path, fileOffset, fileSize);
@@ -136,7 +135,7 @@ public class StorageClient {
     /**
      * 下载文件片段
      */
-    public DownLoadResult downloadFile(String groupName, String path, long fileOffset, long fileSize) {
+    private DownLoadResult downloadFile(String groupName, String path, long fileOffset, long fileSize) {
         StorageNode client = trackerClient.getUpdateStorage(groupName, path);
         StorageDownloadCommand command = new StorageDownloadCommand(groupName, path, fileOffset, fileSize);
         return connectionManager.executeFdfsCmd(client.getInetSocketAddress(), command);

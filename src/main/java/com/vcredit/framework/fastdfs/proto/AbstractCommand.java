@@ -61,27 +61,21 @@ public abstract class AbstractCommand<T> implements FdfsCommand<T> {
      * 3.输出文件内容
      * </pre>
      *
-     * @param out
-     * @throws Exception
+     * @param out     socket输出流
+     * @param charset 编码
+     * @throws Exception 异常
      */
-    protected void send(OutputStream out, Charset charset) throws Exception {
-        // 报文分为三个部分
-        // 报文头
+    private void send(OutputStream out, Charset charset) throws Exception {
         byte[] head = request.getHeadByte(charset);
-        // 交易参数
         byte[] param = request.getParam();
-        // 交易文件流
         InputStream inputFile = request.getInputFile();
         long fileSize = request.getFileSize();
         log.debug("发出交易请求..报文头为{}", request.getHead());
         log.debug("交易参数为{}", param);
-        // 输出报文头
         out.write(head);
-        // 输出交易参数
         if (null != param) {
             out.write(param);
         }
-        // 输出文件流
         if (null != inputFile) {
             sendFileContent(inputFile, fileSize, out);
         }
@@ -90,17 +84,15 @@ public abstract class AbstractCommand<T> implements FdfsCommand<T> {
     /**
      * 接收这里只能确切知道报文头，报文内容(参数+文件)只能靠接收对象分析
      *
-     * @param in
-     * @return
-     * @throws IOException
+     * @param in      socket输入流
+     * @param charset 编码
+     * @return 解析响应对象
+     * @throws IOException 异常
      */
-    protected T receive(InputStream in, Charset charset) throws Exception {
-        // 解析报文头
+    private T receive(InputStream in, Charset charset) throws Exception {
         ProtoHead head = ProtoHead.createFromInputStream(in);
         log.debug("服务端返回报文头{}", head);
-        // 校验报文头
         head.validateResponseHead();
-        // 解析报文体
         return response.decode(head, in, charset);
 
     }
@@ -108,12 +100,12 @@ public abstract class AbstractCommand<T> implements FdfsCommand<T> {
     /**
      * 发送文件
      *
-     * @param ins
-     * @param size
-     * @param ous
-     * @throws IOException
+     * @param ins  文件输入流
+     * @param size 文件长度
+     * @param ous  socket输出流
+     * @throws IOException 异常
      */
-    protected void sendFileContent(InputStream ins, long size, OutputStream ous) throws IOException {
+    private void sendFileContent(InputStream ins, long size, OutputStream ous) throws IOException {
         log.debug("开始上传文件流大小为{}", size);
         long remainBytes = size;
         byte[] buff = new byte[256 * 1024];

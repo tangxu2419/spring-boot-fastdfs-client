@@ -1,4 +1,10 @@
-spring.profiles.active: dev
+spring:
+  profiles:
+    active: dev
+  servlet:
+    multipart:
+      max-file-size: 30MB
+      max-request-size: 50MB
 
 fastdfs:
   connectTimeout: PT5S
@@ -10,6 +16,5 @@ fastdfs:
   cluster:
     nodes:
       - 10.138.30.151:22122
-#    - 10.0.75.2:22122
-#    - 10.138.30.40:22122
-#    - 10.138.30.42:22122
+      - 10.138.30.40:22122
+      - 10.138.30.42:22122

@@ -51,7 +51,7 @@ public abstract class AbstractFdfsRequest {
      *
      * @return 参数域长度
      */
-    private long getBodyLength(Charset charset) {
+    protected long getBodyLength(Charset charset) {
         param = encodeParam(charset);
         return null == param ? 0 : param.length;
     }
