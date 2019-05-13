@@ -1,17 +1,13 @@
 package com.vcredit.framework.fastdfs.proto;
 
-import lombok.Builder;
-import lombok.Data;
-
 import java.io.InputStream;
 import java.util.Set;
 
 /**
  * 文件上传对象
+ *
  * @author Dong Zhuming
  */
-@Data
-@Builder
 public class UploadingFile {
 
     /**
@@ -43,25 +39,32 @@ public class UploadingFile {
         this.fileExtName = fileExtName;
     }
 
-    public UploadingFile(InputStream inputStream, long size, String fileExtName, String groupName) {
-        this.inputStream = inputStream;
-        this.size = size;
-        this.fileExtName = fileExtName;
-        this.groupName = groupName;
-    }
 
-    public UploadingFile(InputStream inputStream, long size, String fileExtName, Set<MetaInfo>metaData) {
+    public UploadingFile(InputStream inputStream, long size, String fileExtName, Set<MetaInfo> metaData) {
         this.inputStream = inputStream;
         this.size = size;
         this.fileExtName = fileExtName;
         this.metaData = metaData;
     }
 
-    public UploadingFile(InputStream inputStream, long size, String fileExtName, Set<MetaInfo> metaData, String groupName) {
-        this.inputStream = inputStream;
-        this.size = size;
-        this.fileExtName = fileExtName;
-        this.metaData = metaData;
-        this.groupName = groupName;
+
+    public InputStream getInputStream() {
+        return inputStream;
+    }
+
+    public long getSize() {
+        return size;
+    }
+
+    public String getFileExtName() {
+        return fileExtName;
+    }
+
+    public Set<MetaInfo> getMetaData() {
+        return metaData;
+    }
+
+    public String getGroupName() {
+        return groupName;
     }
 }
