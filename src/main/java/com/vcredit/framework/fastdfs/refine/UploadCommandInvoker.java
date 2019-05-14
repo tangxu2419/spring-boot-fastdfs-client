@@ -16,14 +16,13 @@ import java.nio.charset.Charset;
  * @author dongzhuming
  */
 
-public class UploadInvoker extends StorageCommandInvoker {
+public class UploadCommandInvoker extends StorageCommandInvoker {
 
     private final StorageCommand.Upload command;
 
-    UploadInvoker(StorageCommand.Upload upload) {
-        super();
+    UploadCommandInvoker(StorageCommand.Upload upload) {
         this.command = upload;
-        this.request = new StorageUploadFileRequest(command.getStorageNode().getStoreIndex(), command.getInputStream(), command.getFileExtension(), command.getFileSize());
+        super.request = new StorageUploadFileRequest(command.getStorageNode().getStoreIndex(), command.getInputStream(), command.getFileExtension(), command.getFileSize());
     }
 
     @Override
@@ -32,7 +31,7 @@ public class UploadInvoker extends StorageCommandInvoker {
     }
 
     @Override
-    public OperationResult decodeContent(InputStream in, ProtoHead head, Charset charset) throws Exception {
+    protected OperationResult parseContent(InputStream in, ProtoHead head, Charset charset) throws Exception {
         // 如果有内容
         if (head.getContentLength() > 0) {
             byte[] body = ProtoPackageUtil.recvResponseBody(in, head.getContentLength());

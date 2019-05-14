@@ -29,24 +29,23 @@ public abstract class StorageCommandInvoker extends AbstractCommandInvoker {
     /**
      * 解析反馈消息对象
      */
+    @Deprecated
     protected OperationResult response;
 
     /**
      * 对服务端发出请求然后接收反馈
      */
-    public OperationResult execute(Connection conn) {
-        // 封装socket交易 send
+    protected OperationResult execute(Connection conn) {
         try {
-            send(conn.getOutputStream(), conn.getCharset());
+            Charset charset = conn.getCharset();
+            InputStream inputStream = conn.getInputStream();
+
+            send(conn.getOutputStream(), charset);
+            ProtoHead head = parseHeader(inputStream);
+            return parseContent(inputStream, head, charset);
         } catch (Exception e) {
-            log.error("send conent error", e);
-            throw new FdfsIOException("socket io exception occured while sending cmd", e);
-        }
-        try {
-            return receive(conn.getInputStream(), conn.getCharset());
-        } catch (Exception e) {
-            log.error("receive conent error", e);
-            throw new FdfsIOException("socket io exception occured while receive content", e);
+            log.error("parseHeader content error", e);
+            throw new FdfsIOException("socket io exception occurred while execute command", e);
         }
 
     }
@@ -108,26 +107,26 @@ public abstract class StorageCommandInvoker extends AbstractCommandInvoker {
     /**
      * 接收这里只能确切知道报文头，报文内容(参数+文件)只能靠接收对象分析
      *
-     * @param in      socket输入流
-     * @param charset 编码
-     * @return 解析响应对象
+     * @param in socket输入流
+     * @return 返回响应头
      * @throws IOException 异常
      */
-    private OperationResult receive(InputStream in, Charset charset) throws Exception {
+    private ProtoHead parseHeader(InputStream in) throws Exception {
         ProtoHead head = ProtoHead.createFromInputStream(in);
         log.debug("服务端返回报文头{}", head);
         head.validateResponseHead();
-        return this.decodeContent(in, head, charset);
+        return head;
     }
 
     /**
      * 解析反馈内容
      *
      * @param in      响应输入流
+     * @param head    响应头
      * @param charset 编码
      * @return 响应对象
      * @throws Exception 异常
      */
-    public abstract OperationResult decodeContent(InputStream in, ProtoHead head, Charset charset) throws Exception;
+    protected abstract OperationResult parseContent(InputStream in, ProtoHead head, Charset charset) throws Exception;
 
 }

@@ -3,6 +3,7 @@ spring:
     active: dev
 
 fastdfs:
+  uploadFailIgnore: true
   connectTimeout: PT5S
   soTimeout: PT15S
   charset: UTF-8
@@ -11,6 +12,4 @@ fastdfs:
     max-wait-millis: 500
   cluster:
     nodes:
-      - 10.138.30.151:22122
-      - 10.138.30.40:22122
-      - 10.138.30.42:22122
+      - 10.0.75.2:22122
