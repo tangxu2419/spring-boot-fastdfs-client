@@ -4,20 +4,20 @@ import com.vcredit.framework.fastdfs.exception.FdfsIOException;
 import com.vcredit.framework.fastdfs.proto.FdfsCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import java.net.InetSocketAddress;
 
 /**
  * @author tangxu
- * @date 2019/5/715:03
  */
 @Component
 public class ConnectionManager {
 
     protected static final Logger log = LoggerFactory.getLogger(ConnectionManager.class);
 
-    public ConnectionManager(FdfsConnectionPool pool) {
+    public ConnectionManager(@Qualifier("fdfsConnectionPool") FdfsConnectionPool pool) {
         this.pool = pool;
     }
 

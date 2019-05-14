@@ -4,11 +4,11 @@ import com.vcredit.framework.fastdfs.config.FastdfsProperties;
 import com.vcredit.framework.fastdfs.exception.FdfsConnectException;
 import com.vcredit.framework.fastdfs.exception.FdfsServerException;
 import com.vcredit.framework.fastdfs.proto.CircularList;
-import com.vcredit.framework.fastdfs.proto.FdfsCommand;
 import com.vcredit.framework.fastdfs.proto.TrackerNode;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Component;
+import org.apache.commons.pool2.KeyedPooledObjectFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.*;
@@ -16,8 +16,9 @@ import java.util.*;
 /**
  * @author tangxu
  */
-@Component
-public class TrackerConnectionManager extends ConnectionManager {
+public class TrackerConnectionPool extends FdfsConnectionPool {
+
+    private static final Logger log = LoggerFactory.getLogger(TrackerConnectionPool.class);
 
     /**
      * 10分钟以后重试连接
@@ -34,23 +35,54 @@ public class TrackerConnectionManager extends ConnectionManager {
     private List<String> trackerList;
 
     /**
-     * 目录服务地址-为了加速处理，增加了一个map
-     */
-    private final Map<InetSocketAddress, TrackerNode> trackerAddressMap = new HashMap<>();
-
-    /**
      * 轮询圈
      */
     private final CircularList<TrackerNode> trackerAddressCircular = new CircularList<>();
 
+    /**
+     * 目录服务地址-为了加速处理，增加了一个map
+     */
+    private final Map<InetSocketAddress, TrackerNode> trackerAddressMap = new HashMap<>();
 
-    public TrackerConnectionManager(@Qualifier("fdfsConnectionPool") FdfsConnectionPool pool, FastdfsProperties fastdfsProperties) {
-        super(pool);
+    public TrackerConnectionPool(KeyedPooledObjectFactory<InetSocketAddress, Connection> factory, FastdfsProperties fastdfsProperties) {
+        super(factory);
         if (fastdfsProperties.getCluster() == null || fastdfsProperties.getCluster().getNodes().isEmpty()) {
             throw new FdfsServerException("tracker地址配置为空");
         }
         trackerList = fastdfsProperties.getCluster().getNodes();
         buildTrackerAddresses();
+    }
+
+
+    /**
+     * 获取连接
+     */
+    public Connection borrow() {
+        InetSocketAddress address = null;
+        Connection conn;
+        // 获取连接
+        try {
+            address = this.getTrackerAddress();
+            log.debug("获取到Tracker连接地址{}", address);
+            conn = this.borrowObject(address);
+            this.setActive(address);
+        } catch (FdfsConnectException e) {
+            this.setInActive(address);
+            throw e;
+        } catch (Exception e) {
+            log.error("Unable to borrow buffer from pool", e);
+            throw new RuntimeException("Unable to borrow buffer from pool", e);
+        }
+        return conn;
+    }
+
+    /**
+     * 释放连接
+     *
+     * @param conn
+     */
+    public void release(TrackerConnection conn) {
+        this.returnObject(conn.getAddress(), conn);
     }
 
 
@@ -77,8 +109,8 @@ public class TrackerConnectionManager extends ConnectionManager {
             trackerAddressCircular.add(holder);
             trackerAddressMap.put(item, holder);
         }
-
     }
+
 
     /**
      * 获取Tracker服务器地址
@@ -95,32 +127,6 @@ public class TrackerConnectionManager extends ConnectionManager {
             }
         }
         throw new FdfsServerException("找不到可用的tracker " + getTrackerAddressConfigString());
-    }
-
-    /**
-     * 获取连接并执行交易
-     *
-     * @param command 请求指令
-     * @return 响应结果
-     */
-    public <T> T executeFdfsTrackerCmd(FdfsCommand<T> command) {
-        Connection conn;
-        InetSocketAddress address = null;
-        // 获取连接
-        try {
-            address = this.getTrackerAddress();
-            log.debug("获取到Tracker连接地址{}", address);
-            conn = getConnection(address);
-            this.setActive(address);
-        } catch (FdfsConnectException e) {
-            this.setInActive(address);
-            throw e;
-        } catch (Exception e) {
-            log.error("Unable to borrow buffer from pool", e);
-            throw new RuntimeException("Unable to borrow buffer from pool", e);
-        }
-        // 执行交易
-        return execute(address, conn, command);
     }
 
 
@@ -144,7 +150,7 @@ public class TrackerConnectionManager extends ConnectionManager {
      *
      * @param address 连接地址
      */
-    void setActive(InetSocketAddress address) {
+    private void setActive(InetSocketAddress address) {
         TrackerNode holder = trackerAddressMap.get(address);
         holder.setActive();
     }
@@ -154,7 +160,7 @@ public class TrackerConnectionManager extends ConnectionManager {
      *
      * @param address 连接地址
      */
-    void setInActive(InetSocketAddress address) {
+    private void setInActive(InetSocketAddress address) {
         TrackerNode holder = trackerAddressMap.get(address);
         holder.setInActive();
     }

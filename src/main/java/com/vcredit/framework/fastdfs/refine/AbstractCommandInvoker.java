@@ -1,6 +1,8 @@
 package com.vcredit.framework.fastdfs.refine;
 
+import com.vcredit.framework.fastdfs.conn.FdfsConnectionPool;
 import com.vcredit.framework.fastdfs.proto.OperationResult;
+import com.vcredit.framework.fastdfs.refine.storage.StorageCommand;
 import org.apache.commons.lang3.NotImplementedException;
 
 /**
@@ -8,18 +10,9 @@ import org.apache.commons.lang3.NotImplementedException;
  */
 public abstract class AbstractCommandInvoker {
 
-    private Connection connection;
-
-    protected Connection initTrackerConnection(){
-
-    }
-    protected Connection initStorageConnection(){
-
-    }
-
     public static AbstractCommandInvoker prepare(StorageCommand command) {
-        if(command instanceof StorageCommand.Upload) {
-            return new UploadInvoker((StorageCommand.Upload)command);
+        if (command instanceof StorageCommand.Upload) {
+            return new UploadInvoker((StorageCommand.Upload) command);
         } else {
             //TODO
             throw new NotImplementedException("");
@@ -28,7 +21,8 @@ public abstract class AbstractCommandInvoker {
 
     /**
      * 执行命令
+     *
      * @return 操作结果
      */
-    abstract OperationResult action();
+    public abstract OperationResult action();
 }

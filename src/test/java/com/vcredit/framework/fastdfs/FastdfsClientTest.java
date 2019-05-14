@@ -4,6 +4,7 @@ import com.vcredit.framework.fastdfs.proto.DeleteResult;
 import com.vcredit.framework.fastdfs.proto.DownLoadResult;
 import com.vcredit.framework.fastdfs.proto.MetaInfo;
 import com.vcredit.framework.fastdfs.proto.UploadResult;
+import com.vcredit.framework.fastdfs.refine.FastdfsClient2;
 import com.vcredit.framework.fastdfs.service.FastdfsClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -24,6 +25,18 @@ public class FastdfsClientTest {
 
     @Autowired
     private FastdfsClient fastdfsClient;
+
+    @Autowired
+    private FastdfsClient2 fastdfsClient2;
+
+    @Test
+    public void test() throws IOException {
+        File file = File.createTempFile("test", "sql");
+        FileWriter fileWriter = new FileWriter(file);
+        fileWriter.append("Test Upload file").flush();
+        UploadResult result = fastdfsClient2.upload(new FileInputStream(file), file.length(), "sql", null);
+        System.out.println("上传文件信息：" + result.toString());
+    }
 
 
     @Test
@@ -57,9 +70,12 @@ public class FastdfsClientTest {
     }
 
 
+
     public UploadResult testUpload() throws IOException {
         File file = File.createTempFile("test", "sql");
-        return fastdfsClient.upload(new FileInputStream(file), file.length(), "sql");
+        FileWriter fileWriter = new FileWriter(file);
+        fileWriter.append("Test Upload file").flush();
+        return fastdfsClient2.upload(new FileInputStream(file), file.length(), "sql",null);
     }
 
     public void testDownload(String groupName, String fileName, String localFileName) throws Exception {

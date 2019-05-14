@@ -11,9 +11,7 @@ import java.nio.charset.Charset;
 
 /**
  * @author tangxu
- * @date 2019/5/711:14
  */
-@Component
 public class PoolConnectFactory extends BaseKeyedPooledObjectFactory<InetSocketAddress, Connection> {
     /**
      * 读取时间

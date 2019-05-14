@@ -31,7 +31,7 @@ public abstract class AbstractFdfsRequest {
      * @param charset 编码
      * @return 报文头byte
      */
-    byte[] getHeadByte(Charset charset) {
+    public byte[] getHeadByte(Charset charset) {
         // 设置报文长度
         head.setContentLength(getBodyLength(charset));
         // 返回报文byte
@@ -64,7 +64,7 @@ public abstract class AbstractFdfsRequest {
         return head;
     }
 
-    InputStream getInputFile() {
+    public InputStream getInputFile() {
         return inputFile;
     }
 

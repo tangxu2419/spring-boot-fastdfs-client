@@ -3,6 +3,7 @@ package com.vcredit.framework.fastdfs.refine;
 import com.vcredit.framework.fastdfs.proto.OperationResult;
 import com.vcredit.framework.fastdfs.proto.StorageNode;
 import com.vcredit.framework.fastdfs.proto.UploadResult;
+import com.vcredit.framework.fastdfs.refine.storage.StorageCommand;
 import com.vcredit.framework.fastdfs.service.StorageClient;
 import com.vcredit.framework.fastdfs.service.TrackerClient;
 import org.springframework.stereotype.Component;

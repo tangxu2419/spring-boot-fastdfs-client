@@ -10,9 +10,7 @@ import java.net.InetSocketAddress;
 
 /**
  * @author tangxu
- * @date 2019/5/714:33
  */
-@Component
 public class FdfsConnectionPool extends GenericKeyedObjectPool<InetSocketAddress, Connection> {
 
 

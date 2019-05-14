@@ -15,7 +15,6 @@ import java.util.List;
  */
 @Getter
 @Setter
-@Component
 @ConfigurationProperties(prefix = "fastdfs")
 public class FastdfsProperties {
     /**
