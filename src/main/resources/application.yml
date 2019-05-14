@@ -1,10 +1,6 @@
 spring:
   profiles:
     active: dev
-  servlet:
-    multipart:
-      max-file-size: 30MB
-      max-request-size: 50MB
 
 fastdfs:
   connectTimeout: PT5S

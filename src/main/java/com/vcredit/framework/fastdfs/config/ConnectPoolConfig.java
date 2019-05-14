@@ -34,6 +34,10 @@ public class ConnectPoolConfig extends GenericKeyedObjectPoolConfig {
      */
     public static final long FDFS_MAX_WAIT_MILLIS = 100;
 
+    /**
+     * 视休眠时间超过了180秒的对象为过期
+     *
+     */
     public static final long FDFS_MIN_EVICTABLE_IDLETIME_MILLIS = 180000;
 
     /**
