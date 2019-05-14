@@ -31,7 +31,7 @@ public class PoolConnectFactory extends BaseKeyedPooledObjectFactory<InetSocketA
     /**
      * 默认字符集
      */
-    private static final  DEFAULT_CHARSET_NAME = "UTF-8";
+    private static final String  DEFAULT_CHARSET_NAME = "UTF-8";
 
     public PoolConnectFactory(FastdfsProperties properties) {
         this.soTimeout = properties.getSoTimeout().toMillisPart();
