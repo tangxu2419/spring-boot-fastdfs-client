@@ -9,9 +9,21 @@ public class ProtocolCommand {
     public static final byte TRACKER_PROTO_CMD_SERVER_LIST_GROUP = 91;
     public static final byte TRACKER_PROTO_CMD_SERVER_LIST_STORAGE = 92;
     public static final byte TRACKER_PROTO_CMD_SERVER_DELETE_STORAGE = 93;
+    /**
+     * 根据指定groupName获取storage服务节点
+     */
     public static final byte TRACKER_PROTO_CMD_SERVICE_QUERY_STORE_WITHOUT_GROUP_ONE = 101;
+    /**
+     * 获取storage服务做下载操作
+     */
     public static final byte TRACKER_PROTO_CMD_SERVICE_QUERY_FETCH_ONE = 102;
+    /**
+     * 获取storage服务节点做 更新（删除文件/设置metaData）操作
+     */
     public static final byte TRACKER_PROTO_CMD_SERVICE_QUERY_UPDATE = 103;
+    /**
+     * 根据tracker策略获取storage服务节点
+     */
     public static final byte TRACKER_PROTO_CMD_SERVICE_QUERY_STORE_WITH_GROUP_ONE = 104;
     public static final byte TRACKER_PROTO_CMD_SERVICE_QUERY_FETCH_ALL = 105;
     public static final byte TRACKER_PROTO_CMD_SERVICE_QUERY_STORE_WITHOUT_GROUP_ALL = 106;
