@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,6 +46,8 @@ public class FastdfsClientTest {
         Set<MetaInfo> metaInfo = new HashSet<>();
         metaInfo.add(new MetaInfo("desc", "this is a metaData"));
         File file = File.createTempFile("test", "sql");
+        FileWriter fileWriter = new FileWriter(file);
+        fileWriter.append("Test Upload file").flush();
         return fastdfsClient.upload(new FileInputStream(file), file.length(), "sql", metaInfo);
     }
 
