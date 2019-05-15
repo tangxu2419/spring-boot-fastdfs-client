@@ -4,8 +4,8 @@ import com.vcredit.framework.fastdfs.proto.DownLoadResult;
 import com.vcredit.framework.fastdfs.proto.OperationResult;
 import com.vcredit.framework.fastdfs.proto.ProtoHead;
 import com.vcredit.framework.fastdfs.proto.storage.StorageDownloadRequest;
-import com.vcredit.framework.fastdfs.refine.storage.StorageCommand;
 import com.vcredit.framework.fastdfs.refine.storage.AbstractStorageCommandInvoker;
+import com.vcredit.framework.fastdfs.refine.storage.StorageCommand;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +24,7 @@ public class DownloadCommandInvoker extends AbstractStorageCommandInvoker {
     }
 
     @Override
-    protected OperationResult parseContent(InputStream in, ProtoHead head, Charset charset) throws Exception {
+    protected DownLoadResult parseContent(InputStream in, ProtoHead head, Charset charset) throws Exception {
         // 如果有内容
         if (head.getContentLength() > 0) {
             byte[] body = new byte[(int) head.getContentLength()];
@@ -42,7 +42,8 @@ public class DownloadCommandInvoker extends AbstractStorageCommandInvoker {
                 throw new IOException("recv package size " + totalBytes + " != " + head.getContentLength());
             }
             return new DownLoadResult(body);
+        } else {
+            return new DownLoadResult(new byte[0]);
         }
-        return new DownLoadResult(null);
     }
 }

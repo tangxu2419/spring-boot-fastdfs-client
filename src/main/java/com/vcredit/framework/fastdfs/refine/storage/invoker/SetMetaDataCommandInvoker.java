@@ -3,8 +3,8 @@ package com.vcredit.framework.fastdfs.refine.storage.invoker;
 import com.vcredit.framework.fastdfs.proto.OperationResult;
 import com.vcredit.framework.fastdfs.proto.ProtoHead;
 import com.vcredit.framework.fastdfs.proto.storage.StorageSetMetadataRequest;
-import com.vcredit.framework.fastdfs.refine.storage.StorageCommand;
 import com.vcredit.framework.fastdfs.refine.storage.AbstractStorageCommandInvoker;
+import com.vcredit.framework.fastdfs.refine.storage.StorageCommand;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;

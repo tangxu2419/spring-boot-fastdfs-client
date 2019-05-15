@@ -4,15 +4,14 @@ import com.vcredit.framework.fastdfs.proto.DeleteResult;
 import com.vcredit.framework.fastdfs.proto.OperationResult;
 import com.vcredit.framework.fastdfs.proto.ProtoHead;
 import com.vcredit.framework.fastdfs.proto.storage.StorageDeleteFileRequest;
-import com.vcredit.framework.fastdfs.refine.storage.StorageCommand;
 import com.vcredit.framework.fastdfs.refine.storage.AbstractStorageCommandInvoker;
+import com.vcredit.framework.fastdfs.refine.storage.StorageCommand;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
 
 /**
  * @author tangxu
- * @date 2019/5/1510:07
  */
 public class DeleteCommandInvoker extends AbstractStorageCommandInvoker {
 
@@ -23,7 +22,6 @@ public class DeleteCommandInvoker extends AbstractStorageCommandInvoker {
 
     @Override
     protected OperationResult parseContent(InputStream in, ProtoHead head, Charset charset) {
-        //TODO 描述
         return new DeleteResult(head.getStatus());
     }
 }
