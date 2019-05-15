@@ -1,17 +1,18 @@
 package com.vcredit.framework.fastdfs.refine.storage;
 
 import com.vcredit.framework.fastdfs.conn.Connection;
+import com.vcredit.framework.fastdfs.conn.StorageConnectionPool;
 import com.vcredit.framework.fastdfs.exception.FdfsIOException;
-import com.vcredit.framework.fastdfs.proto.AbstractFdfsRequest;
 import com.vcredit.framework.fastdfs.proto.OperationResult;
 import com.vcredit.framework.fastdfs.proto.ProtoHead;
+import com.vcredit.framework.fastdfs.proto.StorageNode;
 import com.vcredit.framework.fastdfs.refine.AbstractCommandInvoker;
+import com.vcredit.framework.fastdfs.refine.FastdfsConnectionPoolHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 
 /**
@@ -21,10 +22,13 @@ public abstract class StorageCommandInvoker extends AbstractCommandInvoker {
 
     private static final Logger log = LoggerFactory.getLogger(StorageCommandInvoker.class);
 
+    private StorageConnectionPool pool = FastdfsConnectionPoolHolder.STORAGE_CONNECTION_POOL;
+
     /**
-     * 表示请求消息
+     * storage指令
      */
-    protected AbstractFdfsRequest request;
+    protected StorageCommand command;
+
 
     /**
      * 解析反馈消息对象
@@ -33,9 +37,34 @@ public abstract class StorageCommandInvoker extends AbstractCommandInvoker {
     protected OperationResult response;
 
     /**
+     * 执行指令交易
+     *
+     * @return 结果
+     */
+    @Override
+    public OperationResult action() {
+        return this.executeFdfsCmd(command);
+    }
+
+    /**
+     * 获取连接并执行交易
+     *
+     * @param command 指令
+     * @return 结果
+     */
+    private OperationResult executeFdfsCmd(StorageCommand command) {
+        // 获取连接
+        StorageNode storageNode = command.getStorageNode();
+        Connection conn = pool.borrow(storageNode);
+        // 执行交易
+        return execute(storageNode.getInetSocketAddress(), conn);
+
+    }
+
+    /**
      * 对服务端发出请求然后接收反馈
      */
-    protected OperationResult execute(Connection conn) {
+    private OperationResult execute(InetSocketAddress address, Connection conn) {
         try {
             Charset charset = conn.getCharset();
             InputStream inputStream = conn.getInputStream();
@@ -46,77 +75,18 @@ public abstract class StorageCommandInvoker extends AbstractCommandInvoker {
         } catch (Exception e) {
             log.error("parseHeader content error", e);
             throw new FdfsIOException("socket io exception occurred while execute command", e);
-        }
-
-    }
-
-    /**
-     * 将报文输出规范为模板方法
-     * <p>
-     * <pre>
-     * 1.输出报文头
-     * 2.输出报文参数
-     * 3.输出文件内容
-     * </pre>
-     *
-     * @param out     socket输出流
-     * @param charset 编码
-     * @throws Exception 异常
-     */
-    private void send(OutputStream out, Charset charset) throws Exception {
-        byte[] head = request.getHeadByte(charset);
-        byte[] param = request.getParam();
-        InputStream inputFile = request.getInputFile();
-        long fileSize = request.getFileSize();
-        log.debug("发出交易请求..报文头为{}", request.getHead());
-        log.debug("交易参数为{}", param);
-        out.write(head);
-        if (null != param) {
-            out.write(param);
-        }
-        if (null != inputFile) {
-            sendFileContent(inputFile, fileSize, out);
-        }
-    }
-
-
-    /**
-     * 发送文件
-     *
-     * @param ins  文件输入流
-     * @param size 文件长度
-     * @param ous  socket输出流
-     * @throws IOException 异常
-     */
-    private void sendFileContent(InputStream ins, long size, OutputStream ous) throws IOException {
-        log.debug("开始上传文件流大小为{}", size);
-        long remainBytes = size;
-        byte[] buff = new byte[256 * 1024];
-        int bytes;
-        while (remainBytes > 0) {
-            if ((bytes = ins.read(buff, 0, remainBytes > buff.length ? buff.length : (int) remainBytes)) < 0) {
-                throw new IOException("the end of the stream has been reached. not match the expected size ");
+        } finally {
+            try {
+                if (null != conn) {
+                    pool.returnObject(address, conn);
+                }
+            } catch (Exception e) {
+                log.error("return pooled connection error", e);
             }
-            ous.write(buff, 0, bytes);
-            remainBytes -= bytes;
-            log.debug("剩余数据量{}", remainBytes);
         }
+
     }
 
-
-    /**
-     * 接收这里只能确切知道报文头，报文内容(参数+文件)只能靠接收对象分析
-     *
-     * @param in socket输入流
-     * @return 返回响应头
-     * @throws IOException 异常
-     */
-    private ProtoHead parseHeader(InputStream in) throws Exception {
-        ProtoHead head = ProtoHead.createFromInputStream(in);
-        log.debug("服务端返回报文头{}", head);
-        head.validateResponseHead();
-        return head;
-    }
 
     /**
      * 解析反馈内容

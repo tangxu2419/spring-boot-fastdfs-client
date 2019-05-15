@@ -1,4 +1,4 @@
-package com.vcredit.framework.fastdfs.proto.storage.interactive;
+package com.vcredit.framework.fastdfs.proto.storage;
 
 import com.vcredit.framework.fastdfs.ProtoPackageUtil;
 import com.vcredit.framework.fastdfs.constants.Constants;

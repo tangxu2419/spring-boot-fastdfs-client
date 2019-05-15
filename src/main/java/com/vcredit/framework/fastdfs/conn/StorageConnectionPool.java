@@ -1,5 +1,6 @@
 package com.vcredit.framework.fastdfs.conn;
 
+import com.vcredit.framework.fastdfs.config.ConnectPoolConfig;
 import com.vcredit.framework.fastdfs.exception.FdfsConnectException;
 import com.vcredit.framework.fastdfs.proto.StorageNode;
 import org.apache.commons.pool2.KeyedPooledObjectFactory;
@@ -16,8 +17,9 @@ public class StorageConnectionPool extends FdfsConnectionPool {
 
     private static final Logger log = LoggerFactory.getLogger(StorageConnectionPool.class);
 
-    public StorageConnectionPool(KeyedPooledObjectFactory<InetSocketAddress, Connection> factory) {
-        super(factory);
+    @SuppressWarnings("unchecked")
+    public StorageConnectionPool(KeyedPooledObjectFactory<InetSocketAddress, Connection> factory, ConnectPoolConfig config) {
+        super(factory,config);
     }
 
     /**
@@ -40,12 +42,4 @@ public class StorageConnectionPool extends FdfsConnectionPool {
         return conn;
     }
 
-    /**
-     * 释放连接
-     *
-     * @param conn
-     */
-    public void release(StorageConnection conn) {
-        this.returnObject(conn.getAddress(), conn);
-    }
 }

@@ -110,8 +110,8 @@ public class ProtoHead {
     /**
      * 验证服务端返回报文有效性
      *
-     * @return
-     * @throws IOException
+     * @return  请求是否成功
+     * @throws IOException  异常
      */
     public boolean validateResponseHead() throws IOException {
         // 检查是否是正确反馈报文

@@ -1,4 +1,11 @@
 package com.vcredit.framework.fastdfs.refine;
 
-public class MetaData {
+
+import java.util.HashMap;
+
+/**
+ *
+ */
+public class MetaData extends HashMap<String, String> {
+
 }

@@ -1,15 +1,14 @@
-package com.vcredit.framework.fastdfs.proto.storage.interactive;
+package com.vcredit.framework.fastdfs.proto.storage;
 
-import com.vcredit.framework.fastdfs.proto.MetaInfo;
 import com.vcredit.framework.fastdfs.ProtoPackageUtil;
 import com.vcredit.framework.fastdfs.constants.Constants;
 import com.vcredit.framework.fastdfs.constants.ProtocolCommand;
 import com.vcredit.framework.fastdfs.proto.AbstractFdfsRequest;
 import com.vcredit.framework.fastdfs.proto.ProtoHead;
+import com.vcredit.framework.fastdfs.refine.MetaData;
 import org.apache.commons.lang3.Validate;
 
 import java.nio.charset.Charset;
-import java.util.Set;
 
 /**
  * @author tangxu
@@ -32,16 +31,16 @@ public class StorageSetMetadataRequest extends AbstractFdfsRequest {
     /**
      * 元数据
      */
-    private Set<MetaInfo> metaDataSet;
+    private MetaData metaData;
 
-    public StorageSetMetadataRequest(String groupName, String fileName, Set<MetaInfo> metaDataSet, byte type) {
+    public StorageSetMetadataRequest(String groupName, String fileName, MetaData metaData, byte type) {
         super();
         Validate.notBlank(groupName, "分组不能为空");
         Validate.notBlank(fileName, "分组不能为空");
-        Validate.notEmpty(metaDataSet, "分组不能为空");
+        Validate.notEmpty(metaData, "分组不能为空");
         this.groupName = groupName;
         this.path = fileName;
-        this.metaDataSet = metaDataSet;
+        this.metaData = metaData;
         this.opFlag = type;
         head = new ProtoHead(ProtocolCommand.STORAGE_PROTO_CMD_SET_METADATA);
     }
@@ -58,7 +57,7 @@ public class StorageSetMetadataRequest extends AbstractFdfsRequest {
         byte[] bopFlag = {opFlag};
         byte[] groupNameBytes = super.encodeRequestParam(groupName, Constants.FDFS_GROUP_NAME_MAX_LEN, charset);
         byte[] filenameBytes = path.getBytes(charset);
-        byte[] metaDataBytes = this.packMetaData(metaDataSet, charset);
+        byte[] metaDataBytes = this.packMetaData(metaData, charset);
         //////////////////////////
         byte[] fileNameSizeBytes = ProtoPackageUtil.long2buff(filenameBytes.length);
         byte[] metaDataSizeBytes = ProtoPackageUtil.long2buff(metaDataBytes.length);
@@ -68,17 +67,17 @@ public class StorageSetMetadataRequest extends AbstractFdfsRequest {
     /**
      * 将元数据映射为byte
      *
-     * @param metadataSet 元数据
-     * @param charset     编码
+     * @param metadata 元数据
+     * @param charset  编码
      * @return result
      */
-    private byte[] packMetaData(Set<MetaInfo> metadataSet, Charset charset) {
-        if (null == metadataSet || metadataSet.isEmpty()) {
+    private byte[] packMetaData(MetaData metadata, Charset charset) {
+        if (null == metadata || metadata.isEmpty()) {
             return new byte[0];
         }
-        StringBuilder sb = new StringBuilder(32 * metadataSet.size());
-        for (MetaInfo md : metadataSet) {
-            sb.append(md.getName()).append(Constants.FDFS_FIELD_SEPERATOR).append(md.getValue());
+        StringBuilder sb = new StringBuilder(32 * metadata.size());
+        for (String key : metadata.keySet()) {
+            sb.append(key).append(Constants.FDFS_FIELD_SEPERATOR).append(metadata.get(key));
             sb.append(Constants.FDFS_RECORD_SEPERATOR);
         }
         // 去除最后一个分隔符

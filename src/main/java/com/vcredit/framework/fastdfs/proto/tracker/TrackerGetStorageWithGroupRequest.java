@@ -1,4 +1,4 @@
-package com.vcredit.framework.fastdfs.proto.tracker.interactive;
+package com.vcredit.framework.fastdfs.proto.tracker;
 
 import com.vcredit.framework.fastdfs.constants.Constants;
 import com.vcredit.framework.fastdfs.constants.ProtocolCommand;
@@ -10,13 +10,12 @@ import java.nio.charset.Charset;
 
 /**
  * @author tangxu
- * @date 2019/5/814:42
  */
-public class TrackerGetStoreStorageWithGroupRequest extends AbstractFdfsRequest {
+public class TrackerGetStorageWithGroupRequest extends AbstractFdfsRequest {
 
     private final String groupName;
 
-    public TrackerGetStoreStorageWithGroupRequest(String groupName) {
+    public TrackerGetStorageWithGroupRequest(String groupName) {
         Validate.notBlank(groupName, "分組信息不能為空");
         this.groupName = groupName;
         this.head = new ProtoHead(ProtocolCommand.TRACKER_PROTO_CMD_SERVICE_QUERY_STORE_WITH_GROUP_ONE);

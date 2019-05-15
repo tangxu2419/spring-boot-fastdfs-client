@@ -35,7 +35,7 @@ public class DefaultConnection implements Connection {
     private Charset charset;
 
 
-    public DefaultConnection(InetSocketAddress address, int soTimeout, int connectTimeout, Charset charset) {
+    DefaultConnection(InetSocketAddress address, int soTimeout, int connectTimeout, Charset charset) {
         try {
             socket = new Socket();
             socket.setSoTimeout(soTimeout);

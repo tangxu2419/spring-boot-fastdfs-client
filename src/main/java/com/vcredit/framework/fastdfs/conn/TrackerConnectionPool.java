@@ -1,5 +1,6 @@
 package com.vcredit.framework.fastdfs.conn;
 
+import com.vcredit.framework.fastdfs.config.ConnectPoolConfig;
 import com.vcredit.framework.fastdfs.config.FastdfsProperties;
 import com.vcredit.framework.fastdfs.exception.FdfsConnectException;
 import com.vcredit.framework.fastdfs.exception.FdfsServerException;
@@ -44,8 +45,9 @@ public class TrackerConnectionPool extends FdfsConnectionPool {
      */
     private final Map<InetSocketAddress, TrackerNode> trackerAddressMap = new HashMap<>();
 
-    public TrackerConnectionPool(KeyedPooledObjectFactory<InetSocketAddress, Connection> factory, FastdfsProperties fastdfsProperties) {
-        super(factory);
+    @SuppressWarnings("unchecked")
+    public TrackerConnectionPool(KeyedPooledObjectFactory<InetSocketAddress, Connection> factory, ConnectPoolConfig config, FastdfsProperties fastdfsProperties) {
+        super(factory, config);
         if (fastdfsProperties.getCluster() == null || fastdfsProperties.getCluster().getNodes().isEmpty()) {
             throw new FdfsServerException("tracker地址配置为空");
         }
@@ -57,12 +59,10 @@ public class TrackerConnectionPool extends FdfsConnectionPool {
     /**
      * 获取连接
      */
-    public Connection borrow() {
-        InetSocketAddress address = null;
+    public Connection borrow(InetSocketAddress address) {
         Connection conn;
         // 获取连接
         try {
-            address = this.getTrackerAddress();
             log.debug("获取到Tracker连接地址{}", address);
             conn = this.borrowObject(address);
             this.setActive(address);
@@ -74,15 +74,6 @@ public class TrackerConnectionPool extends FdfsConnectionPool {
             throw new RuntimeException("Unable to borrow buffer from pool", e);
         }
         return conn;
-    }
-
-    /**
-     * 释放连接
-     *
-     * @param conn
-     */
-    public void release(TrackerConnection conn) {
-        this.returnObject(conn.getAddress(), conn);
     }
 
 
@@ -117,7 +108,7 @@ public class TrackerConnectionPool extends FdfsConnectionPool {
      *
      * @return 获取地址
      */
-    InetSocketAddress getTrackerAddress() {
+    public InetSocketAddress getTrackerAddress() {
         TrackerNode holder;
         // 遍历连接地址,抓取当前有效的地址
         for (int i = 0; i < trackerAddressCircular.size(); i++) {

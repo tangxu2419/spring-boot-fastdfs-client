@@ -1,11 +1,11 @@
-package com.vcredit.framework.fastdfs.refine;
+package com.vcredit.framework.fastdfs.refine.storage.invoker;
 
 import com.vcredit.framework.fastdfs.ProtoPackageUtil;
 import com.vcredit.framework.fastdfs.constants.Constants;
 import com.vcredit.framework.fastdfs.proto.OperationResult;
 import com.vcredit.framework.fastdfs.proto.ProtoHead;
 import com.vcredit.framework.fastdfs.proto.UploadResult;
-import com.vcredit.framework.fastdfs.proto.storage.interactive.StorageUploadFileRequest;
+import com.vcredit.framework.fastdfs.proto.storage.StorageUploadFileRequest;
 import com.vcredit.framework.fastdfs.refine.storage.StorageCommand;
 import com.vcredit.framework.fastdfs.refine.storage.StorageCommandInvoker;
 
@@ -18,16 +18,9 @@ import java.nio.charset.Charset;
 
 public class UploadCommandInvoker extends StorageCommandInvoker {
 
-    private final StorageCommand.Upload command;
-
-    UploadCommandInvoker(StorageCommand.Upload upload) {
-        this.command = upload;
+    public UploadCommandInvoker(StorageCommand.Upload command) {
+        this.command = command;
         super.request = new StorageUploadFileRequest(command.getStorageNode().getStoreIndex(), command.getInputStream(), command.getFileExtension(), command.getFileSize());
-    }
-
-    @Override
-    public OperationResult action() {
-        return super.execute(FastdfsConnectionPoolHolder.STORAGE_CONNECTION_POOL.borrow(command.getStorageNode()));
     }
 
     @Override

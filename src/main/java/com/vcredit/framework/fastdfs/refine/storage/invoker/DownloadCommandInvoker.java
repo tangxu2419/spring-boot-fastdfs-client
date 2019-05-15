@@ -1,7 +1,11 @@
-package com.vcredit.framework.fastdfs.proto.storage.interactive;
+package com.vcredit.framework.fastdfs.refine.storage.invoker;
 
 import com.vcredit.framework.fastdfs.proto.DownLoadResult;
-import com.vcredit.framework.fastdfs.proto.AbstractFdfsResponse;
+import com.vcredit.framework.fastdfs.proto.OperationResult;
+import com.vcredit.framework.fastdfs.proto.ProtoHead;
+import com.vcredit.framework.fastdfs.proto.storage.StorageDownloadRequest;
+import com.vcredit.framework.fastdfs.refine.storage.StorageCommand;
+import com.vcredit.framework.fastdfs.refine.storage.StorageCommandInvoker;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,21 +13,20 @@ import java.nio.charset.Charset;
 
 /**
  * @author tangxu
- * @date 2019/5/918:13
+ * @date 2019/5/1510:06
  */
-public class StorageDownloadResponse extends AbstractFdfsResponse<DownLoadResult> {
+public class DownloadCommandInvoker extends StorageCommandInvoker {
 
-    /**
-     * 解析反馈内容
-     *
-     * @param in
-     * @param charset
-     * @return
-     */
+
+    public DownloadCommandInvoker(StorageCommand.Download command) {
+        this.command = command;
+        super.request = new StorageDownloadRequest(command.getGroupName(), command.getFileName(), command.getFileOffset(), command.getDownloadBytes());
+    }
+
     @Override
-    public DownLoadResult decodeContent(InputStream in, Charset charset) throws IOException {
+    protected OperationResult parseContent(InputStream in, ProtoHead head, Charset charset) throws Exception {
         // 如果有内容
-        if (getContentLength() > 0) {
+        if (head.getContentLength() > 0) {
             byte[] body = new byte[(int) head.getContentLength()];
             int totalBytes = 0;
             int remainBytes = (int) head.getContentLength();

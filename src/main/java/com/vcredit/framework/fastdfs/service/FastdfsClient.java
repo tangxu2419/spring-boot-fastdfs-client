@@ -1,13 +1,13 @@
 package com.vcredit.framework.fastdfs.service;
 
-import com.vcredit.framework.fastdfs.proto.MetaInfo;
-import com.vcredit.framework.fastdfs.proto.DeleteResult;
-import com.vcredit.framework.fastdfs.proto.DownLoadResult;
-import com.vcredit.framework.fastdfs.proto.UploadResult;
+import com.vcredit.framework.fastdfs.constants.StorageStatus;
+import com.vcredit.framework.fastdfs.proto.*;
+import com.vcredit.framework.fastdfs.refine.MetaData;
+import com.vcredit.framework.fastdfs.refine.storage.StorageCommand;
+import com.vcredit.framework.fastdfs.refine.tracker.TrackerCommand;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
-import java.util.Set;
 
 /**
  * @author Dong Zhuming
@@ -15,35 +15,92 @@ import java.util.Set;
 @Component
 public class FastdfsClient {
 
-    private final StorageClient storageClient;
 
-    public FastdfsClient(StorageClient storageClient) {
-        this.storageClient = storageClient;
+    /**
+     * 下载
+     * @param groupName     指定组名
+     * @param inputStream   文件输入流
+     * @param fileSize      文件长度
+     * @param fileExtension 文件后缀名
+     * @param metaData      metaData
+     * @return  UploadResult
+     */
+    public UploadResult upload(String groupName, InputStream inputStream, long fileSize, String fileExtension, MetaData metaData) {
+        TrackerResult storageNode = (TrackerResult) TrackerCommand.GetStorage.create()
+                .groupName(groupName)
+                .execute();
+        UploadResult result = (UploadResult) StorageCommand.Upload.create(storageNode.getStorageNode())
+                .inputStream(inputStream)
+                .fileSize(fileSize)
+                .fileExtension(fileExtension)
+                .execute();
+        if (null != metaData) {
+            StorageCommand.SetMeta.create(storageNode.getStorageNode())
+                    .groupName(result.getGroupName())
+                    .fileName(result.getFileName())
+                    .metaData(metaData)
+                    .opFlag(StorageStatus.STORAGE_SET_METADATA_FLAG_OVERWRITE)
+                    .execute();
+        }
+        return result;
     }
 
-    public UploadResult upload(InputStream inputStream, long fileSize, String fileExtName) {
-        return storageClient.uploadFile(inputStream, fileSize, fileExtName, null);
+    /**
+     * 获取metadata
+     *
+     * @return metaDataResult
+     */
+    public MetaDataResult getMetadata(String groupName, String fileName) {
+        TrackerResult storageNode = (TrackerResult) TrackerCommand.FetchStorage.create()
+                .groupName(groupName)
+                .fileName(fileName)
+                .toUpdate(true)
+                .execute();
+        return (MetaDataResult) StorageCommand.GetMeta.create(storageNode.getStorageNode())
+                .groupName(groupName)
+                .fileName(fileName)
+                .execute();
     }
 
-    public UploadResult upload(InputStream inputStream, long fileSize, String fileExtName, Set<MetaInfo> metaInfo) {
-        return storageClient.uploadFile(inputStream, fileSize, fileExtName, metaInfo);
+
+    /**
+     * 下载
+     *
+     * @param groupName 组名
+     * @param fileName  文件全路径
+     * @return DownLoadResult
+     */
+    public DownLoadResult download(String groupName, String fileName) {
+        TrackerResult storageNode = (TrackerResult) TrackerCommand.FetchStorage.create()
+                .groupName(groupName)
+                .fileName(fileName)
+                .toUpdate(true)
+                .execute();
+        return (DownLoadResult) StorageCommand.Download.create(storageNode.getStorageNode())
+                .groupName(groupName)
+                .fileName(fileName)
+                .fileOffset(0)
+                .downloadBytes(0)
+                .execute();
     }
 
-    public void setMetadata(String groupName, String fileName, Set<MetaInfo> metaInfo) {
-        storageClient.setMetadata(groupName, fileName, metaInfo);
+    /**
+     * 删除
+     *
+     * @param groupName 组名
+     * @param fileName  文件全路径
+     * @return DeleteResult
+     */
+    public DeleteResult delete(String groupName, String fileName) {
+        TrackerResult storageNode = (TrackerResult) TrackerCommand.FetchStorage.create()
+                .groupName(groupName)
+                .fileName(fileName)
+                .toUpdate(true)
+                .execute();
+        return (DeleteResult) StorageCommand.Delete.create(storageNode.getStorageNode())
+                .groupName(groupName)
+                .fileName(fileName)
+                .execute();
     }
-
-    public Set<MetaInfo> getMetadata(String groupName, String fileName) {
-        return storageClient.getMetadata(groupName, fileName);
-    }
-
-    public DownLoadResult download(String fileName, String groupName) {
-        return storageClient.downloadFile(groupName, fileName);
-    }
-
-    public DeleteResult delete(String fileName, String groupName) {
-        return storageClient.deleteFile(groupName, fileName);
-    }
-
 
 }

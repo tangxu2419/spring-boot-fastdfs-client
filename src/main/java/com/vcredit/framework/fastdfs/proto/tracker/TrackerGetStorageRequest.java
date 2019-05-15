@@ -1,4 +1,4 @@
-package com.vcredit.framework.fastdfs.proto.tracker.interactive;
+package com.vcredit.framework.fastdfs.proto.tracker;
 
 import com.vcredit.framework.fastdfs.constants.ProtocolCommand;
 import com.vcredit.framework.fastdfs.proto.AbstractFdfsRequest;
