@@ -17,6 +17,11 @@ import java.util.List;
 @Setter
 @ConfigurationProperties(prefix = "fastdfs")
 public class FastdfsProperties {
+
+    /**
+     * 上传MetaData失败时，是否删除原始文件
+     */
+    private Boolean uploadFailIgnore;
     /**
      * 连接超时时间
      */

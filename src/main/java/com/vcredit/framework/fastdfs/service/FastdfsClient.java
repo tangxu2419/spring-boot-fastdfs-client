@@ -26,16 +26,18 @@ public class FastdfsClient {
      * @return  UploadResult
      */
     public UploadResult upload(String groupName, InputStream inputStream, long fileSize, String fileExtension, MetaData metaData) {
-        TrackerResult storageNode = (TrackerResult) TrackerCommand.GetStorage.create()
+        TrackerResult trackerResult = (TrackerResult) TrackerCommand.GetStorage.create()
                 .groupName(groupName)
                 .execute();
-        UploadResult result = (UploadResult) StorageCommand.Upload.create(storageNode.getStorageNode())
+        StorageNode storageNode = trackerResult.getStorageNode();
+
+        UploadResult result = (UploadResult) StorageCommand.Upload.create(storageNode)
                 .inputStream(inputStream)
                 .fileSize(fileSize)
                 .fileExtension(fileExtension)
                 .execute();
         if (null != metaData) {
-            StorageCommand.SetMeta.create(storageNode.getStorageNode())
+            StorageCommand.SetMeta.create(storageNode)
                     .groupName(result.getGroupName())
                     .fileName(result.getFileName())
                     .metaData(metaData)
@@ -50,13 +52,13 @@ public class FastdfsClient {
      *
      * @return metaDataResult
      */
-    public MetaDataResult getMetadata(String groupName, String fileName) {
-        TrackerResult storageNode = (TrackerResult) TrackerCommand.FetchStorage.create()
+    public MetaDataResult getMetaData(String groupName, String fileName) {
+        TrackerResult trackerResult = (TrackerResult) TrackerCommand.FetchStorage.create()
                 .groupName(groupName)
                 .fileName(fileName)
                 .toUpdate(true)
                 .execute();
-        return (MetaDataResult) StorageCommand.GetMeta.create(storageNode.getStorageNode())
+        return (MetaDataResult) StorageCommand.GetMeta.create(trackerResult.getStorageNode())
                 .groupName(groupName)
                 .fileName(fileName)
                 .execute();
@@ -79,8 +81,6 @@ public class FastdfsClient {
         return (DownLoadResult) StorageCommand.Download.create(storageNode.getStorageNode())
                 .groupName(groupName)
                 .fileName(fileName)
-                .fileOffset(0)
-                .downloadBytes(0)
                 .execute();
     }
 

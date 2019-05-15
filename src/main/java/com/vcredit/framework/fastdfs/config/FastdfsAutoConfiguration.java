@@ -42,7 +42,7 @@ public class FastdfsAutoConfiguration {
      */
     @Bean
     public TrackerConnectionPool trackerConnectionPool(PoolConnectFactory factory, ConnectPoolConfig config, FastdfsProperties properties) {
-        TrackerConnectionPool trackerConnectionPool = new TrackerConnectionPool(factory,config, properties);
+        TrackerConnectionPool trackerConnectionPool = new TrackerConnectionPool(factory, config, properties);
         FastdfsConnectionPoolHolder.TRACKER_CONNECTION_POOL = trackerConnectionPool;
         return trackerConnectionPool;
     }
@@ -55,7 +55,7 @@ public class FastdfsAutoConfiguration {
      */
     @Bean
     public StorageConnectionPool storageConnectionPool(PoolConnectFactory factory, ConnectPoolConfig config) {
-        StorageConnectionPool storageConnectionPool = new StorageConnectionPool(factory,config);
+        StorageConnectionPool storageConnectionPool = new StorageConnectionPool(factory, config);
         FastdfsConnectionPoolHolder.STORAGE_CONNECTION_POOL = storageConnectionPool;
         return storageConnectionPool;
     }

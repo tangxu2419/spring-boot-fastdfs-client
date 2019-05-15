@@ -24,7 +24,7 @@ public class ConnectPoolConfig extends GenericKeyedObjectPoolConfig {
 
     /**
      * 连接耗尽时是否阻塞(默认true)
-     * false报异常,ture阻塞直到超时
+     * false报异常,true阻塞直到超时
      */
     public static final boolean FDFS_BLOCK_WHEN_EXHAUSTED = true;
 
@@ -50,7 +50,7 @@ public class ConnectPoolConfig extends GenericKeyedObjectPoolConfig {
      * 每次逐出检查时 逐出的最大数目 如果为负数就是 : 1/abs(n), 默认3
      * －1表示清理时检查所有线程
      */
-    public static final int FDFS_NUM_TESTS_PEREVICTION_RUN = -1;
+    public static final int FDFS_NUM_TESTS_PER_EVICTION_RUN = -1;
 
     /**
      * 默认jmx域名
@@ -76,7 +76,7 @@ public class ConnectPoolConfig extends GenericKeyedObjectPoolConfig {
         // 每过60秒进行一次后台对象清理的行动
         setTimeBetweenEvictionRunsMillis(FDFS_TIME_BETWEEN_EVICTION_RUNS_MILLIS);
         // 清理时候检查所有线程
-        setNumTestsPerEvictionRun(FDFS_NUM_TESTS_PEREVICTION_RUN);
+        setNumTestsPerEvictionRun(FDFS_NUM_TESTS_PER_EVICTION_RUN);
         // 配置jmx
         this.setJmxNameBase(FDFS_JMX_NAME_BASE);
         this.setJmxNamePrefix(FDFS_JMX_NAME_PREFIX);

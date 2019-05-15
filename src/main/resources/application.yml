@@ -3,7 +3,7 @@ spring:
     active: dev
 
 fastdfs:
-  uploadFailIgnore: true
+  upload-fail-ignore: true
   connectTimeout: PT5S
   soTimeout: PT15S
   charset: UTF-8

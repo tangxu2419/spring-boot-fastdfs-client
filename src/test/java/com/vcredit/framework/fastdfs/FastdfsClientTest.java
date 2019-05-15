@@ -33,7 +33,7 @@ public class FastdfsClientTest {
         UploadResult result = fastdfsClient.upload(null, new FileInputStream(file), file.length(), "sql", metaData);
         System.out.println("上传文件信息：" + result.toString());
         System.out.println("==============[MetaData 获取]=================");
-        MetaDataResult metadata = fastdfsClient.getMetadata(result.getGroupName(), result.getFileName());
+        MetaDataResult metadata = fastdfsClient.getMetaData(result.getGroupName(), result.getFileName());
         for (String key : metadata.getMetaData().keySet()) {
             System.out.println(metadata.getMetaData().get(key));
         }

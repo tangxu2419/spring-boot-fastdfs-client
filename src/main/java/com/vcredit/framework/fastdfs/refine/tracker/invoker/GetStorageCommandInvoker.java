@@ -32,14 +32,11 @@ public class GetStorageCommandInvoker extends AbstractTrackerCommandInvoker {
 
     @Override
     protected OperationResult parseContent(InputStream in, ProtoHead head, Charset charset) throws Exception {
-        if (head.getContentLength() > 0) {
-            byte[] body = ProtoPackageUtil.recvResponseBody(in, head.getContentLength());
-            String groupName = new String(body, 0, FDFS_GROUP_NAME_MAX_LEN, charset).trim();
-            String ip = new String(body, FDFS_GROUP_NAME_MAX_LEN, FDFS_IPADDR_SIZE - 1, charset).trim();
-            int port = (int) ProtoPackageUtil.buff2long(body, FDFS_GROUP_NAME_MAX_LEN + FDFS_IPADDR_SIZE - 1);
-            byte storePath = body[TRACKER_QUERY_STORAGE_STORE_BODY_LEN - 1];
-            return new TrackerResult(new StorageNode(groupName, ip, port, storePath));
-        }
-        return null;
+        byte[] body = ProtoPackageUtil.recvResponseBody(in, head.getContentLength());
+        String groupName = new String(body, 0, FDFS_GROUP_NAME_MAX_LEN, charset).trim();
+        String ip = new String(body, FDFS_GROUP_NAME_MAX_LEN, FDFS_IPADDR_SIZE - 1, charset).trim();
+        int port = (int) ProtoPackageUtil.buff2long(body, FDFS_GROUP_NAME_MAX_LEN + FDFS_IPADDR_SIZE - 1);
+        byte storePath = body[TRACKER_QUERY_STORAGE_STORE_BODY_LEN - 1];
+        return new TrackerResult(new StorageNode(groupName, ip, port, storePath));
     }
 }

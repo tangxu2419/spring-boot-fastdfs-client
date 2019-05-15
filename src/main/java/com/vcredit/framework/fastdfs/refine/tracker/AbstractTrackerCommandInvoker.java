@@ -30,22 +30,9 @@ public abstract class AbstractTrackerCommandInvoker extends AbstractCommandInvok
      */
     @Override
     public OperationResult action() {
-        return this.executeFdfsCmd();
-    }
-
-    /**
-     * 获取连接并执行交易
-     *
-     * @return 结果
-     */
-    private OperationResult executeFdfsCmd() {
-        // 获取连接
+        // 获取链接
         InetSocketAddress address = pool.getTrackerAddress();
         Connection conn = pool.borrow(address);
-        // 执行交易
         return super.execute(pool, address, conn);
-
     }
-
-
 }

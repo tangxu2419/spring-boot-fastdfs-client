@@ -41,24 +41,11 @@ public abstract class AbstractStorageCommandInvoker extends AbstractCommandInvok
      */
     @Override
     public OperationResult action() {
-        return this.executeFdfsCmd(command);
-    }
-
-    /**
-     * 获取连接并执行交易
-     *
-     * @param command 指令
-     * @return 结果
-     */
-    private OperationResult executeFdfsCmd(StorageCommand command) {
         // 获取连接
         StorageNode storageNode = command.getStorageNode();
         Connection conn = pool.borrow(storageNode);
-        // 执行交易
-        return super.execute(pool,storageNode.getInetSocketAddress(), conn);
+
+        return super.execute(pool, storageNode.getInetSocketAddress(), conn);
     }
-
-
-
 
 }

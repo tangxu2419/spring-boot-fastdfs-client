@@ -210,11 +210,11 @@ public abstract class StorageCommand implements FastdfsCommand {
         /**
          * 开始位置
          */
-        private long fileOffset;
+        private long fileOffset = 0;
         /**
          * 读取文件长度
          */
-        private long downloadBytes;
+        private long downloadBytes = 0;
 
         Download(StorageNode storageNode) {
             super(storageNode);
