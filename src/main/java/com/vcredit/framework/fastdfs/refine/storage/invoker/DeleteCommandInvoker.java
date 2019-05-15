@@ -5,7 +5,7 @@ import com.vcredit.framework.fastdfs.proto.OperationResult;
 import com.vcredit.framework.fastdfs.proto.ProtoHead;
 import com.vcredit.framework.fastdfs.proto.storage.StorageDeleteFileRequest;
 import com.vcredit.framework.fastdfs.refine.storage.StorageCommand;
-import com.vcredit.framework.fastdfs.refine.storage.StorageCommandInvoker;
+import com.vcredit.framework.fastdfs.refine.storage.AbstractStorageCommandInvoker;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -14,7 +14,7 @@ import java.nio.charset.Charset;
  * @author tangxu
  * @date 2019/5/1510:07
  */
-public class DeleteCommandInvoker extends StorageCommandInvoker {
+public class DeleteCommandInvoker extends AbstractStorageCommandInvoker {
 
     public DeleteCommandInvoker(StorageCommand.Delete command) {
         this.command = command;

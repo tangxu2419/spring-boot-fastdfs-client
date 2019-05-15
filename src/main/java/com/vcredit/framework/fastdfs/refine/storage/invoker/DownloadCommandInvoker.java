@@ -5,7 +5,7 @@ import com.vcredit.framework.fastdfs.proto.OperationResult;
 import com.vcredit.framework.fastdfs.proto.ProtoHead;
 import com.vcredit.framework.fastdfs.proto.storage.StorageDownloadRequest;
 import com.vcredit.framework.fastdfs.refine.storage.StorageCommand;
-import com.vcredit.framework.fastdfs.refine.storage.StorageCommandInvoker;
+import com.vcredit.framework.fastdfs.refine.storage.AbstractStorageCommandInvoker;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +15,7 @@ import java.nio.charset.Charset;
  * @author tangxu
  * @date 2019/5/1510:06
  */
-public class DownloadCommandInvoker extends StorageCommandInvoker {
+public class DownloadCommandInvoker extends AbstractStorageCommandInvoker {
 
 
     public DownloadCommandInvoker(StorageCommand.Download command) {

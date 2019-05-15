@@ -1,5 +1,8 @@
 package com.vcredit.framework.fastdfs.refine;
 
+import com.vcredit.framework.fastdfs.conn.Connection;
+import com.vcredit.framework.fastdfs.conn.FdfsConnectionPool;
+import com.vcredit.framework.fastdfs.exception.FdfsIOException;
 import com.vcredit.framework.fastdfs.proto.AbstractFdfsRequest;
 import com.vcredit.framework.fastdfs.proto.OperationResult;
 import com.vcredit.framework.fastdfs.proto.ProtoHead;
@@ -15,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 
 /**
@@ -61,6 +65,43 @@ public abstract class AbstractCommandInvoker {
      */
     public abstract OperationResult action();
 
+
+    /**
+     * 对服务端发出请求然后接收反馈
+     */
+    protected OperationResult execute(FdfsConnectionPool pool, InetSocketAddress address, Connection conn) {
+        try {
+            Charset charset = conn.getCharset();
+            InputStream inputStream = conn.getInputStream();
+
+            send(conn.getOutputStream(), charset);
+            ProtoHead head = parseHeader(inputStream);
+            return parseContent(inputStream, head, charset);
+        } catch (Exception e) {
+            log.error("parseHeader content error", e);
+            throw new FdfsIOException("socket io exception occurred while execute command", e);
+        } finally {
+            try {
+                if (null != conn) {
+                    pool.returnObject(address, conn);
+                }
+            } catch (Exception e) {
+                log.error("return pooled connection error", e);
+            }
+        }
+    }
+
+
+    /**
+     * 解析反馈内容
+     *
+     * @param in      响应输入流
+     * @param head    响应头
+     * @param charset 编码
+     * @return 响应对象
+     * @throws Exception 异常
+     */
+    protected abstract OperationResult parseContent(InputStream in, ProtoHead head, Charset charset) throws Exception;
 
     /**
      * 将报文输出规范为模板方法

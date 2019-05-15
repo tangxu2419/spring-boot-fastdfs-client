@@ -8,7 +8,7 @@ import com.vcredit.framework.fastdfs.proto.TrackerResult;
 import com.vcredit.framework.fastdfs.proto.tracker.TrackerGetStorageRequest;
 import com.vcredit.framework.fastdfs.proto.tracker.TrackerGetStorageWithGroupRequest;
 import com.vcredit.framework.fastdfs.refine.tracker.TrackerCommand;
-import com.vcredit.framework.fastdfs.refine.tracker.TrackerCommandInvoker;
+import com.vcredit.framework.fastdfs.refine.tracker.AbstractTrackerCommandInvoker;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.InputStream;
@@ -19,7 +19,7 @@ import static com.vcredit.framework.fastdfs.constants.Constants.*;
 /**
  * @author tangxu
  */
-public class GetStorageCommandInvoker extends TrackerCommandInvoker {
+public class GetStorageCommandInvoker extends AbstractTrackerCommandInvoker {
 
     public GetStorageCommandInvoker(TrackerCommand.GetStorage command) {
         this.command = command;

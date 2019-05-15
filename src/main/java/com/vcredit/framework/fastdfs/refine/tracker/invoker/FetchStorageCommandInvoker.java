@@ -8,7 +8,7 @@ import com.vcredit.framework.fastdfs.proto.StorageNode;
 import com.vcredit.framework.fastdfs.proto.TrackerResult;
 import com.vcredit.framework.fastdfs.proto.tracker.TrackerGetFetchStorageRequest;
 import com.vcredit.framework.fastdfs.refine.tracker.TrackerCommand;
-import com.vcredit.framework.fastdfs.refine.tracker.TrackerCommandInvoker;
+import com.vcredit.framework.fastdfs.refine.tracker.AbstractTrackerCommandInvoker;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -16,7 +16,7 @@ import java.nio.charset.Charset;
 /**
  * @author tangxu
  */
-public class FetchStorageCommandInvoker extends TrackerCommandInvoker {
+public class FetchStorageCommandInvoker extends AbstractTrackerCommandInvoker {
 
     public FetchStorageCommandInvoker(TrackerCommand.FetchStorage command) {
         this.command = command;

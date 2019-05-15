@@ -7,7 +7,7 @@ import com.vcredit.framework.fastdfs.proto.ProtoHead;
 import com.vcredit.framework.fastdfs.proto.UploadResult;
 import com.vcredit.framework.fastdfs.proto.storage.StorageUploadFileRequest;
 import com.vcredit.framework.fastdfs.refine.storage.StorageCommand;
-import com.vcredit.framework.fastdfs.refine.storage.StorageCommandInvoker;
+import com.vcredit.framework.fastdfs.refine.storage.AbstractStorageCommandInvoker;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -16,7 +16,7 @@ import java.nio.charset.Charset;
  * @author dongzhuming
  */
 
-public class UploadCommandInvoker extends StorageCommandInvoker {
+public class UploadCommandInvoker extends AbstractStorageCommandInvoker {
 
     public UploadCommandInvoker(StorageCommand.Upload command) {
         this.command = command;
