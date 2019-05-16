@@ -38,12 +38,12 @@ public class FastdfsConnection {
         this.connectionInfo = connectionInfo;
     }
 
-    FastdfsConnection(ConnectionInfo connectionInfo , Type type, int soTimeout, int connectTimeout) throws IOException {
+    FastdfsConnection(ConnectionInfo connectionInfo, int soTimeout, int connectTimeout) throws IOException {
         socket = new Socket();
         socket.setSoTimeout(soTimeout);
         log.debug("connect to {} soTimeout={} connectTimeout={}", connectionInfo.getInetSocketAddress(), soTimeout, connectTimeout);
         socket.connect(connectionInfo.getInetSocketAddress());
-        connectionInfo = connectionInfo;
+        this.connectionInfo = connectionInfo;
     }
 
     ConnectionInfo getConnectionInfo() {

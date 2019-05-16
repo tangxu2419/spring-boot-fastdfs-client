@@ -7,9 +7,6 @@ import org.apache.commons.pool2.impl.DefaultPooledObject;
 
 import java.io.IOException;
 
-import static com.vcredit.framework.fastdfs.connection.FastdfsConnection.Type.STORAGE;
-import static com.vcredit.framework.fastdfs.connection.FastdfsConnection.Type.TRACKER;
-
 
 /**
  * @author tangxu
@@ -43,11 +40,11 @@ public class PooledConnectionFactory extends BaseKeyedPooledObjectFactory<Fastdf
 
     private FastdfsConnection createTrackerConnection(FastdfsConnection.ConnectionInfo connectionInfo) throws IOException {
         ;
-        return new FastdfsConnection(connectionInfo, TRACKER, soTimeout, connectTimeout);
+        return new FastdfsConnection(connectionInfo, soTimeout, connectTimeout);
     }
 
     private FastdfsConnection createStorageConnection(FastdfsConnection.ConnectionInfo connectionInfo) throws IOException {
-        return new FastdfsConnection(connectionInfo, STORAGE, soTimeout, connectTimeout);
+        return new FastdfsConnection(connectionInfo, soTimeout, connectTimeout);
     }
 
     @Override
