@@ -58,9 +58,44 @@ public class FastdfsProperties {
     @Getter
     @Setter
     public static class Pool {
-        private int maxSize = 10;
-        private int maxActive;
-        private int maxAttempt = 3;
+        /**
+         * 从池中借出的对象的最大数目
+         */
+        private int maxTotal;
+
+        /**
+         * 在空闲时检查有效性, 默认false
+         */
+        private boolean testWhileIdle;
+
+        /**
+         * 获取连接时的最大等待毫秒数(如果设置为阻塞时BlockWhenExhausted)
+         * 如果超时就抛异常,小于零:阻塞不确定的时间,默认-1
+         */
+        private Duration maxWaitMillis;
+
+        /**
+         * 连接耗尽时是否阻塞(默认true)
+         * false报异常,true阻塞直到超时
+         */
+        private boolean blockWhenExhausted;
+
+        /**
+         * 视休眠时间超过了xxx秒的对象为过期
+         */
+        private Duration minEvictableIdleTimeMillis;
+
+        /**
+         * 逐出扫描的时间间隔(毫秒) 每过xx秒进行一次后台对象清理的行动
+         * 如果为负数,则不运行逐出线程, 默认-1
+         */
+        private Duration timeBetweenEvictionRunsMillis;
+
+        /**
+         * 每次逐出检查时 逐出的最大数目 如果为负数就是 : 1/abs(n), 默认3
+         * －1表示清理时检查所有线程
+         */
+        private int numTestsPerEvictionRun;
 
     }
 }

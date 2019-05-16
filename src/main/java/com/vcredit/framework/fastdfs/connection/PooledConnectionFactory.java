@@ -1,12 +1,34 @@
 package com.vcredit.framework.fastdfs.connection;
 
+import com.vcredit.framework.fastdfs.config.FastdfsProperties;
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 
+import static com.vcredit.framework.fastdfs.connection.FastdfsConnection.Type.STORAGE;
+import static com.vcredit.framework.fastdfs.connection.FastdfsConnection.Type.TRACKER;
+
+
+/**
+ * @author tangxu
+ */
 public class PooledConnectionFactory extends BaseKeyedPooledObjectFactory<FastdfsConnection.ConnectionInfo, FastdfsConnection> {
+    /**
+     * 读取时间
+     */
+    private int soTimeout;
+    /**
+     * 连接超时时间
+     */
+    private int connectTimeout;
+
+    public PooledConnectionFactory(FastdfsProperties properties) {
+        this.soTimeout = properties.getSoTimeout().toMillisPart();
+        this.connectTimeout = properties.getConnectTimeout().toMillisPart();
+    }
 
     @Override
     public FastdfsConnection create(FastdfsConnection.ConnectionInfo key) throws Exception {
@@ -20,16 +42,27 @@ public class PooledConnectionFactory extends BaseKeyedPooledObjectFactory<Fastdf
         }
     }
 
-    private FastdfsConnection createTrackerConnection(InetSocketAddress inetSocketAddress) {
-        return new FastdfsConnection(inetSocketAddress);
+    private FastdfsConnection createTrackerConnection(InetSocketAddress inetSocketAddress) throws IOException {
+        return new FastdfsConnection(inetSocketAddress,TRACKER, soTimeout, connectTimeout);
     }
 
-    private FastdfsConnection createStorageConnection(InetSocketAddress inetSocketAddress) {
-        return new FastdfsConnection(inetSocketAddress);
+    private FastdfsConnection createStorageConnection(InetSocketAddress inetSocketAddress) throws IOException {
+        return new FastdfsConnection(inetSocketAddress, STORAGE, soTimeout, connectTimeout);
     }
 
     @Override
     public PooledObject<FastdfsConnection> wrap(FastdfsConnection connection) {
         return new DefaultPooledObject<>(connection);
+    }
+
+
+    @Override
+    public void destroyObject(FastdfsConnection.ConnectionInfo key, PooledObject<FastdfsConnection> connection) {
+        connection.getObject().close();
+    }
+
+    @Override
+    public boolean validateObject(FastdfsConnection.ConnectionInfo key, PooledObject<FastdfsConnection> connection) {
+        return connection.getObject().isValid();
     }
 }

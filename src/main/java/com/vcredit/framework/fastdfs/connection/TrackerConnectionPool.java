@@ -1,9 +1,10 @@
 package com.vcredit.framework.fastdfs.connection;
 
 import com.vcredit.framework.fastdfs.config.FastdfsProperties;
-import com.vcredit.framework.fastdfs.conn.TrackerConnectionPool2;
 import org.apache.commons.pool2.KeyedPooledObjectFactory;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.Comparator;
@@ -15,9 +16,35 @@ import java.util.Map;
  */
 public class TrackerConnectionPool extends GenericKeyedObjectPool<FastdfsConnection.ConnectionInfo, FastdfsConnection> {
 
+    private static final Logger log = LoggerFactory.getLogger(TrackerConnectionPool.class);
+
     public TrackerConnectionPool(KeyedPooledObjectFactory<FastdfsConnection.ConnectionInfo, FastdfsConnection> factory, FastdfsProperties properties) {
         super(factory);
-        //TODO parse properties & set config & set TrackerNodeLocator
+        // 从池中借出的对象的最大数目
+        FastdfsProperties.Pool pool = properties.getPool();
+        super.setMaxTotal(pool.getMaxTotal());
+        // 在空闲时检查有效性
+        super.setTestWhileIdle(pool.isTestWhileIdle());
+        // 连接耗尽时是否阻塞(默认true)
+        super.setBlockWhenExhausted(pool.isBlockWhenExhausted());
+        // 获取连接时的最大等待毫秒数100
+        super.setMaxWaitMillis(pool.getMaxWaitMillis().toMillis());
+        // 视休眠时间超过了180秒的对象为过期
+        super.setMinEvictableIdleTimeMillis(pool.getMinEvictableIdleTimeMillis().toMillis());
+        // 每过60秒进行一次后台对象清理的行动
+        super.setTimeBetweenEvictionRunsMillis(pool.getTimeBetweenEvictionRunsMillis().toMillis());
+        // 清理时候检查所有线程
+        super.setNumTestsPerEvictionRun(pool.getNumTestsPerEvictionRun());
+
+        properties.getCluster().getNodes().forEach(node -> {
+            String[] split = node.split(":", 2);
+            try {
+                final InetSocketAddress inetSocketAddress = new InetSocketAddress(split[0], Integer.parseInt(split[1]));
+                TrackerConnectionPool.TrackerNodeLocator.addNode(inetSocketAddress);
+            } catch (IllegalArgumentException e) {
+                log.error("Illegal Tracker Server: {}", node);
+            }
+        });
     }
 
     public FastdfsConnection borrowObject() throws Exception {
@@ -30,6 +57,8 @@ public class TrackerConnectionPool extends GenericKeyedObjectPool<FastdfsConnect
     public void returnObject(FastdfsConnection connection) {
         super.returnObject(connection.getConnectionInfo(), connection);
     }
+
+
 
     private static class TrackerNodeLocator {
 
@@ -58,5 +87,20 @@ public class TrackerConnectionPool extends GenericKeyedObjectPool<FastdfsConnect
                     .map(Map.Entry::getKey)
                     .orElse(null);
         }
+    }
+
+
+    /**
+     * 标记问题Socket
+     */
+    public void markAsProblem(InetSocketAddress inetSocketAddress) {
+        TrackerConnectionPool.TrackerNodeLocator.markProblem(inetSocketAddress);
+    }
+
+    /**
+     * 标记连接有效
+     */
+    public void markAsActive(InetSocketAddress inetSocketAddress) {
+        TrackerConnectionPool.TrackerNodeLocator.addNode(inetSocketAddress);
     }
 }

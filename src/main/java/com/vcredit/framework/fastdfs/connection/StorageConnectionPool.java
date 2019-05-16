@@ -5,12 +5,6 @@ import com.vcredit.framework.fastdfs.proto.StorageNode;
 import org.apache.commons.pool2.KeyedPooledObjectFactory;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * @author dongzhuming
  */
@@ -18,7 +12,20 @@ public class StorageConnectionPool extends GenericKeyedObjectPool<FastdfsConnect
 
     public StorageConnectionPool(KeyedPooledObjectFactory<FastdfsConnection.ConnectionInfo, FastdfsConnection> factory, FastdfsProperties properties) {
         super(factory);
-        //TODO parse properties & set config
+        FastdfsProperties.Pool pool = properties.getPool();
+        super.setMaxTotal(pool.getMaxTotal());
+        // 在空闲时检查有效性
+        super.setTestWhileIdle(pool.isTestWhileIdle());
+        // 连接耗尽时是否阻塞(默认true)
+        super.setBlockWhenExhausted(pool.isBlockWhenExhausted());
+        // 获取连接时的最大等待毫秒数100
+        super.setMaxWaitMillis(pool.getMaxWaitMillis().toMillis());
+        // 视休眠时间超过了180秒的对象为过期
+        super.setMinEvictableIdleTimeMillis(pool.getMinEvictableIdleTimeMillis().toMillis());
+        // 每过60秒进行一次后台对象清理的行动
+        super.setTimeBetweenEvictionRunsMillis(pool.getTimeBetweenEvictionRunsMillis().toMillis());
+        // 清理时候检查所有线程
+        super.setNumTestsPerEvictionRun(pool.getNumTestsPerEvictionRun());
     }
 
     public FastdfsConnection borrowObject(StorageNode storageNode) throws Exception {

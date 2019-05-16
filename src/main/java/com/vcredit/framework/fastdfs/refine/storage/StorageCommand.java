@@ -1,5 +1,6 @@
 package com.vcredit.framework.fastdfs.refine.storage;
 
+import com.vcredit.framework.fastdfs.proto.ErrorResult;
 import com.vcredit.framework.fastdfs.proto.OperationResult;
 import com.vcredit.framework.fastdfs.proto.StorageNode;
 import com.vcredit.framework.fastdfs.refine.AbstractCommandInvoker;
@@ -34,7 +35,13 @@ public abstract class StorageCommand implements FastdfsCommand {
      */
     @Override
     public OperationResult execute() {
-        return AbstractCommandInvoker.prepare(this).action();
+        try {
+            return AbstractCommandInvoker.prepare(this).action();
+        } catch (Exception e) {
+            //TODO
+            e.printStackTrace();
+            return new ErrorResult(e.getMessage());
+        }
     }
 
     /**

@@ -1,8 +1,6 @@
 package com.vcredit.framework.fastdfs.refine;
 
-import com.vcredit.framework.fastdfs.conn.Connection;
-import com.vcredit.framework.fastdfs.conn.FdfsConnectionPool;
-import com.vcredit.framework.fastdfs.exception.FdfsIOException;
+import com.vcredit.framework.fastdfs.connection.FastdfsConnection;
 import com.vcredit.framework.fastdfs.proto.AbstractFdfsRequest;
 import com.vcredit.framework.fastdfs.proto.OperationResult;
 import com.vcredit.framework.fastdfs.proto.ProtoHead;
@@ -18,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 
 /**
@@ -27,6 +24,9 @@ import java.nio.charset.Charset;
 public abstract class AbstractCommandInvoker {
 
     private static final Logger log = LoggerFactory.getLogger(AbstractCommandInvoker.class);
+
+
+    private static final Charset CHARSET = Charset.forName("UTF-8");
 
     public static AbstractCommandInvoker prepare(FastdfsCommand command) {
         if (command instanceof StorageCommand.Upload) {
@@ -60,35 +60,20 @@ public abstract class AbstractCommandInvoker {
 
     /**
      * 执行命令
-     *
-     * @return 操作结果
+     * @return  响应结果
+     * @throws Exception
      */
-    public abstract OperationResult action();
+    public abstract OperationResult action() throws Exception;
 
 
     /**
      * 对服务端发出请求然后接收反馈
      */
-    protected OperationResult execute(FdfsConnectionPool pool, InetSocketAddress address, Connection conn) {
-        try {
-            Charset charset = conn.getCharset();
-            InputStream inputStream = conn.getInputStream();
-
-            send(conn.getOutputStream(), charset);
-            ProtoHead head = parseHeader(inputStream);
-            return parseContent(inputStream, head, charset);
-        } catch (Exception e) {
-            log.error("parseHeader content error", e);
-            throw new FdfsIOException("socket io exception occurred while execute command", e);
-        } finally {
-            try {
-                if (null != conn) {
-                    pool.returnObject(address, conn);
-                }
-            } catch (Exception e) {
-                log.error("return pooled connection error", e);
-            }
-        }
+    protected OperationResult execute(FastdfsConnection conn) throws Exception {
+        InputStream inputStream = conn.getInputStream();
+        send(conn.getOutputStream(), CHARSET);
+        ProtoHead head = parseHeader(inputStream);
+        return parseContent(inputStream, head, CHARSET);
     }
 
 
@@ -116,7 +101,7 @@ public abstract class AbstractCommandInvoker {
      * @param charset 编码
      * @throws Exception 异常
      */
-    protected void send(OutputStream out, Charset charset) throws Exception {
+    private void send(OutputStream out, Charset charset) throws Exception {
         byte[] head = request.getHeadByte(charset);
         byte[] param = request.getParam();
         InputStream inputFile = request.getInputFile();
@@ -163,7 +148,7 @@ public abstract class AbstractCommandInvoker {
      * @return 返回响应头
      * @throws IOException 异常
      */
-    protected ProtoHead parseHeader(InputStream in) throws Exception {
+    private ProtoHead parseHeader(InputStream in) throws Exception {
         ProtoHead head = ProtoHead.createFromInputStream(in);
         log.debug("服务端返回报文头{}", head);
         head.validateResponseHead();

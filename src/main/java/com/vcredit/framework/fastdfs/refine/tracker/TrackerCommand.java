@@ -1,5 +1,6 @@
 package com.vcredit.framework.fastdfs.refine.tracker;
 
+import com.vcredit.framework.fastdfs.proto.ErrorResult;
 import com.vcredit.framework.fastdfs.proto.OperationResult;
 import com.vcredit.framework.fastdfs.refine.AbstractCommandInvoker;
 import com.vcredit.framework.fastdfs.refine.FastdfsCommand;
@@ -16,7 +17,13 @@ public class TrackerCommand implements FastdfsCommand {
      */
     @Override
     public OperationResult execute() {
-        return AbstractCommandInvoker.prepare(this).action();
+        try {
+            return AbstractCommandInvoker.prepare(this).action();
+        } catch (Exception e) {
+            //TODO
+            e.printStackTrace();
+            return new ErrorResult(e.getMessage());
+        }
     }
 
 

@@ -2,6 +2,7 @@ package com.vcredit.framework.fastdfs.refine.storage;
 
 import com.vcredit.framework.fastdfs.connection.FastdfsConnection;
 import com.vcredit.framework.fastdfs.connection.StorageConnectionPool;
+import com.vcredit.framework.fastdfs.exception.InvokeCommandException;
 import com.vcredit.framework.fastdfs.proto.OperationResult;
 import com.vcredit.framework.fastdfs.proto.StorageNode;
 import com.vcredit.framework.fastdfs.refine.AbstractCommandInvoker;

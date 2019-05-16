@@ -8,8 +8,13 @@ fastdfs:
   soTimeout: PT15S
   charset: UTF-8
   pool:
-    max-total: 200
-    max-wait-millis: 500
+    max-total: 50
+    test-while-idle: true
+    block-when-exhausted: true
+    max-wait-millis: PT2S
+    min-evictable-idle-time-millis: PT180S
+    time-between-eviction-runs-millis: PT60S
+    num-tests-per-eviction-run: -1
   cluster:
     nodes:
       - 10.0.75.2:22122

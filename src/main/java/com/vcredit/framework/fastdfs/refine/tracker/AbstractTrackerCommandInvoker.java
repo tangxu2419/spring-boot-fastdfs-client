@@ -1,18 +1,16 @@
 package com.vcredit.framework.fastdfs.refine.tracker;
 
-import com.vcredit.framework.fastdfs.conn.Connection;
-import com.vcredit.framework.fastdfs.conn.TrackerConnectionPool;
+import com.vcredit.framework.fastdfs.connection.FastdfsConnection;
+import com.vcredit.framework.fastdfs.connection.TrackerConnectionPool;
 import com.vcredit.framework.fastdfs.proto.OperationResult;
 import com.vcredit.framework.fastdfs.refine.AbstractCommandInvoker;
 import com.vcredit.framework.fastdfs.refine.FastdfsConnectionPoolHolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 
 /**
  * Tracker指令
+ *
  * @author tangx
  */
 public abstract class AbstractTrackerCommandInvoker extends AbstractCommandInvoker {
@@ -30,24 +28,20 @@ public abstract class AbstractTrackerCommandInvoker extends AbstractCommandInvok
      * @return 结果
      */
     @Override
-    public OperationResult action() throws InvokeCommandException {
-        // 获取链接
-        InetSocketAddress address = pool.getTrackerAddress();
-        Connection conn = pool.borrow(address);
-        return super.execute(pool, address, conn);
-    }
-
-    public OperationResult action2() {
-        Connection conn = null;
+    public OperationResult action() throws Exception {
+        FastdfsConnection conn = null;
         try {
-            conn = pool.borrow();
-            super.execute(conn);
-        } catch(IOException e) {
-            //TODO
+            conn = pool.borrowObject();
+            pool.markAsActive(conn.getInetSocketAddress());
+            return super.execute(conn);
+        } catch (IOException e) {
+            if (null != conn) {
+                pool.markAsProblem(conn.getInetSocketAddress());
+            }
+            throw e;
         } finally {
-            pool.release(conn);
+            pool.returnObject(conn);
         }
     }
-
 
 }
