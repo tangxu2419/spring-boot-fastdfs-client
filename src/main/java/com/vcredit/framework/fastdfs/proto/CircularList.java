@@ -10,18 +10,11 @@ import java.util.ArrayList;
  */
 public class CircularList<E> extends ArrayList<E> {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 1L;
-
     private int index = -1;
 
 
     /**
      * 下一个元素
-     *
-     * @return
      */
     public E next() {
         check();

@@ -70,15 +70,15 @@ public class FastdfsClient {
      *
      * @param groupName 组名
      * @param fileName  文件全路径
-     * @return DownLoadResult
+     * @return DownloadResult
      */
-    public DownLoadResult download(String groupName, String fileName) {
+    public DownloadResult download(String groupName, String fileName) {
         TrackerResult storageNode = (TrackerResult) TrackerCommand.FetchStorage.create()
                 .groupName(groupName)
                 .fileName(fileName)
                 .toUpdate(true)
                 .execute();
-        return (DownLoadResult) StorageCommand.Download.create(storageNode.getStorageNode())
+        return (DownloadResult) StorageCommand.Download.create(storageNode.getStorageNode())
                 .groupName(groupName)
                 .fileName(fileName)
                 .execute();

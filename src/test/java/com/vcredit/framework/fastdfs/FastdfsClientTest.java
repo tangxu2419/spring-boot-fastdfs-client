@@ -44,7 +44,7 @@ public class FastdfsClientTest {
     }
 
     public void testDownload2(String groupName, String fileName, String localFileName) throws Exception {
-        DownLoadResult download = fastdfsClient.download(groupName, fileName);
+        DownloadResult download = fastdfsClient.download(groupName, fileName);
         if (download.getFileBytes() == null) {
             System.out.println("文件内容为空");
             return;

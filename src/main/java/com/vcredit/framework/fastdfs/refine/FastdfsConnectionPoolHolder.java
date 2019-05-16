@@ -1,7 +1,7 @@
 package com.vcredit.framework.fastdfs.refine;
 
-import com.vcredit.framework.fastdfs.conn.StorageConnectionPool;
-import com.vcredit.framework.fastdfs.conn.TrackerConnectionPool;
+import com.vcredit.framework.fastdfs.connection.TrackerConnectionPool;
+import com.vcredit.framework.fastdfs.connection.StorageConnectionPool;
 
 /**
  * @author tangxu

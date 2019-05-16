@@ -1,19 +1,11 @@
 package com.vcredit.framework.fastdfs.refine.storage;
 
-import com.vcredit.framework.fastdfs.conn.Connection;
-import com.vcredit.framework.fastdfs.conn.StorageConnectionPool;
-import com.vcredit.framework.fastdfs.exception.FdfsIOException;
+import com.vcredit.framework.fastdfs.connection.FastdfsConnection;
+import com.vcredit.framework.fastdfs.connection.StorageConnectionPool;
 import com.vcredit.framework.fastdfs.proto.OperationResult;
-import com.vcredit.framework.fastdfs.proto.ProtoHead;
 import com.vcredit.framework.fastdfs.proto.StorageNode;
 import com.vcredit.framework.fastdfs.refine.AbstractCommandInvoker;
 import com.vcredit.framework.fastdfs.refine.FastdfsConnectionPoolHolder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.InputStream;
-import java.net.InetSocketAddress;
-import java.nio.charset.Charset;
 
 /**
  * @author tangx
@@ -40,12 +32,17 @@ public abstract class AbstractStorageCommandInvoker extends AbstractCommandInvok
      * @return 结果
      */
     @Override
-    public OperationResult action() {
-        // 获取连接
-        StorageNode storageNode = command.getStorageNode();
-        Connection conn = pool.borrow(storageNode);
-
-        return super.execute(pool, storageNode.getInetSocketAddress(), conn);
+    public OperationResult action() throws InvokeCommandException {
+        FastdfsConnection conn = null;
+        try {
+            StorageNode storageNode = command.getStorageNode();
+            conn = pool.borrowObject(storageNode);
+            return super.execute(conn);
+        } catch (Exception e) {
+            throw new InvokeCommandException(e);
+        } finally {
+            pool.returnObject(conn);
+        }
     }
 
 }
