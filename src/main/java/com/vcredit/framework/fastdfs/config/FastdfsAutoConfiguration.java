@@ -1,9 +1,9 @@
 package com.vcredit.framework.fastdfs.config;
 
+import com.vcredit.framework.fastdfs.connection.FastdfsConnectionPoolHolder;
 import com.vcredit.framework.fastdfs.connection.PooledConnectionFactory;
 import com.vcredit.framework.fastdfs.connection.StorageConnectionPool;
 import com.vcredit.framework.fastdfs.connection.TrackerConnectionPool;
-import com.vcredit.framework.fastdfs.refine.FastdfsConnectionPoolHolder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

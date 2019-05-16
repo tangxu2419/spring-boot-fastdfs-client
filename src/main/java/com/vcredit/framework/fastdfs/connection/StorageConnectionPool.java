@@ -1,7 +1,7 @@
 package com.vcredit.framework.fastdfs.connection;
 
+import com.vcredit.framework.fastdfs.command.tracker.result.StorageNode;
 import com.vcredit.framework.fastdfs.config.FastdfsProperties;
-import com.vcredit.framework.fastdfs.proto.StorageNode;
 import org.apache.commons.pool2.KeyedPooledObjectFactory;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 

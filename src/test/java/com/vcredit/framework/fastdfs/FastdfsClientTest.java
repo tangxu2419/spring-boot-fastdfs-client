@@ -1,15 +1,19 @@
 package com.vcredit.framework.fastdfs;
 
-import com.vcredit.framework.fastdfs.proto.*;
-import com.vcredit.framework.fastdfs.service.FastdfsClient;
-import com.vcredit.framework.fastdfs.refine.MetaData;
+import com.vcredit.framework.fastdfs.command.MetaData;
+import com.vcredit.framework.fastdfs.command.storage.result.DownloadResult;
+import com.vcredit.framework.fastdfs.command.storage.result.MetaDataResult;
+import com.vcredit.framework.fastdfs.command.storage.result.UploadResult;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 
 /**
  * @author Dong Zhuming

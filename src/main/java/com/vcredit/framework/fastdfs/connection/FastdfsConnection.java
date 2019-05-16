@@ -1,8 +1,8 @@
 package com.vcredit.framework.fastdfs.connection;
 
-import com.vcredit.framework.fastdfs.ProtoPackageUtil;
-import com.vcredit.framework.fastdfs.constants.Constants;
-import com.vcredit.framework.fastdfs.constants.ProtocolCommand;
+import com.vcredit.framework.fastdfs.constant.Constants;
+import com.vcredit.framework.fastdfs.constant.ProtocolCommand;
+import com.vcredit.framework.fastdfs.util.ProtoPackageUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
