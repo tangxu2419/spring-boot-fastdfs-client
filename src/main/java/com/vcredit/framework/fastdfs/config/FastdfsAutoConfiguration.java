@@ -1,9 +1,6 @@
 package com.vcredit.framework.fastdfs.config;
 
-import com.vcredit.framework.fastdfs.conn.FdfsConnectionPool;
-import com.vcredit.framework.fastdfs.conn.PoolConnectFactory;
-import com.vcredit.framework.fastdfs.conn.StorageConnectionPool;
-import com.vcredit.framework.fastdfs.conn.TrackerConnectionPool;
+import com.vcredit.framework.fastdfs.conn.*;
 import com.vcredit.framework.fastdfs.refine.FastdfsConnectionPoolHolder;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +22,20 @@ public class FastdfsAutoConfiguration {
     @Bean
     public PoolConnectFactory poolConnectFactory(FastdfsProperties properties) {
         return new PoolConnectFactory(properties);
+    }
+
+
+    /**
+     * 创建tracker服务连接池
+     *
+     * @param properties 自定义配置参数
+     * @return trackerPool
+     */
+    @Bean
+    public TrackerConnectionPool2 trackerConnectionPool2( FastdfsProperties properties) {
+        TrackerConnectionPool2 trackerConnectionPool = new TrackerConnectionPool2( properties);
+//        FastdfsConnectionPoolHolder.TRACKER_CONNECTION_POOL = trackerConnectionPool;
+        return trackerConnectionPool;
     }
 
     @Bean

@@ -52,6 +52,17 @@ public class FastdfsProperties {
         private List<String> nodes;
 
     }
+
+    private Pool pool;
+
+    @Getter
+    @Setter
+    public static class Pool {
+        private int maxSize = 10;
+        private int maxActive;
+        private int maxAttempt = 3;
+
+    }
 }
 
 

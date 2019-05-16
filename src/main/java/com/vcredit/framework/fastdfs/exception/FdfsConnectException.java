@@ -2,14 +2,9 @@ package com.vcredit.framework.fastdfs.exception;
 
 /**
  * @author tangxu
- * @date 2019/5/711:08
  */
-public class FdfsConnectException extends RuntimeException {
+public class FdfsConnectException extends Exception {
 
-    /**
-     * serialVersionUID
-     */
-    private static final long serialVersionUID = 1L;
 
     /**
      * @param message
