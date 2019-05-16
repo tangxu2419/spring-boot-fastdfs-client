@@ -6,7 +6,6 @@ import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
 
 import static com.vcredit.framework.fastdfs.connection.FastdfsConnection.Type.STORAGE;
 import static com.vcredit.framework.fastdfs.connection.FastdfsConnection.Type.TRACKER;
@@ -34,20 +33,21 @@ public class PooledConnectionFactory extends BaseKeyedPooledObjectFactory<Fastdf
     public FastdfsConnection create(FastdfsConnection.ConnectionInfo key) throws Exception {
         switch (key.getType()) {
             case TRACKER:
-                return createTrackerConnection(key.getInetSocketAddress());
+                return createTrackerConnection(key);
             case STORAGE:
-                return createStorageConnection(key.getInetSocketAddress());
+                return createStorageConnection(key);
             default:
                 throw new Exception("Illegal Connection Type:" + key);
         }
     }
 
-    private FastdfsConnection createTrackerConnection(InetSocketAddress inetSocketAddress) throws IOException {
-        return new FastdfsConnection(inetSocketAddress,TRACKER, soTimeout, connectTimeout);
+    private FastdfsConnection createTrackerConnection(FastdfsConnection.ConnectionInfo connectionInfo) throws IOException {
+        ;
+        return new FastdfsConnection(connectionInfo, TRACKER, soTimeout, connectTimeout);
     }
 
-    private FastdfsConnection createStorageConnection(InetSocketAddress inetSocketAddress) throws IOException {
-        return new FastdfsConnection(inetSocketAddress, STORAGE, soTimeout, connectTimeout);
+    private FastdfsConnection createStorageConnection(FastdfsConnection.ConnectionInfo connectionInfo) throws IOException {
+        return new FastdfsConnection(connectionInfo, STORAGE, soTimeout, connectTimeout);
     }
 
     @Override
