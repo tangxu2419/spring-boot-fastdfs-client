@@ -34,10 +34,6 @@ public class FastdfsConnection {
         return connectionInfo.getInetSocketAddress();
     }
 
-    public void setConnectionInfo(ConnectionInfo connectionInfo) {
-        this.connectionInfo = connectionInfo;
-    }
-
     FastdfsConnection(ConnectionInfo connectionInfo, int soTimeout, int connectTimeout) throws IOException {
         socket = new Socket();
         socket.setSoTimeout(soTimeout);
@@ -49,7 +45,6 @@ public class FastdfsConnection {
     ConnectionInfo getConnectionInfo() {
         return this.connectionInfo;
     }
-
 
     public OutputStream getOutputStream() throws IOException {
         Assert.notNull(this.socket, "socket shouldn't be null");

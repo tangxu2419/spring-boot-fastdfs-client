@@ -59,7 +59,6 @@ public class TrackerConnectionPool extends GenericKeyedObjectPool<FastdfsConnect
     }
 
 
-
     private static class TrackerNodeLocator {
 
         private static Map<InetSocketAddress, Integer> nodeMap = new HashMap<>();
@@ -72,10 +71,9 @@ public class TrackerConnectionPool extends GenericKeyedObjectPool<FastdfsConnect
          * 将此连接标记为不可用状态
          *
          * @param inetSocketAddress Tracker地址
-         * @return 标记不可用之前的连接数
          */
-        static Integer markProblem(InetSocketAddress inetSocketAddress) {
-            return nodeMap.put(inetSocketAddress, Integer.MAX_VALUE);
+        static void markProblem(InetSocketAddress inetSocketAddress) {
+            nodeMap.put(inetSocketAddress, Integer.MAX_VALUE);
         }
 
         static InetSocketAddress getNodeSocket() {
@@ -93,14 +91,14 @@ public class TrackerConnectionPool extends GenericKeyedObjectPool<FastdfsConnect
     /**
      * 标记问题Socket
      */
-    public void markAsProblem(InetSocketAddress inetSocketAddress) {
+    public synchronized void markAsProblem(InetSocketAddress inetSocketAddress) {
         TrackerConnectionPool.TrackerNodeLocator.markProblem(inetSocketAddress);
     }
 
     /**
      * 标记连接有效
      */
-    public void markAsActive(InetSocketAddress inetSocketAddress) {
+    public synchronized void markAsActive(InetSocketAddress inetSocketAddress) {
         TrackerConnectionPool.TrackerNodeLocator.addNode(inetSocketAddress);
     }
 }
