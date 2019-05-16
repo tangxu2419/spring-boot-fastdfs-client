@@ -40,7 +40,7 @@ public class TrackerConnectionPool extends GenericKeyedObjectPool<FastdfsConnect
             String[] split = node.split(":", 2);
             try {
                 final InetSocketAddress inetSocketAddress = new InetSocketAddress(split[0], Integer.parseInt(split[1]));
-                TrackerConnectionPool.TrackerNodeLocator.addNode(inetSocketAddress);
+                TrackerNodeLocator.addNode(inetSocketAddress);
             } catch (IllegalArgumentException e) {
                 log.error("Illegal Tracker Server: {}", node);
             }

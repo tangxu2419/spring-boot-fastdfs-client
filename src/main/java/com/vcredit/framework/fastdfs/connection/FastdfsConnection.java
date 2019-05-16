@@ -70,7 +70,6 @@ public class FastdfsConnection {
             header[Constants.PROTO_HEADER_STATUS_INDEX] = (byte) 0;
             try {
                 socket.getOutputStream().write(header);
-                socket.close();
             } catch (IOException e) {
                 log.error("close connection error", e);
             } finally {
