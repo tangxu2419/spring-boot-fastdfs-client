@@ -194,7 +194,6 @@ public abstract class StorageCommand implements FastdfsCommand {
      */
     public static class Download extends StorageCommand {
 
-
         /**
          * 组名
          */

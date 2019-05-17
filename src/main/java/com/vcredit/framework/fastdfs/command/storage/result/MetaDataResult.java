@@ -24,4 +24,5 @@ public class MetaDataResult extends BaseOperationResult {
     public MetaData getMetaData() {
         return metaData;
     }
+
 }

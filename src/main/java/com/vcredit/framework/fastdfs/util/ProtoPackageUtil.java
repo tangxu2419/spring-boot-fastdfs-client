@@ -5,7 +5,6 @@ import java.io.InputStream;
 
 /**
  * @author tangxu
- * @date 2019/5/517:30
  */
 public class ProtoPackageUtil {
 

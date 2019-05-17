@@ -15,7 +15,6 @@ import static com.vcredit.framework.fastdfs.constant.Constants.PROTO_HEADER_STAT
 
 /**
  * @author tangxu
- * @date 2019/5/614:19
  */
 public class ProtoHead {
     /**
@@ -41,10 +40,6 @@ public class ProtoHead {
         return contentLength;
     }
 
-    public byte getCmd() {
-        return cmd;
-    }
-
     public byte getStatus() {
         return status;
     }
@@ -61,9 +56,9 @@ public class ProtoHead {
     /**
      * 返回报文构造函数
      *
-     * @param contentLength
-     * @param cmd
-     * @param status
+     * @param contentLength 响应体长度
+     * @param cmd           指令字节
+     * @param status        响应状态
      */
     public ProtoHead(long contentLength, byte cmd, byte status) {
         this.contentLength = contentLength;
@@ -77,7 +72,7 @@ public class ProtoHead {
      *
      * @return packed byte buffer
      */
-    public byte[] packHeader() {
+    byte[] packHeader() {
         byte[] header = new byte[HEAD_LENGTH];
         Arrays.fill(header, (byte) 0);
         byte[] hexLen = ProtoPackageUtil.long2buff(contentLength);
@@ -90,11 +85,11 @@ public class ProtoHead {
     /**
      * 读取输入流创建报文头
      *
-     * @param ins
-     * @return
-     * @throws IOException
+     * @param ins 输入流
+     * @return ProtoHead
+     * @throws IOException IO异常
      */
-    public static ProtoHead createFromInputStream(InputStream ins) throws IOException {
+    static ProtoHead createFromInputStream(InputStream ins) throws IOException {
         byte[] header = new byte[HEAD_LENGTH];
         int bytes;
         // 读取HEAD_LENGTH长度的输入流
@@ -113,7 +108,7 @@ public class ProtoHead {
      *
      * @throws InvokeCommandException 调用指令异常
      */
-    public void validateResponseHead() throws InvokeCommandException {
+    void validateResponseHead() throws InvokeCommandException {
         // 检查是否是正确反馈报文
         if (cmd != ProtocolCommand.TRACKER_PROTO_CMD_RESP) {
             throw new InvokeCommandException(
@@ -134,7 +129,7 @@ public class ProtoHead {
         return "ProtoHead{ contentLength=" + contentLength + ", cmd=" + cmd + ", status=" + status + '}';
     }
 
-    public void setContentLength(long contentLength) {
+    void setContentLength(long contentLength) {
         this.contentLength = contentLength;
     }
 }

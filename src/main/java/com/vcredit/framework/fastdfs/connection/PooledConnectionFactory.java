@@ -1,6 +1,7 @@
 package com.vcredit.framework.fastdfs.connection;
 
 import com.vcredit.framework.fastdfs.config.FastdfsProperties;
+import com.vcredit.framework.fastdfs.exception.FastdfsConnectionException;
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
 import org.apache.commons.pool2.PooledObject;
 import org.apache.commons.pool2.impl.DefaultPooledObject;
@@ -27,24 +28,14 @@ public class PooledConnectionFactory extends BaseKeyedPooledObjectFactory<Fastdf
     }
 
     @Override
-    public FastdfsConnection create(FastdfsConnection.ConnectionInfo key) throws Exception {
+    public FastdfsConnection create(FastdfsConnection.ConnectionInfo key) throws FastdfsConnectionException, IOException {
         switch (key.getType()) {
             case TRACKER:
-                return createTrackerConnection(key);
             case STORAGE:
-                return createStorageConnection(key);
+                return new FastdfsConnection(key, soTimeout, connectTimeout);
             default:
-                throw new Exception("Illegal Connection Type:" + key);
+                throw new FastdfsConnectionException("Illegal Connection Type:" + key);
         }
-    }
-
-    private FastdfsConnection createTrackerConnection(FastdfsConnection.ConnectionInfo connectionInfo) throws IOException {
-        ;
-        return new FastdfsConnection(connectionInfo, soTimeout, connectTimeout);
-    }
-
-    private FastdfsConnection createStorageConnection(FastdfsConnection.ConnectionInfo connectionInfo) throws IOException {
-        return new FastdfsConnection(connectionInfo, soTimeout, connectTimeout);
     }
 
     @Override

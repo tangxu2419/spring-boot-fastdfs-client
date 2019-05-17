@@ -27,7 +27,7 @@ public class CommandStatusException extends InvokeCommandException {
     private int errorCode;
 
     public CommandStatusException(int errorCode) {
-        super(CODE_MESSAGE_MAPPING.get(errorCode), null);
+        super(CODE_MESSAGE_MAPPING.get(errorCode));
         this.errorCode = errorCode;
     }
 

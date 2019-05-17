@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author dongzhuming
@@ -40,7 +40,7 @@ public class TrackerConnectionPool extends GenericKeyedObjectPool<FastdfsConnect
             String[] split = node.split(":", 2);
             try {
                 final InetSocketAddress inetSocketAddress = new InetSocketAddress(split[0], Integer.parseInt(split[1]));
-                TrackerNodeLocator.addNode(inetSocketAddress);
+                TrackerConnectionPool.TrackerNodeLocator.addNode(inetSocketAddress);
             } catch (IllegalArgumentException e) {
                 log.error("Illegal Tracker Server: {}", node);
             }
@@ -61,7 +61,7 @@ public class TrackerConnectionPool extends GenericKeyedObjectPool<FastdfsConnect
 
     private static class TrackerNodeLocator {
 
-        private static Map<InetSocketAddress, Integer> nodeMap = new HashMap<>();
+        private static Map<InetSocketAddress, Integer> nodeMap = new ConcurrentHashMap<>();
 
         static void addNode(InetSocketAddress inetSocketAddress) {
             nodeMap.put(inetSocketAddress, 0);
@@ -71,9 +71,10 @@ public class TrackerConnectionPool extends GenericKeyedObjectPool<FastdfsConnect
          * 将此连接标记为不可用状态
          *
          * @param inetSocketAddress Tracker地址
+         * @return 标记不可用之前的连接数
          */
-        static void markProblem(InetSocketAddress inetSocketAddress) {
-            nodeMap.put(inetSocketAddress, Integer.MAX_VALUE);
+        static Integer markProblem(InetSocketAddress inetSocketAddress) {
+            return nodeMap.put(inetSocketAddress, Integer.MAX_VALUE);
         }
 
         static InetSocketAddress getNodeSocket() {
@@ -91,14 +92,14 @@ public class TrackerConnectionPool extends GenericKeyedObjectPool<FastdfsConnect
     /**
      * 标记问题Socket
      */
-    public synchronized void markAsProblem(InetSocketAddress inetSocketAddress) {
+    public void markAsProblem(InetSocketAddress inetSocketAddress) {
         TrackerConnectionPool.TrackerNodeLocator.markProblem(inetSocketAddress);
     }
 
     /**
      * 标记连接有效
      */
-    public synchronized void markAsActive(InetSocketAddress inetSocketAddress) {
+    public void markAsActive(InetSocketAddress inetSocketAddress) {
         TrackerConnectionPool.TrackerNodeLocator.addNode(inetSocketAddress);
     }
 }

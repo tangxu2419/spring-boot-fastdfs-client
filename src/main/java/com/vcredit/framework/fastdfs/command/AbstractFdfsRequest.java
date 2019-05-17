@@ -6,7 +6,6 @@ import java.util.Arrays;
 
 /**
  * @author tangxu
- * @date 2019/5/614:18
  */
 public abstract class AbstractFdfsRequest {
 
@@ -31,7 +30,7 @@ public abstract class AbstractFdfsRequest {
      * @param charset 编码
      * @return 报文头byte
      */
-    public byte[] getHeadByte(Charset charset) {
+    byte[] getHeadByte(Charset charset) {
         // 设置报文长度
         head.setContentLength(getBodyLength(charset));
         // 返回报文byte
@@ -64,7 +63,7 @@ public abstract class AbstractFdfsRequest {
         return head;
     }
 
-    public InputStream getInputFile() {
+    InputStream getInputFile() {
         return inputFile;
     }
 

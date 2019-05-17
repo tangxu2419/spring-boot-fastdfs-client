@@ -24,8 +24,8 @@ public class TrackerGetStorageWithGroupRequest extends AbstractFdfsRequest {
     /**
      * 打包参数
      *
-     * @param charset
-     * @return
+     * @param charset 编码
+     * @return byte[]
      */
     @Override
     public byte[] encodeParam(Charset charset) {

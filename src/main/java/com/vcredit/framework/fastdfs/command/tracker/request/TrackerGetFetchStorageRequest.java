@@ -12,7 +12,6 @@ import java.nio.charset.Charset;
  * 获取源服务器
  *
  * @author tangxu
- * @date 2019/5/917:18
  */
 public class TrackerGetFetchStorageRequest extends AbstractFdfsRequest {
 
@@ -46,8 +45,8 @@ public class TrackerGetFetchStorageRequest extends AbstractFdfsRequest {
     /**
      * 打包参数
      *
-     * @param charset
-     * @return
+     * @param charset 编码
+     * @return byte[]
      */
     @Override
     public byte[] encodeParam(Charset charset) {

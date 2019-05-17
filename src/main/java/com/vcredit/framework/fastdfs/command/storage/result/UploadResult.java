@@ -35,6 +35,8 @@ public class UploadResult extends BaseOperationResult {
         return "UploadResult{" +
                 "groupName='" + groupName + '\'' +
                 ", fileName='" + fileName + '\'' +
-                '}';
+                "} " + super.toString();
     }
+
+
 }

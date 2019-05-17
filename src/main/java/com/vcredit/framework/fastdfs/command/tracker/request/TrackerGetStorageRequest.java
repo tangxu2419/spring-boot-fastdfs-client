@@ -8,7 +8,6 @@ import java.nio.charset.Charset;
 
 /**
  * @author tangxu
- * @date 2019/5/814:40
  */
 public class TrackerGetStorageRequest extends AbstractFdfsRequest {
 

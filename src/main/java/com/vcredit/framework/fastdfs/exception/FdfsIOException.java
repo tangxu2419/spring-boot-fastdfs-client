@@ -13,18 +13,18 @@ public class FdfsIOException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     /**
-     * @param cause
+     * @param cause Throwable
      */
     public FdfsIOException(Throwable cause) {
         super("客户端连接服务端出现了io异常", cause);
     }
 
     /**
-     * @param messge
-     * @param cause
+     * @param message   exceptionMessage
+     * @param cause Throwable
      */
-    public FdfsIOException(String messge, Throwable cause) {
-        super("客户端连接服务端出现了io异常:" + messge, cause);
+    public FdfsIOException(String message, Throwable cause) {
+        super("客户端连接服务端出现了io异常:" + message, cause);
     }
 
     public FdfsIOException(String message) {

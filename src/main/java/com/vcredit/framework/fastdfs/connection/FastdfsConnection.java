@@ -85,7 +85,7 @@ public class FastdfsConnection {
     /**
      * 校验连接是否可用
      *
-     * @return
+     * @return boolean
      */
     boolean isValid() {
         if (this.socket != null && !socket.isClosed()) {

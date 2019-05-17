@@ -12,7 +12,6 @@ import java.nio.charset.Charset;
 
 /**
  * @author tangxu
- * @date 2019/5/1510:06
  */
 public class DownloadCommandInvoker extends AbstractStorageCommandInvoker {
 

@@ -3,6 +3,8 @@ package com.vcredit.framework.fastdfs.config;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.EnableMBeanExport;
+import org.springframework.jmx.support.RegistrationPolicy;
 
 import java.time.Duration;
 import java.util.List;

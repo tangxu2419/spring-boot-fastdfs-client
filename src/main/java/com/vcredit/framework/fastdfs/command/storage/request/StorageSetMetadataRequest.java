@@ -12,7 +12,6 @@ import java.nio.charset.Charset;
 
 /**
  * @author tangxu
- * @date 2019/5/1011:13
  */
 public class StorageSetMetadataRequest extends AbstractFdfsRequest {
 
@@ -35,9 +34,9 @@ public class StorageSetMetadataRequest extends AbstractFdfsRequest {
 
     public StorageSetMetadataRequest(String groupName, String fileName, MetaData metaData, byte type) {
         super();
-        Validate.notBlank(groupName, "分组不能为空");
-        Validate.notBlank(fileName, "分组不能为空");
-        Validate.notEmpty(metaData, "分组不能为空");
+        Validate.notBlank(groupName, "groupName不能为空");
+        Validate.notBlank(fileName, "fileName不能为空");
+        Validate.notEmpty(metaData, "metaData不能为空");
         this.groupName = groupName;
         this.path = fileName;
         this.metaData = metaData;

@@ -9,7 +9,6 @@ import java.nio.charset.Charset;
 
 /**
  * @author tangxu
- * @date 2019/5/917:38
  */
 public class StorageDeleteFileRequest extends AbstractFdfsRequest {
 
@@ -32,8 +31,8 @@ public class StorageDeleteFileRequest extends AbstractFdfsRequest {
     /**
      * 打包参数
      *
-     * @param charset
-     * @return
+     * @param charset 编码
+     * @return byte[]
      */
     @Override
     public byte[] encodeParam(Charset charset) {

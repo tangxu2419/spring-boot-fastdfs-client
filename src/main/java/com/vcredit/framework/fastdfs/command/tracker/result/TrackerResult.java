@@ -5,7 +5,6 @@ import com.vcredit.framework.fastdfs.exception.CommandStatusException;
 
 /**
  * @author tangxu
- * @date 2019/5/1511:39
  */
 public class TrackerResult extends BaseOperationResult {
     private StorageNode storageNode;

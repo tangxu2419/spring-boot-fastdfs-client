@@ -10,7 +10,6 @@ import java.nio.charset.Charset;
 
 /**
  * @author tangxu
- * @date 2019/5/1510:44
  */
 public class SlaveFileCommandInvoker extends AbstractStorageCommandInvoker {
     public SlaveFileCommandInvoker(StorageCommand.SlaveFile command) {

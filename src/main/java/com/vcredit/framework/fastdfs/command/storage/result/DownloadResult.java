@@ -3,9 +3,10 @@ package com.vcredit.framework.fastdfs.command.storage.result;
 import com.vcredit.framework.fastdfs.command.BaseOperationResult;
 import com.vcredit.framework.fastdfs.exception.CommandStatusException;
 
+import java.util.Arrays;
+
 /**
  * @author tangxu
- * @date 2019/5/918:03
  */
 public class DownloadResult extends BaseOperationResult {
 
@@ -22,5 +23,12 @@ public class DownloadResult extends BaseOperationResult {
 
     public byte[] getFileBytes() {
         return fileBytes;
+    }
+
+    @Override
+    public String toString() {
+        return "DownloadResult{" +
+                "fileBytes=" + Arrays.toString(fileBytes) +
+                "} " + super.toString();
     }
 }

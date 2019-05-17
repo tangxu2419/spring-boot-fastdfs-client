@@ -100,7 +100,7 @@ public abstract class AbstractCommandInvoker {
      *
      * @param out     socket输出流
      * @param charset 编码
-     * @throws Exception 异常
+     * @throws IOException 异常
      */
     private void send(OutputStream out, Charset charset) throws IOException {
         byte[] head = request.getHeadByte(charset);

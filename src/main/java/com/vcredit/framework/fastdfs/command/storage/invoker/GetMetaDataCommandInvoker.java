@@ -14,7 +14,6 @@ import java.nio.charset.Charset;
 
 /**
  * @author tangxu
- * @date 2019/5/1513:58
  */
 public class GetMetaDataCommandInvoker extends AbstractStorageCommandInvoker {
 

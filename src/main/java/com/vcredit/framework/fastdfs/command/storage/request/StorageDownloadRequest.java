@@ -12,7 +12,6 @@ import java.nio.charset.Charset;
  * 文件下载请求
  *
  * @author tangxu
- * @date 2019/5/918:13
  */
 public class StorageDownloadRequest extends AbstractFdfsRequest {
 
@@ -46,8 +45,8 @@ public class StorageDownloadRequest extends AbstractFdfsRequest {
     /**
      * 打包参数
      *
-     * @param charset
-     * @return
+     * @param charset 编码
+     * @return byte[]
      */
     @Override
     public byte[] encodeParam(Charset charset) {

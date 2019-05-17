@@ -11,7 +11,6 @@ import java.nio.charset.Charset;
  * 查询文件信息命令
  *
  * @author tangxu
- * @date 2019/5/1011:44
  */
 public class StorageGetMetadataRequest extends AbstractFdfsRequest {
 

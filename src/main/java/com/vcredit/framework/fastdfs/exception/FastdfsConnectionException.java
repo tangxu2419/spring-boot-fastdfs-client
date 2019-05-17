@@ -10,4 +10,7 @@ public class FastdfsConnectionException extends InvokeCommandException {
         super(t);
     }
 
+    public FastdfsConnectionException(String message) {
+        super(message);
+    }
 }

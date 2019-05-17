@@ -4,7 +4,6 @@ import java.net.InetSocketAddress;
 
 /**
  * @author tangxu
- * @date 2019/5/814:32
  */
 public class StorageNode {
 
