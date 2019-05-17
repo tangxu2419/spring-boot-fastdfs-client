@@ -7,7 +7,10 @@ import com.vcredit.framework.fastdfs.command.tracker.result.StorageNode;
 import com.vcredit.framework.fastdfs.connection.FastdfsConnection;
 import com.vcredit.framework.fastdfs.connection.FastdfsConnectionPoolHolder;
 import com.vcredit.framework.fastdfs.connection.StorageConnectionPool;
+import com.vcredit.framework.fastdfs.exception.FastdfsConnectionException;
 import com.vcredit.framework.fastdfs.exception.InvokeCommandException;
+
+import java.io.IOException;
 
 /**
  * @author tangx
@@ -39,12 +42,15 @@ public abstract class AbstractStorageCommandInvoker extends AbstractCommandInvok
         try {
             StorageNode storageNode = command.getStorageNode();
             conn = pool.borrowObject(storageNode);
-            return super.execute(conn);
         } catch (Exception e) {
             throw new InvokeCommandException(e);
+        }
+        try {
+            return super.execute(conn);
+        } catch (IOException ioe) {
+            throw new FastdfsConnectionException(ioe);
         } finally {
             pool.returnObject(conn);
         }
     }
-
 }

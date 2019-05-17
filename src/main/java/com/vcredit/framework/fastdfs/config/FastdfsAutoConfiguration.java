@@ -1,5 +1,6 @@
 package com.vcredit.framework.fastdfs.config;
 
+import com.vcredit.framework.fastdfs.FastdfsClient;
 import com.vcredit.framework.fastdfs.connection.FastdfsConnectionPoolHolder;
 import com.vcredit.framework.fastdfs.connection.PooledConnectionFactory;
 import com.vcredit.framework.fastdfs.connection.StorageConnectionPool;
@@ -50,6 +51,11 @@ public class FastdfsAutoConfiguration {
         StorageConnectionPool storageConnectionPool = new StorageConnectionPool(factory, properties);
         FastdfsConnectionPoolHolder.STORAGE_CONNECTION_POOL = storageConnectionPool;
         return storageConnectionPool;
+    }
+
+    @Bean
+    public FastdfsClient fastdfsClient() {
+        return new FastdfsClient();
     }
 
 

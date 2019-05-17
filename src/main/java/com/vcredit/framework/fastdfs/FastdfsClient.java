@@ -12,14 +12,12 @@ import com.vcredit.framework.fastdfs.command.tracker.result.TrackerResult;
 import com.vcredit.framework.fastdfs.constant.StorageStatus;
 import com.vcredit.framework.fastdfs.exception.CommandStatusException;
 import com.vcredit.framework.fastdfs.exception.FastdfsException;
-import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 
 /**
  * @author Dong Zhuming
  */
-@Component
 public class FastdfsClient {
 
 
