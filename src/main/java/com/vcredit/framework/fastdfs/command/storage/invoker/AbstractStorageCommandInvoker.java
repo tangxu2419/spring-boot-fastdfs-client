@@ -38,7 +38,7 @@ public abstract class AbstractStorageCommandInvoker extends AbstractCommandInvok
      */
     @Override
     public BaseOperationResult action() throws InvokeCommandException {
-        FastdfsConnection conn = null;
+        FastdfsConnection conn;
         try {
             StorageNode storageNode = command.getStorageNode();
             conn = pool.borrowObject(storageNode);
