@@ -12,6 +12,8 @@ import com.vcredit.framework.fastdfs.command.tracker.result.TrackerResult;
 import com.vcredit.framework.fastdfs.constant.StorageStatus;
 import com.vcredit.framework.fastdfs.exception.CommandStatusException;
 import com.vcredit.framework.fastdfs.exception.FastdfsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 
@@ -20,6 +22,7 @@ import java.io.InputStream;
  */
 public class FastdfsClient {
 
+    private static final Logger log = LoggerFactory.getLogger(FastdfsClient.class);
 
     /**
      * 下载
@@ -37,7 +40,7 @@ public class FastdfsClient {
                     .groupName(groupName)
                     .execute();
             StorageNode storageNode = trackerResult.getStorageNode();
-
+            log.debug("storageNode:[{}]", storageNode.toString());
             UploadResult result = (UploadResult) StorageCommand.Upload.create(storageNode)
                     .inputStream(inputStream)
                     .fileSize(fileSize)
@@ -53,6 +56,7 @@ public class FastdfsClient {
             }
             return result;
         } catch (CommandStatusException cse) {
+            log.warn("错误码：{}，错误信息：{}", cse.getErrorCode(), cse.getMessage());
             return new UploadResult(cse);
         }
     }
@@ -69,11 +73,13 @@ public class FastdfsClient {
                     .fileName(fileName)
                     .toUpdate(true)
                     .execute();
+            log.debug("storageNode:[{}]", trackerResult.getStorageNode().toString());
             return (MetaDataResult) StorageCommand.GetMeta.create(trackerResult.getStorageNode())
                     .groupName(groupName)
                     .fileName(fileName)
                     .execute();
         } catch (CommandStatusException cse) {
+            log.warn("错误码：{}，错误信息：{}", cse.getErrorCode(), cse.getMessage());
             return new MetaDataResult(cse);
         }
     }
@@ -88,16 +94,18 @@ public class FastdfsClient {
      */
     public DownloadResult download(String groupName, String fileName) throws FastdfsException {
         try {
-            TrackerResult storageNode = (TrackerResult) TrackerCommand.FetchStorage.create()
+            TrackerResult trackerResult = (TrackerResult) TrackerCommand.FetchStorage.create()
                     .groupName(groupName)
                     .fileName(fileName)
                     .toUpdate(true)
                     .execute();
-            return (DownloadResult) StorageCommand.Download.create(storageNode.getStorageNode())
+            log.debug("storageNode:[{}]", trackerResult.getStorageNode().toString());
+            return (DownloadResult) StorageCommand.Download.create(trackerResult.getStorageNode())
                     .groupName(groupName)
                     .fileName(fileName)
                     .execute();
         } catch (CommandStatusException cse) {
+            log.warn("错误码：{}，错误信息：{}", cse.getErrorCode(), cse.getMessage());
             return new DownloadResult(cse);
         }
     }
@@ -111,16 +119,18 @@ public class FastdfsClient {
      */
     public DeleteResult delete(String groupName, String fileName) throws FastdfsException {
         try {
-            TrackerResult storageNode = (TrackerResult) TrackerCommand.FetchStorage.create()
+            TrackerResult trackerResult = (TrackerResult) TrackerCommand.FetchStorage.create()
                     .groupName(groupName)
                     .fileName(fileName)
                     .toUpdate(true)
                     .execute();
-            return (DeleteResult) StorageCommand.Delete.create(storageNode.getStorageNode())
+            log.debug("storageNode:[{}]", trackerResult.getStorageNode().toString());
+            return (DeleteResult) StorageCommand.Delete.create(trackerResult.getStorageNode())
                     .groupName(groupName)
                     .fileName(fileName)
                     .execute();
         } catch (CommandStatusException cse) {
+            log.warn("错误码：{}，错误信息：{}", cse.getErrorCode(), cse.getMessage());
             return new DeleteResult(cse);
         }
     }
