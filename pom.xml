@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.vcredit.framework</groupId>
     <artifactId>spring-boot-fastdfs-client</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>spring-boot-fastdfs-client</name>
     <description>Fastdfs client for Spring Boot</description>
 

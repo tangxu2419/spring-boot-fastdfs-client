@@ -1,6 +1,7 @@
 package com.vcredit.framework.fastdfs.exception;
 
 import com.vcredit.framework.fastdfs.constant.Constants;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Map;
 
@@ -27,7 +28,7 @@ public class CommandStatusException extends InvokeCommandException {
     private int errorCode;
 
     public CommandStatusException(int errorCode) {
-        super(CODE_MESSAGE_MAPPING.get(errorCode));
+        super(StringUtils.isBlank(CODE_MESSAGE_MAPPING.get(errorCode)) ? "未知错误" : CODE_MESSAGE_MAPPING.get(errorCode));
         this.errorCode = errorCode;
     }
 
