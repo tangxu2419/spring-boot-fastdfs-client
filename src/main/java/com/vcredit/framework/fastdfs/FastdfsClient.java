@@ -72,7 +72,7 @@ public class FastdfsClient {
             }
             return result;
         } catch (CommandStatusException cse) {
-            log.warn("错误码：{}，错误信息：{}", cse.getErrorCode(), cse.getMessage());
+            log.error("错误码：{}，错误信息：{}", cse.getErrorCode(), cse.getMessage());
             return new UploadResult(cse);
         }
     }
@@ -95,7 +95,7 @@ public class FastdfsClient {
                     .fileName(fileName)
                     .execute();
         } catch (CommandStatusException cse) {
-            log.warn("错误码：{}，错误信息：{}", cse.getErrorCode(), cse.getMessage());
+            log.error("错误码：{}，错误信息：{}", cse.getErrorCode(), cse.getMessage());
             return new MetaDataResult(cse);
         }
     }
@@ -121,7 +121,7 @@ public class FastdfsClient {
                     .fileName(fileName)
                     .execute();
         } catch (CommandStatusException cse) {
-            log.warn("错误码：{}，错误信息：{}", cse.getErrorCode(), cse.getMessage());
+            log.error("错误码：{}，错误信息：{}", cse.getErrorCode(), cse.getMessage());
             return new DownloadResult(cse);
         }
     }
@@ -146,7 +146,7 @@ public class FastdfsClient {
                     .fileName(fileName)
                     .execute();
         } catch (CommandStatusException cse) {
-            log.warn("错误码：{}，错误信息：{}", cse.getErrorCode(), cse.getMessage());
+            log.error("错误码：{}，错误信息：{}", cse.getErrorCode(), cse.getMessage());
             return new DeleteResult(cse);
         }
     }
