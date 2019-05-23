@@ -36,6 +36,9 @@ public class TrackerClient {
 
     private static final Logger log = LoggerFactory.getLogger(TrackerClient.class);
 
+    /**
+     * 获取所有组信息
+     */
     public List<GroupState> listGroups() throws InvokeCommandException {
         GroupStateResult groupStateResult = (GroupStateResult) TrackerCommand.ListGroups.create().execute();
         List<GroupState> list = groupStateResult.getList();
@@ -47,9 +50,6 @@ public class TrackerClient {
 
     /**
      * 按组列出存储状态
-     *
-     * @return
-     * @throws InvokeCommandException
      */
     public List<StorageState> listStorage(String groupName) throws InvokeCommandException {
         StorageStateResult result = (StorageStateResult) TrackerCommand.ListStorage.create()
@@ -64,9 +64,6 @@ public class TrackerClient {
 
     /**
      * 按组和IP列出存储状态
-     *
-     * @return
-     * @throws InvokeCommandException
      */
     public List<StorageState> listStorage(String groupName, String storageIpAddr) throws InvokeCommandException {
         StorageStateResult result = (StorageStateResult) TrackerCommand.ListStorage.create()

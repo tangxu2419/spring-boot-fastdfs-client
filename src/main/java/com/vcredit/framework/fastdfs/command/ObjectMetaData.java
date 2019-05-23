@@ -56,13 +56,13 @@ public class ObjectMetaData<T> {
     public ObjectMetaData(Class<T> genericType) throws InvokeCommandException {
         this.genericType = genericType;
         // 获得对象类名
-        this.fieldList = praseFieldList(genericType);
+        this.fieldList = parseFieldList(genericType);
     }
 
     /**
      * 解析映射对象数据映射情况
      */
-    private List<FieldMetaData> praseFieldList(Class genericType) throws InvokeCommandException {
+    private List<FieldMetaData> parseFieldList(Class genericType) throws InvokeCommandException {
         List<Field> fields = this.getOrderedField(genericType);
         List<FieldMetaData> fieldMetaDataList = new ArrayList<>();
         for (Field field : fields) {
@@ -202,7 +202,6 @@ public class ObjectMetaData<T> {
     public int getFieldsTotalSize() {
         return fieldsTotalSize;
     }
-
 
     public List<FieldMetaData> getFieldList() {
         return fieldList;
