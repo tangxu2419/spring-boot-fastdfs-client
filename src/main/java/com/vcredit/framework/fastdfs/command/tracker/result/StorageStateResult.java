@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 VCREDIT
+ *   Copyright 2019 VCREDIT
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -12,31 +12,31 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
+ *
  */
 
-package com.vcredit.framework.fastdfs.exception;
+package com.vcredit.framework.fastdfs.command.tracker.result;
+
+import com.vcredit.framework.fastdfs.command.BaseOperationResult;
+
+import java.util.List;
 
 /**
- * Fastdfs通用异常
- *
- * @author dongzhuming
+ * @author tangxu
  */
-public class FastdfsException extends Exception {
+public class StorageStateResult extends BaseOperationResult {
 
-    public FastdfsException() {
+    private List<StorageState> list;
 
+    public StorageStateResult(List<StorageState> list) {
+        this.list = list;
     }
 
-    public FastdfsException(Throwable t) {
-        super(t);
+    public List<StorageState> getList() {
+        return list;
     }
 
-    public FastdfsException(String message) {
-        super(message);
+    public void setList(List<StorageState> list) {
+        this.list = list;
     }
-
-    public FastdfsException(String message, Throwable t) {
-        super(message, t);
-    }
-
 }

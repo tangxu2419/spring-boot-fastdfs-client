@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 VCREDIT
+ *   Copyright 2019 VCREDIT
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -12,31 +12,26 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
+ *
  */
 
-package com.vcredit.framework.fastdfs.exception;
+package com.vcredit.framework.fastdfs.command;
 
 /**
- * Fastdfs通用异常
- *
- * @author dongzhuming
+ * @author tangxu / tobato
  */
-public class FastdfsException extends Exception {
-
-    public FastdfsException() {
-
-    }
-
-    public FastdfsException(Throwable t) {
-        super(t);
-    }
-
-    public FastdfsException(String message) {
-        super(message);
-    }
-
-    public FastdfsException(String message, Throwable t) {
-        super(message, t);
-    }
+public enum DynamicFieldType {
+    /**
+     * 非动态属性
+     */
+    NOT,
+    /**
+     * 剩余的所有Byte
+     */
+    ALL_REST_BYTE,
+    /**
+     * 文件元数据
+     */
+    METADATA
 
 }

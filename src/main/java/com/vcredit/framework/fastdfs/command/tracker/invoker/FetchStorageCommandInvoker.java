@@ -20,7 +20,7 @@ import com.vcredit.framework.fastdfs.command.ProtoHead;
 import com.vcredit.framework.fastdfs.command.tracker.TrackerCommand;
 import com.vcredit.framework.fastdfs.command.tracker.request.TrackerGetFetchStorageRequest;
 import com.vcredit.framework.fastdfs.command.tracker.result.StorageNode;
-import com.vcredit.framework.fastdfs.command.tracker.result.TrackerResult;
+import com.vcredit.framework.fastdfs.command.tracker.result.StorageNodeResult;
 import com.vcredit.framework.fastdfs.constant.Constants;
 import com.vcredit.framework.fastdfs.util.ProtoPackageUtil;
 
@@ -39,12 +39,12 @@ public class FetchStorageCommandInvoker extends AbstractTrackerCommandInvoker {
     }
 
     @Override
-    protected TrackerResult parseContent(InputStream in, ProtoHead head, Charset charset) throws IOException {
+    protected StorageNodeResult parseContent(InputStream in, ProtoHead head, Charset charset) throws IOException {
         byte[] body = ProtoPackageUtil.recvResponseBody(in, head.getContentLength());
         String groupName = new String(body, 0, Constants.FDFS_GROUP_NAME_MAX_LEN, charset).trim();
         String ip = new String(body, Constants.FDFS_GROUP_NAME_MAX_LEN, Constants.FDFS_IPADDR_SIZE - 1, charset).trim();
         int port = (int) ProtoPackageUtil.buff2long(body, Constants.FDFS_GROUP_NAME_MAX_LEN + Constants.FDFS_IPADDR_SIZE - 1);
-        return new TrackerResult(new StorageNode(groupName, ip, port));
+        return new StorageNodeResult(new StorageNode(groupName, ip, port));
 
     }
 }

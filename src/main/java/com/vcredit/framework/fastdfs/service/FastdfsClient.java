@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.vcredit.framework.fastdfs;
+package com.vcredit.framework.fastdfs.service;
 
 import com.vcredit.framework.fastdfs.command.MetaData;
 import com.vcredit.framework.fastdfs.command.storage.StorageCommand;
@@ -24,7 +24,7 @@ import com.vcredit.framework.fastdfs.command.storage.result.MetaDataResult;
 import com.vcredit.framework.fastdfs.command.storage.result.UploadResult;
 import com.vcredit.framework.fastdfs.command.tracker.TrackerCommand;
 import com.vcredit.framework.fastdfs.command.tracker.result.StorageNode;
-import com.vcredit.framework.fastdfs.command.tracker.result.TrackerResult;
+import com.vcredit.framework.fastdfs.command.tracker.result.StorageNodeResult;
 import com.vcredit.framework.fastdfs.constant.StorageStatus;
 import com.vcredit.framework.fastdfs.exception.CommandStatusException;
 import com.vcredit.framework.fastdfs.exception.FastdfsException;
@@ -52,10 +52,10 @@ public class FastdfsClient {
      */
     public UploadResult upload(String groupName, InputStream inputStream, long fileSize, String fileExtension, MetaData metaData) throws FastdfsException {
         try {
-            TrackerResult trackerResult = (TrackerResult) TrackerCommand.GetStorage.create()
+            StorageNodeResult storageNodeResult = (StorageNodeResult) TrackerCommand.GetStorage.create()
                     .groupName(groupName)
                     .execute();
-            StorageNode storageNode = trackerResult.getStorageNode();
+            StorageNode storageNode = storageNodeResult.getStorageNode();
             log.debug("storageNode:[{}]", storageNode.toString());
             UploadResult result = (UploadResult) StorageCommand.Upload.create(storageNode)
                     .inputStream(inputStream)
@@ -84,13 +84,13 @@ public class FastdfsClient {
      */
     public MetaDataResult getMetaData(String groupName, String fileName) throws FastdfsException {
         try {
-            TrackerResult trackerResult = (TrackerResult) TrackerCommand.FetchStorage.create()
+            StorageNodeResult storageNodeResult = (StorageNodeResult) TrackerCommand.FetchStorage.create()
                     .groupName(groupName)
                     .fileName(fileName)
                     .toUpdate(true)
                     .execute();
-            log.debug("storageNode:[{}]", trackerResult.getStorageNode().toString());
-            return (MetaDataResult) StorageCommand.GetMeta.create(trackerResult.getStorageNode())
+            log.debug("storageNode:[{}]", storageNodeResult.getStorageNode().toString());
+            return (MetaDataResult) StorageCommand.GetMeta.create(storageNodeResult.getStorageNode())
                     .groupName(groupName)
                     .fileName(fileName)
                     .execute();
@@ -110,13 +110,13 @@ public class FastdfsClient {
      */
     public DownloadResult download(String groupName, String fileName) throws FastdfsException {
         try {
-            TrackerResult trackerResult = (TrackerResult) TrackerCommand.FetchStorage.create()
+            StorageNodeResult storageNodeResult = (StorageNodeResult) TrackerCommand.FetchStorage.create()
                     .groupName(groupName)
                     .fileName(fileName)
                     .toUpdate(true)
                     .execute();
-            log.debug("storageNode:[{}]", trackerResult.getStorageNode().toString());
-            return (DownloadResult) StorageCommand.Download.create(trackerResult.getStorageNode())
+            log.debug("storageNode:[{}]", storageNodeResult.getStorageNode().toString());
+            return (DownloadResult) StorageCommand.Download.create(storageNodeResult.getStorageNode())
                     .groupName(groupName)
                     .fileName(fileName)
                     .execute();
@@ -135,13 +135,13 @@ public class FastdfsClient {
      */
     public DeleteResult delete(String groupName, String fileName) throws FastdfsException {
         try {
-            TrackerResult trackerResult = (TrackerResult) TrackerCommand.FetchStorage.create()
+            StorageNodeResult storageNodeResult = (StorageNodeResult) TrackerCommand.FetchStorage.create()
                     .groupName(groupName)
                     .fileName(fileName)
                     .toUpdate(true)
                     .execute();
-            log.debug("storageNode:[{}]", trackerResult.getStorageNode().toString());
-            return (DeleteResult) StorageCommand.Delete.create(trackerResult.getStorageNode())
+            log.debug("storageNode:[{}]", storageNodeResult.getStorageNode().toString());
+            return (DeleteResult) StorageCommand.Delete.create(storageNodeResult.getStorageNode())
                     .groupName(groupName)
                     .fileName(fileName)
                     .execute();

@@ -20,51 +20,42 @@ import com.vcredit.framework.fastdfs.command.AbstractFdfsRequest;
 import com.vcredit.framework.fastdfs.command.ProtoHead;
 import com.vcredit.framework.fastdfs.constant.Constants;
 import com.vcredit.framework.fastdfs.constant.ProtocolCommand;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 
 import java.nio.charset.Charset;
 
 /**
- * 获取源服务器
+ * 列出存储状态
  *
  * @author tangxu
  */
-public class TrackerGetFetchStorageRequest extends AbstractFdfsRequest {
+public class TrackerListStorageRequest extends AbstractFdfsRequest {
 
     /**
      * 组名
      */
     private String groupName;
     /**
-     * 路径名
+     * 存储服务器ip地址
      */
-    private String path;
+    private String storageIpAddr;
 
-
-    public TrackerGetFetchStorageRequest(String groupName, String path, boolean toUpdate) {
+    public TrackerListStorageRequest(String groupName, String storageIpAddr) {
         Validate.notBlank(groupName, "分组不能为空");
-        Validate.notBlank(path, "文件路径不能为空");
         this.groupName = groupName;
-        this.path = path;
-        if (toUpdate) {
-            head = new ProtoHead(ProtocolCommand.TRACKER_PROTO_CMD_SERVICE_QUERY_UPDATE);
-        } else {
-            head = new ProtoHead(ProtocolCommand.TRACKER_PROTO_CMD_SERVICE_QUERY_FETCH_ONE);
-        }
+        this.storageIpAddr = storageIpAddr;
+        head = new ProtoHead(ProtocolCommand.TRACKER_PROTO_CMD_SERVER_LIST_STORAGE);
     }
 
-    /**
-     * 打包参数
-     *
-     * @param charset 编码
-     * @return byte[]
-     */
     @Override
     public byte[] encodeParam(Charset charset) {
         byte[] bGroupName = encodeRequestParam(groupName, Constants.FDFS_GROUP_NAME_MAX_LEN, charset);
-        byte[] bPath = path.getBytes(charset);
-        return this.byteMergerAll(bGroupName, bPath);
+        if (StringUtils.isNotBlank(storageIpAddr)) {
+            byte[] bStorageIpAddr = encodeRequestParam(storageIpAddr, Constants.FDFS_IPADDR_SIZE - 1, charset);
+            return this.byteMergerAll(bGroupName, bStorageIpAddr);
+        } else {
+            return bGroupName;
+        }
     }
-
-
 }

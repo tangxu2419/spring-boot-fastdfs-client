@@ -14,29 +14,28 @@
  *    limitations under the License.
  */
 
-package com.vcredit.framework.fastdfs.exception;
+package com.vcredit.framework.fastdfs.command.tracker.result;
+
+import com.vcredit.framework.fastdfs.command.BaseOperationResult;
+
+import java.util.List;
 
 /**
- * Fastdfs通用异常
- *
- * @author dongzhuming
+ * @author tangxu
  */
-public class FastdfsException extends Exception {
+public class GroupStateResult  extends BaseOperationResult {
 
-    public FastdfsException() {
+    private List<GroupState> list;
 
+    public GroupStateResult(List<GroupState> list) {
+        this.list = list;
     }
 
-    public FastdfsException(Throwable t) {
-        super(t);
+    public List<GroupState> getList() {
+        return list;
     }
 
-    public FastdfsException(String message) {
-        super(message);
+    public void setList(List<GroupState> list) {
+        this.list = list;
     }
-
-    public FastdfsException(String message, Throwable t) {
-        super(message, t);
-    }
-
 }

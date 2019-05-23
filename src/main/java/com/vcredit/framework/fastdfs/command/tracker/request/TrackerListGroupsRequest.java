@@ -14,29 +14,30 @@
  *    limitations under the License.
  */
 
-package com.vcredit.framework.fastdfs.exception;
+package com.vcredit.framework.fastdfs.command.tracker.request;
+
+import com.vcredit.framework.fastdfs.command.AbstractFdfsRequest;
+import com.vcredit.framework.fastdfs.command.ProtoHead;
+import com.vcredit.framework.fastdfs.constant.ProtocolCommand;
+
+import java.nio.charset.Charset;
 
 /**
- * Fastdfs通用异常
+ * 获取分组信息
  *
- * @author dongzhuming
+ * @author tangxu
  */
-public class FastdfsException extends Exception {
+public class TrackerListGroupsRequest extends AbstractFdfsRequest {
 
-    public FastdfsException() {
 
+    public TrackerListGroupsRequest() {
+        head = new ProtoHead(ProtocolCommand.TRACKER_PROTO_CMD_SERVER_LIST_GROUP);
     }
 
-    public FastdfsException(Throwable t) {
-        super(t);
+    @Override
+    public byte[] encodeParam(Charset charset) {
+        return new byte[0];
     }
-
-    public FastdfsException(String message) {
-        super(message);
-    }
-
-    public FastdfsException(String message, Throwable t) {
-        super(message, t);
-    }
-
 }
+
+

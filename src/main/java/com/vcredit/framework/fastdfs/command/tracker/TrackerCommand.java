@@ -23,6 +23,7 @@ import com.vcredit.framework.fastdfs.exception.InvokeCommandException;
 
 /**
  * Tracker指令
+ *
  * @author dongzhuming
  */
 public class TrackerCommand implements FastdfsCommand {
@@ -37,6 +38,9 @@ public class TrackerCommand implements FastdfsCommand {
         return AbstractCommandInvoker.prepare(this).action();
     }
 
+    /**
+     * 获取存储节点命令
+     */
     public static class GetStorage extends TrackerCommand {
         /**
          * 组名
@@ -57,6 +61,10 @@ public class TrackerCommand implements FastdfsCommand {
         }
     }
 
+
+    /**
+     * 获取源服务器
+     */
     public static class FetchStorage extends TrackerCommand {
         /**
          * 组名
@@ -101,6 +109,55 @@ public class TrackerCommand implements FastdfsCommand {
 
         public boolean isToUpdate() {
             return toUpdate;
+        }
+    }
+
+
+    /**
+     * 获取组信息
+     */
+    public static class ListGroups extends TrackerCommand {
+
+        public static ListGroups create() {
+            return new ListGroups();
+        }
+
+    }
+
+    /**
+     * 列出组
+     */
+    public static class ListStorage extends TrackerCommand {
+        /**
+         * 组名
+         */
+        private String groupName;
+        /**
+         * 存储服务器ip地址
+         */
+        private String storageIpAddr;
+
+
+        public static ListStorage create() {
+            return new ListStorage();
+        }
+
+        public ListStorage groupName(String groupName) {
+            this.groupName = groupName;
+            return this;
+        }
+
+        public ListStorage storageIpAddr(String storageIpAddr) {
+            this.storageIpAddr = storageIpAddr;
+            return this;
+        }
+
+        public String getGroupName() {
+            return groupName;
+        }
+
+        public String getStorageIpAddr() {
+            return storageIpAddr;
         }
     }
 }

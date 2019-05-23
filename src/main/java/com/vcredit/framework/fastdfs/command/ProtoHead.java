@@ -84,9 +84,9 @@ public class ProtoHead {
 
 
     /**
-     * pack header by FastDFS transfer protocol
+     * 通过FastDFS传输协议打包标头
      *
-     * @return packed byte buffer
+     * @return 打包字节缓冲区
      */
     byte[] packHeader() {
         byte[] header = new byte[HEAD_LENGTH];

@@ -24,6 +24,14 @@ import java.io.InputStream;
  */
 public class ProtoPackageUtil {
 
+    /**
+     * 从响应流中获取字节数组
+     *
+     * @param in      输入流
+     * @param bodyLen 头信息中指定响应包体长
+     * @return 打包字节缓冲区
+     * @throws IOException 输入流响应体字节长度与头信息指定长度不一致
+     */
     public static byte[] recvResponseBody(InputStream in, long bodyLen) throws IOException {
         byte[] body = new byte[(int) bodyLen];
         int totalBytes = 0;
@@ -37,17 +45,17 @@ public class ProtoPackageUtil {
             remainBytes -= bytes;
         }
         if (totalBytes != bodyLen) {
-            throw new IOException("recv package size " + totalBytes + " != " + bodyLen);
+            throw new IOException("响应字节数组长度不一致：" + totalBytes + " != " + bodyLen);
         }
         return body;
     }
 
 
     /**
-     * long convert to buff (big-endian)
+     * long 转换为 byte数组
      *
-     * @param n long number
-     * @return 8 bytes buff
+     * @param n long
+     * @return 长度为8的字节数组
      */
     public static byte[] long2buff(long n) {
         byte[] bs = new byte[8];
@@ -65,10 +73,10 @@ public class ProtoPackageUtil {
 
 
     /**
-     * buff convert to long
+     * byte数组 转换为 long
      *
-     * @param bs     the buffer (big-endian)
-     * @param offset the start position based 0
+     * @param bs     字节数组
+     * @param offset 要解码的第一个字节的索引
      * @return long number
      */
     public static long buff2long(byte[] bs, int offset) {
@@ -80,6 +88,20 @@ public class ProtoPackageUtil {
                 (((long) (bs[offset + 5] >= 0 ? bs[offset + 5] : 256 + bs[offset + 5])) << 16) |
                 (((long) (bs[offset + 6] >= 0 ? bs[offset + 6] : 256 + bs[offset + 6])) << 8) |
                 ((long) (bs[offset + 7] >= 0 ? bs[offset + 7] : 256 + bs[offset + 7]));
+    }
+
+    /**
+     * byte数组 转换为 int
+     *
+     * @param bs     字节数组
+     * @param offset 要解码的第一个字节的索引
+     * @return int number
+     */
+    public static int buff2int(byte[] bs, int offset) {
+        return ((bs[offset] >= 0 ? bs[offset] : 256 + bs[offset]) << 24) |
+                ((bs[offset + 1] >= 0 ? bs[offset + 1] : 256 + bs[offset + 1]) << 16) |
+                ((bs[offset + 2] >= 0 ? bs[offset + 2] : 256 + bs[offset + 2]) << 8) |
+                (bs[offset + 3] >= 0 ? bs[offset + 3] : 256 + bs[offset + 3]);
     }
 
 }

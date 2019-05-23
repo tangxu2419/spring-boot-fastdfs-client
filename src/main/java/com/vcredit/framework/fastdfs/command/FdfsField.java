@@ -14,29 +14,34 @@
  *    limitations under the License.
  */
 
-package com.vcredit.framework.fastdfs.exception;
+package com.vcredit.framework.fastdfs.command;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Fastdfs通用异常
- *
- * @author dongzhuming
+ * @author tangxu
+ * @date 2019/5/2216:18
  */
-public class FastdfsException extends Exception {
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface FdfsField {
 
-    public FastdfsException() {
+    /**
+     * 标注该属性的顺序
+     */
+    int order() default 0;
 
-    }
+    /**
+     * String属性对应的最大长度
+     */
+    int maxLength() default 0;
 
-    public FastdfsException(Throwable t) {
-        super(t);
-    }
-
-    public FastdfsException(String message) {
-        super(message);
-    }
-
-    public FastdfsException(String message, Throwable t) {
-        super(message, t);
-    }
+    /**
+     * 是否动态属性
+     */
+    DynamicFieldType dynameicFieldType() default DynamicFieldType.NOT;
 
 }

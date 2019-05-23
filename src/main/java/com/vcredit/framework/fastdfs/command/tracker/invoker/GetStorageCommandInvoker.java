@@ -22,7 +22,7 @@ import com.vcredit.framework.fastdfs.command.tracker.TrackerCommand;
 import com.vcredit.framework.fastdfs.command.tracker.request.TrackerGetStorageRequest;
 import com.vcredit.framework.fastdfs.command.tracker.request.TrackerGetStorageWithGroupRequest;
 import com.vcredit.framework.fastdfs.command.tracker.result.StorageNode;
-import com.vcredit.framework.fastdfs.command.tracker.result.TrackerResult;
+import com.vcredit.framework.fastdfs.command.tracker.result.StorageNodeResult;
 import com.vcredit.framework.fastdfs.util.ProtoPackageUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -53,6 +53,6 @@ public class GetStorageCommandInvoker extends AbstractTrackerCommandInvoker {
         String ip = new String(body, FDFS_GROUP_NAME_MAX_LEN, FDFS_IPADDR_SIZE - 1, charset).trim();
         int port = (int) ProtoPackageUtil.buff2long(body, FDFS_GROUP_NAME_MAX_LEN + FDFS_IPADDR_SIZE - 1);
         byte storePath = body[TRACKER_QUERY_STORAGE_STORE_BODY_LEN - 1];
-        return new TrackerResult(new StorageNode(groupName, ip, port, storePath));
+        return new StorageNodeResult(new StorageNode(groupName, ip, port, storePath));
     }
 }

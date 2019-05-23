@@ -21,6 +21,8 @@ import com.vcredit.framework.fastdfs.command.storage.invoker.*;
 import com.vcredit.framework.fastdfs.command.tracker.TrackerCommand;
 import com.vcredit.framework.fastdfs.command.tracker.invoker.FetchStorageCommandInvoker;
 import com.vcredit.framework.fastdfs.command.tracker.invoker.GetStorageCommandInvoker;
+import com.vcredit.framework.fastdfs.command.tracker.invoker.ListGroupCommandInvoker;
+import com.vcredit.framework.fastdfs.command.tracker.invoker.ListStorageCommandInvoker;
 import com.vcredit.framework.fastdfs.connection.FastdfsConnection;
 import com.vcredit.framework.fastdfs.exception.FastdfsConnectionException;
 import com.vcredit.framework.fastdfs.exception.InvokeCommandException;
@@ -62,6 +64,10 @@ public abstract class AbstractCommandInvoker {
             return new GetStorageCommandInvoker((TrackerCommand.GetStorage) command);
         } else if (command instanceof TrackerCommand.FetchStorage) {
             return new FetchStorageCommandInvoker((TrackerCommand.FetchStorage) command);
+        } else if (command instanceof TrackerCommand.ListGroups) {
+            return new ListGroupCommandInvoker((TrackerCommand.ListGroups) command);
+        } else if (command instanceof TrackerCommand.ListStorage) {
+            return new ListStorageCommandInvoker((TrackerCommand.ListStorage) command);
         } else {
             //TODO
             throw new NotImplementedException("");
@@ -100,8 +106,8 @@ public abstract class AbstractCommandInvoker {
      * @param head    响应头
      * @param charset 编码
      * @return 响应对象
-     * @exception InvokeCommandException 调用命令异常
-     * @exception IOException IO异常
+     * @throws InvokeCommandException 调用命令异常
+     * @throws IOException            IO异常
      */
     protected abstract BaseOperationResult parseContent(InputStream in, ProtoHead head, Charset charset) throws InvokeCommandException, IOException;
 
