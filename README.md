@@ -1,4 +1,3 @@
-
 # FastDFS spring-boot-fastdfs-client SDK
 
 ## 运行环境要求
@@ -12,12 +11,12 @@ Maven依赖为
 <dependency>
     <groupId>com.vcredit.framework</groupId>
     <artifactId>spring-boot-fastdfs-client</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>${fastdfs-client-version}</version>
 </dependency>
 ```
 ## yml 配置文件
 
-```
+```yml
 fastdfs:
   upload-fail-ignore: true
   connectTimeout: PT5S
