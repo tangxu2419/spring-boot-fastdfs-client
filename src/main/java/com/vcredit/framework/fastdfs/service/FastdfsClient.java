@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -153,7 +154,6 @@ public class FastdfsClient {
     }
 
 
-
     /**
      * 获取所有组信息
      */
@@ -162,8 +162,10 @@ public class FastdfsClient {
         List<GroupState> list = groupStateResult.getList();
         if (null == list || list.isEmpty()) {
             log.warn("未获取到任何组信息");
+            return new ArrayList<>();
+        } else {
+            return list;
         }
-        return list;
     }
 
     /**

@@ -27,6 +27,8 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.vcredit.framework.fastdfs.connection.FastdfsConnection.Type.TRACKER;
+
 /**
  * @author dongzhuming
  */
@@ -64,9 +66,7 @@ public class TrackerConnectionPool extends GenericKeyedObjectPool<FastdfsConnect
     }
 
     public FastdfsConnection borrowObject() throws Exception {
-        FastdfsConnection.ConnectionInfo connectionInfo = new FastdfsConnection.ConnectionInfo();
-        connectionInfo.setType(FastdfsConnection.Type.TRACKER);
-        connectionInfo.setInetSocketAddress(TrackerNodeLocator.getNodeSocket());
+        FastdfsConnection.ConnectionInfo connectionInfo = new FastdfsConnection.ConnectionInfo(TRACKER,TrackerNodeLocator.getNodeSocket());
         return super.borrowObject(connectionInfo);
     }
 

@@ -1,3 +1,6 @@
+## 1.1.1: 2019-5-24
+* 复写FastdfsConnection.ConnectionInfo中hashCode方法，修复Type及InetSocketAddress相同时，无法重复使用FastdfsConnection
+
 ## 1.1.0: 2019-5-23
 * 增加服务端节点操作，提供listGroups/listStorage/deleteStorage方法
 

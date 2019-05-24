@@ -21,6 +21,8 @@ import com.vcredit.framework.fastdfs.config.FastdfsProperties;
 import org.apache.commons.pool2.KeyedPooledObjectFactory;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
 
+import static com.vcredit.framework.fastdfs.connection.FastdfsConnection.Type.STORAGE;
+
 /**
  * @author dongzhuming
  */
@@ -45,9 +47,7 @@ public class StorageConnectionPool extends GenericKeyedObjectPool<FastdfsConnect
     }
 
     public FastdfsConnection borrowObject(StorageNode storageNode) throws Exception {
-        FastdfsConnection.ConnectionInfo connectionInfo = new FastdfsConnection.ConnectionInfo();
-        connectionInfo.setType(FastdfsConnection.Type.STORAGE);
-        connectionInfo.setInetSocketAddress(storageNode.getInetSocketAddress());
+        FastdfsConnection.ConnectionInfo connectionInfo = new FastdfsConnection.ConnectionInfo(STORAGE, storageNode.getInetSocketAddress());
         return super.borrowObject(connectionInfo);
     }
 

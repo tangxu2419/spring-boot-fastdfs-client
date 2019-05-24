@@ -138,11 +138,11 @@ public class FastdfsConnection {
         STORAGE
     }
 
-    static class ConnectionInfo {
+    public static class ConnectionInfo {
         private Type type;
         private InetSocketAddress inetSocketAddress;
 
-        ConnectionInfo() {
+        public ConnectionInfo() {
         }
 
         ConnectionInfo(Type type, InetSocketAddress inetSocketAddress) {
@@ -150,19 +150,19 @@ public class FastdfsConnection {
             this.inetSocketAddress = inetSocketAddress;
         }
 
-        Type getType() {
+        public Type getType() {
             return type;
         }
 
-        void setType(Type type) {
+        public void setType(Type type) {
             this.type = type;
         }
 
-        InetSocketAddress getInetSocketAddress() {
+        public InetSocketAddress getInetSocketAddress() {
             return inetSocketAddress;
         }
 
-        void setInetSocketAddress(InetSocketAddress inetSocketAddress) {
+        public void setInetSocketAddress(InetSocketAddress inetSocketAddress) {
             this.inetSocketAddress = inetSocketAddress;
         }
 
@@ -173,6 +173,23 @@ public class FastdfsConnection {
             } else {
                 return super.equals(obj);
             }
+        }
+
+        @Override
+        public final int hashCode() {
+            if (null != type && inetSocketAddress != null) {
+                return type.hashCode() + inetSocketAddress.hashCode();
+            } else {
+                return super.hashCode();
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "ConnectionInfo{" +
+                    "type=" + type +
+                    ", inetSocketAddress=" + inetSocketAddress +
+                    '}';
         }
     }
 

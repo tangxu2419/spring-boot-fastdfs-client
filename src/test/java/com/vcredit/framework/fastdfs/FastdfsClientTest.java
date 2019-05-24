@@ -5,8 +5,13 @@ import com.vcredit.framework.fastdfs.command.storage.result.DeleteResult;
 import com.vcredit.framework.fastdfs.command.storage.result.DownloadResult;
 import com.vcredit.framework.fastdfs.command.storage.result.MetaDataResult;
 import com.vcredit.framework.fastdfs.command.storage.result.UploadResult;
+import com.vcredit.framework.fastdfs.command.tracker.TrackerCommand;
 import com.vcredit.framework.fastdfs.command.tracker.result.GroupState;
+import com.vcredit.framework.fastdfs.command.tracker.result.StorageNode;
+import com.vcredit.framework.fastdfs.command.tracker.result.StorageNodeResult;
 import com.vcredit.framework.fastdfs.command.tracker.result.StorageState;
+import com.vcredit.framework.fastdfs.connection.FastdfsConnection;
+import com.vcredit.framework.fastdfs.connection.FastdfsConnectionPoolHolder;
 import com.vcredit.framework.fastdfs.exception.FastdfsException;
 import com.vcredit.framework.fastdfs.exception.InvokeCommandException;
 import com.vcredit.framework.fastdfs.service.FastdfsClient;
@@ -21,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.net.InetSocketAddress;
 import java.util.List;
 
 /**
@@ -33,6 +39,20 @@ public class FastdfsClientTest {
 
     @Autowired
     private FastdfsClient fastdfsClient;
+
+    @Test
+    public void testPool() throws InvokeCommandException {
+        for (int i = 0; i < 10; i++) {
+            StorageNodeResult storageNodeResult = (StorageNodeResult) TrackerCommand.GetStorage.create()
+                    .execute();
+            StorageNode storageNode = storageNodeResult.getStorageNode();
+            System.out.println(storageNode.toString());
+        }
+        FastdfsConnection.ConnectionInfo trackerConn = new FastdfsConnection.ConnectionInfo();
+        trackerConn.setType(FastdfsConnection.Type.TRACKER);
+        trackerConn.setInetSocketAddress(new InetSocketAddress("10.138.30.151", 22122));
+        FastdfsConnectionPoolHolder.trackerPoolInfo(trackerConn);
+    }
 
     @Test
     public void testDeleteStorage() throws InvokeCommandException {
