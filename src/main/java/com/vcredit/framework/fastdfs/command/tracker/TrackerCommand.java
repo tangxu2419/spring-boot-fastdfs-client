@@ -125,7 +125,7 @@ public class TrackerCommand implements FastdfsCommand {
     }
 
     /**
-     * 列出组
+     * 获取Storage节点信息指令
      */
     public static class ListStorage extends TrackerCommand {
         /**
@@ -148,6 +148,44 @@ public class TrackerCommand implements FastdfsCommand {
         }
 
         public ListStorage storageIpAddr(String storageIpAddr) {
+            this.storageIpAddr = storageIpAddr;
+            return this;
+        }
+
+        public String getGroupName() {
+            return groupName;
+        }
+
+        public String getStorageIpAddr() {
+            return storageIpAddr;
+        }
+    }
+
+
+    /**
+     * Storage下线指令
+     */
+    public static class DeleteStorage extends TrackerCommand {
+        /**
+         * 组名
+         */
+        private String groupName;
+        /**
+         * 存储服务器ip地址
+         */
+        private String storageIpAddr;
+
+
+        public static DeleteStorage create() {
+            return new DeleteStorage();
+        }
+
+        public DeleteStorage groupName(String groupName) {
+            this.groupName = groupName;
+            return this;
+        }
+
+        public DeleteStorage storageIpAddr(String storageIpAddr) {
             this.storageIpAddr = storageIpAddr;
             return this;
         }

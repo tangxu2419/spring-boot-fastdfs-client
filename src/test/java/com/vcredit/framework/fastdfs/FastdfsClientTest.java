@@ -10,7 +10,6 @@ import com.vcredit.framework.fastdfs.command.tracker.result.StorageState;
 import com.vcredit.framework.fastdfs.exception.FastdfsException;
 import com.vcredit.framework.fastdfs.exception.InvokeCommandException;
 import com.vcredit.framework.fastdfs.service.FastdfsClient;
-import com.vcredit.framework.fastdfs.service.TrackerClient;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +33,15 @@ public class FastdfsClientTest {
 
     @Autowired
     private FastdfsClient fastdfsClient;
-    @Autowired
-    private TrackerClient trackerClient;
+
+    @Test
+    public void testDeleteStorage() throws InvokeCommandException {
+        fastdfsClient.deleteStorage("group1", "10.138.30.40");
+    }
 
     @Test
     public void testListGroups() throws InvokeCommandException {
-        List<GroupState> list = trackerClient.listGroups();
+        List<GroupState> list = fastdfsClient.listGroups();
         if (null == list || list.isEmpty()) {
             System.out.println("未获取到任何组信息");
             return;
@@ -51,8 +53,7 @@ public class FastdfsClientTest {
 
     @Test
     public void testListStorage() throws InvokeCommandException {
-//        List<StorageState> list = trackerClient.listStorage("group1");
-        List<StorageState> list = trackerClient.listStorage("group1","10.138.30.42");
+        List<StorageState> list = fastdfsClient.listStorage("group1");
         if (null == list || list.isEmpty()) {
             System.out.println("未获取到任何组信息");
             return;
@@ -67,12 +68,11 @@ public class FastdfsClientTest {
         for (int i = 0; i < 1; i++) {
             System.out.println("==============[文件上传]=================");
             MetaData metaData = new MetaData();
-//            metaData.put("desc", "this is a metaData");
+            metaData.put("desc", "this is a metaData");
             File file = File.createTempFile("test", "sql");
-//            File file = new File("C:\\Users\\tangx\\Desktop\\project_info\\note\\MongodbCluster复制集迁移步骤.docx");
             FileWriter fileWriter = new FileWriter(file);
             fileWriter.append("Test Upload file").flush();
-            UploadResult result = fastdfsClient.upload("contract1", new FileInputStream(file), file.length(), "", null);
+            UploadResult result = fastdfsClient.upload("group1", new FileInputStream(file), file.length(), "sql", metaData);
             System.out.println("上传文件信息：" + result.toString());
             if (result.getErrorCode() != 0) {
                 System.out.println("==============[文件上传-失败]=================");

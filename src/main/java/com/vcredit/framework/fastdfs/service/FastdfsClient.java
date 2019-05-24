@@ -23,15 +23,16 @@ import com.vcredit.framework.fastdfs.command.storage.result.DownloadResult;
 import com.vcredit.framework.fastdfs.command.storage.result.MetaDataResult;
 import com.vcredit.framework.fastdfs.command.storage.result.UploadResult;
 import com.vcredit.framework.fastdfs.command.tracker.TrackerCommand;
-import com.vcredit.framework.fastdfs.command.tracker.result.StorageNode;
-import com.vcredit.framework.fastdfs.command.tracker.result.StorageNodeResult;
+import com.vcredit.framework.fastdfs.command.tracker.result.*;
 import com.vcredit.framework.fastdfs.constant.StorageStatus;
 import com.vcredit.framework.fastdfs.exception.CommandStatusException;
 import com.vcredit.framework.fastdfs.exception.FastdfsException;
+import com.vcredit.framework.fastdfs.exception.InvokeCommandException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
+import java.util.List;
 
 /**
  * @author Dong Zhuming
@@ -149,6 +150,59 @@ public class FastdfsClient {
             log.error("错误码：{}，错误信息：{}", cse.getErrorCode(), cse.getMessage());
             return new DeleteResult(cse);
         }
+    }
+
+
+
+    /**
+     * 获取所有组信息
+     */
+    public List<GroupState> listGroups() throws InvokeCommandException {
+        GroupStateResult groupStateResult = (GroupStateResult) TrackerCommand.ListGroups.create().execute();
+        List<GroupState> list = groupStateResult.getList();
+        if (null == list || list.isEmpty()) {
+            log.warn("未获取到任何组信息");
+        }
+        return list;
+    }
+
+    /**
+     * 按组列出存储状态
+     */
+    public List<StorageState> listStorage(String groupName) throws InvokeCommandException {
+        StorageStateResult result = (StorageStateResult) TrackerCommand.ListStorage.create()
+                .groupName(groupName)
+                .execute();
+        List<StorageState> list = result.getList();
+        if (null == list || list.isEmpty()) {
+            log.warn("未获取到任何节点信息");
+        }
+        return list;
+    }
+
+    /**
+     * 按组和IP列出存储状态
+     */
+    public List<StorageState> listStorage(String groupName, String storageIpAddr) throws InvokeCommandException {
+        StorageStateResult result = (StorageStateResult) TrackerCommand.ListStorage.create()
+                .groupName(groupName)
+                .storageIpAddr(storageIpAddr)
+                .execute();
+        List<StorageState> list = result.getList();
+        if (null == list || list.isEmpty()) {
+            log.warn("未获取到任何节点信息");
+        }
+        return list;
+    }
+
+    /**
+     * 按组和IP列出存储状态
+     */
+    public void deleteStorage(String groupName, String storageIpAddr) throws InvokeCommandException {
+        TrackerCommand.DeleteStorage.create()
+                .groupName(groupName)
+                .storageIpAddr(storageIpAddr)
+                .execute();
     }
 
 }

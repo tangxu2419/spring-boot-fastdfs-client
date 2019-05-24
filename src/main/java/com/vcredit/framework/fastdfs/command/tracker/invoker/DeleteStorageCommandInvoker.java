@@ -1,5 +1,5 @@
 /*
- *    Copyright 2019 VCREDIT
+ *   Copyright 2019 VCREDIT
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -12,14 +12,15 @@
  *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
+ *
  */
 
-package com.vcredit.framework.fastdfs.command.storage.invoker;
+package com.vcredit.framework.fastdfs.command.tracker.invoker;
 
 import com.vcredit.framework.fastdfs.command.BaseOperationResult;
 import com.vcredit.framework.fastdfs.command.ProtoHead;
-import com.vcredit.framework.fastdfs.command.storage.StorageCommand;
-import com.vcredit.framework.fastdfs.command.storage.request.StorageSetMetadataRequest;
+import com.vcredit.framework.fastdfs.command.tracker.TrackerCommand;
+import com.vcredit.framework.fastdfs.command.tracker.request.TrackerDeleteStorageRequest;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -27,11 +28,12 @@ import java.nio.charset.Charset;
 /**
  * @author tangxu
  */
-public class SetMetaDataCommandInvoker extends AbstractStorageCommandInvoker {
+public class DeleteStorageCommandInvoker extends AbstractTrackerCommandInvoker {
 
-    public SetMetaDataCommandInvoker(StorageCommand.SetMeta command) {
+
+    public DeleteStorageCommandInvoker(TrackerCommand.DeleteStorage command) {
         this.command = command;
-        super.request = new StorageSetMetadataRequest(command.getGroupName(), command.getFileName(), command.getMetaData(), command.getOpFlag());
+        super.request = new TrackerDeleteStorageRequest(command.getGroupName(), command.getStorageIpAddr());
     }
 
     @Override
@@ -39,5 +41,4 @@ public class SetMetaDataCommandInvoker extends AbstractStorageCommandInvoker {
         /* 程序执行到这里，表示用户本次操作成功 */
         return null;
     }
-
 }

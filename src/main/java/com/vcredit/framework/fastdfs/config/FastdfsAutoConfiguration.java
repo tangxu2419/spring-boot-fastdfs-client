@@ -21,7 +21,6 @@ import com.vcredit.framework.fastdfs.connection.PooledConnectionFactory;
 import com.vcredit.framework.fastdfs.connection.StorageConnectionPool;
 import com.vcredit.framework.fastdfs.connection.TrackerConnectionPool;
 import com.vcredit.framework.fastdfs.service.FastdfsClient;
-import com.vcredit.framework.fastdfs.service.TrackerClient;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -78,11 +77,5 @@ public class FastdfsAutoConfiguration {
     public FastdfsClient fastdfsClient() {
         return new FastdfsClient();
     }
-
-    @Bean
-    public TrackerClient trackerClient() {
-        return new TrackerClient();
-    }
-
 
 }

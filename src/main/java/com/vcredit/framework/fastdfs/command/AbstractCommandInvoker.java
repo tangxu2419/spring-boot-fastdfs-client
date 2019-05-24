@@ -19,10 +19,7 @@ package com.vcredit.framework.fastdfs.command;
 import com.vcredit.framework.fastdfs.command.storage.StorageCommand;
 import com.vcredit.framework.fastdfs.command.storage.invoker.*;
 import com.vcredit.framework.fastdfs.command.tracker.TrackerCommand;
-import com.vcredit.framework.fastdfs.command.tracker.invoker.FetchStorageCommandInvoker;
-import com.vcredit.framework.fastdfs.command.tracker.invoker.GetStorageCommandInvoker;
-import com.vcredit.framework.fastdfs.command.tracker.invoker.ListGroupCommandInvoker;
-import com.vcredit.framework.fastdfs.command.tracker.invoker.ListStorageCommandInvoker;
+import com.vcredit.framework.fastdfs.command.tracker.invoker.*;
 import com.vcredit.framework.fastdfs.connection.FastdfsConnection;
 import com.vcredit.framework.fastdfs.exception.FastdfsConnectionException;
 import com.vcredit.framework.fastdfs.exception.InvokeCommandException;
@@ -68,6 +65,8 @@ public abstract class AbstractCommandInvoker {
             return new ListGroupCommandInvoker((TrackerCommand.ListGroups) command);
         } else if (command instanceof TrackerCommand.ListStorage) {
             return new ListStorageCommandInvoker((TrackerCommand.ListStorage) command);
+        } else if (command instanceof TrackerCommand.DeleteStorage) {
+            return new DeleteStorageCommandInvoker((TrackerCommand.DeleteStorage) command);
         } else {
             //TODO
             throw new NotImplementedException("");

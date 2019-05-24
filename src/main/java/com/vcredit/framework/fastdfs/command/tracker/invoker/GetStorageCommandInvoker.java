@@ -52,7 +52,7 @@ public class GetStorageCommandInvoker extends AbstractTrackerCommandInvoker {
         String groupName = new String(body, 0, FDFS_GROUP_NAME_MAX_LEN, charset).trim();
         String ip = new String(body, FDFS_GROUP_NAME_MAX_LEN, FDFS_IPADDR_SIZE - 1, charset).trim();
         int port = (int) ProtoPackageUtil.buff2long(body, FDFS_GROUP_NAME_MAX_LEN + FDFS_IPADDR_SIZE - 1);
-        byte storePath = body[TRACKER_QUERY_STORAGE_STORE_BODY_LEN - 1];
+        byte storePath = body[TRACKER_QUERY_STORAGE_FETCH_BODY_LEN];
         return new StorageNodeResult(new StorageNode(groupName, ip, port, storePath));
     }
 }

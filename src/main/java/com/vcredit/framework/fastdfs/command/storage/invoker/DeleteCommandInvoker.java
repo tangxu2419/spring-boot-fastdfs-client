@@ -37,6 +37,7 @@ public class DeleteCommandInvoker extends AbstractStorageCommandInvoker {
 
     @Override
     protected BaseOperationResult parseContent(InputStream in, ProtoHead head, Charset charset) {
+        /* 程序执行到这里，表示用户本次操作成功 */
         return new DeleteResult(head.getStatus());
     }
 }

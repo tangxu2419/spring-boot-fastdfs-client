@@ -1,3 +1,6 @@
+## 1.1.0: 2019-5-23
+* 增加服务端节点操作，提供listGroups/listStorage/deleteStorage方法
+
 ## 1.0.1: 2019-5-21
 * 增加CommandStatusException的日志输出
 
